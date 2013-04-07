@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C3006" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Entity2" representedClassName="Entity2" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="someDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="someNumber" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="someStrangeString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="someString" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Entity3" representedClassName="Entity3" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Entity4" representedClassName="Entity4" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uniqueClientIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="EntityOneToOne1" representedClassName="EntityOneToOne1" syncable="YES">
+        <attribute name="childEntityIdentifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="childEntity" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="EntityOneToOne2" inverseName="parentEntity" inverseEntity="EntityOneToOne2" syncable="YES"/>
+    </entity>
+    <entity name="EntityOneToOne2" representedClassName="EntityOneToOne2" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="parentEntity" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="EntityOneToOne1" inverseName="childEntity" inverseEntity="EntityOneToOne1" syncable="YES"/>
+    </entity>
+    <entity name="TTDashboard" representedClassName="TTDashboard" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="workflows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TTWorkflow" inverseName="dashboard" inverseEntity="TTWorkflow" syncable="YES"/>
+    </entity>
+    <entity name="TTEntity1" representedClassName="TTEntity1" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="someDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="someNumber" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="someStrangeString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="someString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unregisteredValue" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TTWorkflow" representedClassName="TTWorkflow" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="dashboard" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="TTDashboard" inverseName="workflows" inverseEntity="TTDashboard" syncable="YES"/>
+    </entity>
+    <entity name="TTWorkflowSubsclass" representedClassName="TTWorkflowSubsclass" parentEntity="TTWorkflow" syncable="YES">
+        <attribute name="subclassAttribute" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Entity2" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="Entity3" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="Entity4" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="TTDashboard" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="TTEntity1" positionX="160" positionY="192" width="128" height="135"/>
+        <element name="TTWorkflow" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="TTWorkflowSubsclass" positionX="160" positionY="192" width="128" height="60"/>
+        <element name="EntityOneToOne1" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="EntityOneToOne2" positionX="160" positionY="192" width="128" height="90"/>
+    </elements>
+</model>
