@@ -11,7 +11,6 @@
 		A72B3B781711E37D009EAAFD /* SLRESTfulCoreData.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A72B3B771711E37D009EAAFD /* SLRESTfulCoreData.h */; };
 		A72B3B7A1711E37D009EAAFD /* SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3B791711E37D009EAAFD /* SLRESTfulCoreData.m */; };
 		A72B3B821711E37D009EAAFD /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72B3B811711E37D009EAAFD /* SenTestingKit.framework */; };
-		A72B3B841711E37D009EAAFD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72B3B831711E37D009EAAFD /* UIKit.framework */; };
 		A72B3B851711E37D009EAAFD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72B3B721711E37D009EAAFD /* Foundation.framework */; };
 		A72B3B881711E37D009EAAFD /* libSLRESTfulCoreData.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A72B3B6F1711E37D009EAAFD /* libSLRESTfulCoreData.a */; };
 		A72B3B8E1711E37D009EAAFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A72B3B8C1711E37D009EAAFD /* InfoPlist.strings */; };
@@ -86,7 +85,6 @@
 		A72B3B791711E37D009EAAFD /* SLRESTfulCoreData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreData.m; sourceTree = "<group>"; };
 		A72B3B801711E37D009EAAFD /* SLRESTfulCoreDataTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SLRESTfulCoreDataTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A72B3B811711E37D009EAAFD /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		A72B3B831711E37D009EAAFD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		A72B3B8B1711E37D009EAAFD /* SLRESTfulCoreDataTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SLRESTfulCoreDataTests-Info.plist"; sourceTree = "<group>"; };
 		A72B3B8D1711E37D009EAAFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A72B3B8F1711E37D009EAAFD /* SLRESTfulCoreDataTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataTests.h; sourceTree = "<group>"; };
@@ -176,7 +174,6 @@
 				A72B3C131711E7A2009EAAFD /* UIKit.framework in Frameworks */,
 				A72B3C121711E79E009EAAFD /* CoreData.framework in Frameworks */,
 				A72B3B821711E37D009EAAFD /* SenTestingKit.framework in Frameworks */,
-				A72B3B841711E37D009EAAFD /* UIKit.framework in Frameworks */,
 				A72B3B851711E37D009EAAFD /* Foundation.framework in Frameworks */,
 				A72B3B881711E37D009EAAFD /* libSLRESTfulCoreData.a in Frameworks */,
 			);
@@ -211,7 +208,6 @@
 				A72B3BE21711E64B009EAAFD /* CoreData.framework */,
 				A72B3B721711E37D009EAAFD /* Foundation.framework */,
 				A72B3B811711E37D009EAAFD /* SenTestingKit.framework */,
-				A72B3B831711E37D009EAAFD /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -735,6 +731,7 @@
 				A72B3B961711E37D009EAAFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A72B3B971711E37D009EAAFD /* Build configuration list for PBXNativeTarget "SLRESTfulCoreDataTests" */ = {
 			isa = XCConfigurationList;
@@ -743,6 +740,7 @@
 				A72B3B991711E37D009EAAFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
