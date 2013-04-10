@@ -53,11 +53,13 @@ end
 desc 'Run the tests'
 task :test do
   verbose = ENV['VERBOSE']
-  ios = test_project('SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj', 'SLRESTfulCoreData Tests', '-configuration Debug -sdk iphonesimulator RUN_UNIT_TEST_WITH_IOS_SIM=YES', verbose)
+  ios = test_project('SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj', 'SLRESTfulCoreDataTests', '-configuration Debug -sdk iphonesimulator RUN_UNIT_TEST_WITH_IOS_SIM=YES', verbose)
+  # mac = test_project('Example/AFNetworking Mac Example.xcodeproj', 'AFNetworking Mac Tests', '-configuration Debug TEST_AFTER_BUILD=YES', verbose)
 
   puts "\n\n\n" if verbose
   puts "iOS: #{ios == 0 ? 'PASSED'.green : 'FAILED'.red}"
-  if ios == 0
+  # puts "Mac: #{mac == 0 ? 'PASSED'.green : 'FAILED'.red}"
+  if ios == 0 # && mac == 0
     exit(0)
   else
     exit(1)
