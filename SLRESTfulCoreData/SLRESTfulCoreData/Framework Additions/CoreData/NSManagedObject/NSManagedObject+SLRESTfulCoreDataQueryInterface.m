@@ -188,7 +188,6 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
     NSString *className = NSStringFromClass(class);
     
     NSRange range = [selectorName rangeOfString:@"WithCompletionHandler:"];
-    
     NSString *relationship = [selectorName substringToIndex:range.location];
     
     NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationship];
@@ -198,8 +197,28 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
         return NO;
     }
     
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:className
+                                                         inManagedObjectContext:[class mainThreadManagedObjectContext]];
+    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
+    
+    if (!relationship) {
+        return NO;
+    }
+    
+    BOOL isToMany = relationshipDescription.isToMany;
+    
     IMP implementation = imp_implementationWithBlock(^(NSManagedObject *blockSelf, void(^completionHandler)(NSArray *objects, NSError *error)) {
-        [blockSelf fetchObjectsForRelationship:relationship fromURL:CRUDBaseURL completionHandler:completionHandler];
+        [blockSelf fetchObjectsForRelationship:relationship fromURL:CRUDBaseURL completionHandler:^(NSArray *fetchedObjects, NSError *error) {
+            if (!completionHandler) {
+                return;
+            }
+            
+            if (isToMany) {
+                completionHandler(fetchedObjects, error);
+            } else {
+                completionHandler(fetchedObjects.lastObject, error);
+            }
+        }];
     });
     
     class_addMethod(self, sel, implementation, "v@:@");
