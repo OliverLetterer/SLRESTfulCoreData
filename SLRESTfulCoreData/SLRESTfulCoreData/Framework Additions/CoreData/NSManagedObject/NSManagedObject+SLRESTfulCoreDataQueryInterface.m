@@ -30,7 +30,41 @@
 #import "NSManagedObject+SLRESTfulCoreDataHelpers.h"
 #import <objc/message.h>
 
-static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL newSelector)
+static void deleteObjectsWithoutRemoteIDs(NSManagedObjectContext *context, Class class, NSArray *remoteIDs)
+{
+    SLAttributeMapping *attributeMapping = [class attributeMapping];
+    NSString *idKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:[class objectDescription].uniqueIdentifierOfJSONObjects];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(class)];
+    request.predicate = [NSPredicate predicateWithFormat:@"NOT (%K IN %@)", idKey, remoteIDs];
+    
+    NSError *error = nil;
+    NSArray *objectsToBeDeleted = [context executeFetchRequest:request error:&error];
+    NSCAssert(error == nil, @"error while fetching: %@", error);
+    
+    for (id object in objectsToBeDeleted) {
+        [context deleteObject:object];
+    }
+}
+
+static NSArray *arrayByCollectiongObjects(NSArray *array, id(^collector)(id object))
+{
+    NSCParameterAssert(collector);
+    
+    NSMutableArray *finalArray = [NSMutableArray arrayWithCapacity:array.count];
+    
+    for (id obj in array) {
+        id object = collector(obj);
+        
+        if (object) {
+            [finalArray addObject:object];
+        }
+    }
+    
+    return finalArray;
+}
+
+static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSelector)
 {
     Method origMethod = class_getInstanceMethod(class, originalSelector);
     Method newMethod = class_getInstanceMethod(class, newSelector);
@@ -278,21 +312,14 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
          
          [backgroundContext performBlock:^{
              
-             void(^successBlock)(NSArray *objectIDs) = ^(NSArray *objectIDs) {
-                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                     NSManagedObjectContext *mainThreadContext = [self mainThreadManagedObjectContext];
-                     
-                     [mainThreadContext performBlock:^{
-                         NSArray *finalObjectArray = [objectIDs SLArrayByCollectionObjectsWithCollector:^id(NSManagedObjectID *objectID, NSUInteger index, BOOL *stop) {
-                             return [mainThreadContext objectWithID:objectID];
-                         }];
-                         
-                         [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                         if (completionHandler) {
-                             completionHandler(finalObjectArray, nil);
-                         }
-                     }];
-                 });
+             void(^successBlock)(NSArray *objects) = ^(NSArray *objects) {
+                 NSManagedObjectContext *mainThreadContext = [self mainThreadManagedObjectContext];
+                 [mainThreadContext performBlock:^(NSArray *objects) {
+                     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                     if (completionHandler) {
+                         completionHandler(objects, nil);
+                     }
+                 } withObjects:objects];
              };
              
              void(^failureBlock)(NSError *error) = ^(NSError *error) {
@@ -302,12 +329,6 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
                          completionHandler(nil, error);
                      }
                  });
-             };
-             
-             NSArray *(^objectIDCollector)(NSArray *objects) = ^(NSArray *objects) {
-                 return [objects SLArrayByCollectionObjectsWithCollector:^id(NSManagedObject *object, NSUInteger index, BOOL *stop) {
-                     return object.objectID;
-                 }];
              };
              
              NSMutableArray *updatedObjects = [NSMutableArray array];
@@ -355,14 +376,14 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
              
              if (deleteEveryOtherObject) {
                  // now delete every object not returned from the API
-                 [self deleteObjectsWithoutRemoteIDs:fetchedObjectIDs inManagedObjectContext:backgroundContext];
+                 deleteObjectsWithoutRemoteIDs(backgroundContext, self, fetchedObjectIDs);
              }
              
              NSError *saveError = nil;
              if (![backgroundContext save:&saveError]) {
                  failureBlock(saveError);
              } else {
-                 successBlock(objectIDCollector(updatedObjects));
+                 successBlock(updatedObjects);
              }
          }];
      }];
@@ -412,19 +433,14 @@ static inline void class_swizzleSelector(Class class, SEL originalSelector, SEL 
                                                                  deleteEveryOtherObject:deleteEveryOtherObject
                                                                                   error:&error];
                  
-                 NSArray *objectIDs = SLRESTfulCoreDataManagedObjectIDCollector(updatedObjects);
-                 
-                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                     NSManagedObjectContext *mainThreadContext = [self.class mainThreadManagedObjectContext];
-                     [mainThreadContext performBlock:^{
-                         NSArray *objects = SLRESTfulCoreDataManagedObjectCollector(objectIDs, mainThreadContext);
-                         [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                         
-                         if (completionHandler) {
-                             completionHandler(objects, error);
-                         }
-                     }];
-                 });
+                 NSManagedObjectContext *mainThreadContext = [self.class mainThreadManagedObjectContext];
+                 [mainThreadContext performBlock:^(NSArray *objects) {
+                     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                     
+                     if (completionHandler) {
+                         completionHandler(objects, error);
+                     }
+                 } withObjects:updatedObjects];
              }];
          }
      }];

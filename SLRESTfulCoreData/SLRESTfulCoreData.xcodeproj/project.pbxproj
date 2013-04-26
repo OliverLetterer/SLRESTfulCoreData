@@ -20,9 +20,7 @@
 		A72B3BD11711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BA21711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m */; };
 		A72B3BD21711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataSetup.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BA41711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataSetup.m */; };
 		A72B3BD31711E611009EAAFD /* NSManagedObjectContext+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BA71711E611009EAAFD /* NSManagedObjectContext+SLRESTfulCoreData.m */; };
-		A72B3BD41711E611009EAAFD /* SLArray+CTRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BAB1711E611009EAAFD /* SLArray+CTRESTfulCoreData.m */; };
 		A72B3BD61711E611009EAAFD /* NSError+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BB11711E611009EAAFD /* NSError+SLRESTfulCoreData.m */; };
-		A72B3BD71711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BB41711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.m */; };
 		A72B3BD81711E611009EAAFD /* NSString+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BB71711E611009EAAFD /* NSString+SLRESTfulCoreData.m */; };
 		A72B3BD91711E611009EAAFD /* NSURL+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BBA1711E611009EAAFD /* NSURL+SLRESTfulCoreData.m */; };
 		A72B3BDA1711E611009EAAFD /* SLBlockValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A72B3BBD1711E611009EAAFD /* SLBlockValueTransformer.m */; };
@@ -99,12 +97,8 @@
 		A72B3BA41711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataSetup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+SLRESTfulCoreDataSetup.m"; sourceTree = "<group>"; };
 		A72B3BA61711E611009EAAFD /* NSManagedObjectContext+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
 		A72B3BA71711E611009EAAFD /* NSManagedObjectContext+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A72B3BAA1711E611009EAAFD /* NSArray+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A72B3BAB1711E611009EAAFD /* SLArray+CTRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLArray+CTRESTfulCoreData.m"; sourceTree = "<group>"; };
 		A72B3BB01711E611009EAAFD /* NSError+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
 		A72B3BB11711E611009EAAFD /* NSError+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A72B3BB31711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A72B3BB41711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
 		A72B3BB61711E611009EAAFD /* NSString+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
 		A72B3BB71711E611009EAAFD /* NSString+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
 		A72B3BB91711E611009EAAFD /* NSURL+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
@@ -305,22 +299,11 @@
 		A72B3BA81711E611009EAAFD /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				A72B3BA91711E611009EAAFD /* NSArray */,
 				A72B3BAF1711E611009EAAFD /* NSError */,
-				A72B3BB21711E611009EAAFD /* NSMutableDictionary */,
 				A72B3BB51711E611009EAAFD /* NSString */,
 				A72B3BB81711E611009EAAFD /* NSURL */,
 			);
 			path = Foundation;
-			sourceTree = "<group>";
-		};
-		A72B3BA91711E611009EAAFD /* NSArray */ = {
-			isa = PBXGroup;
-			children = (
-				A72B3BAA1711E611009EAAFD /* NSArray+SLRESTfulCoreData.h */,
-				A72B3BAB1711E611009EAAFD /* SLArray+CTRESTfulCoreData.m */,
-			);
-			path = NSArray;
 			sourceTree = "<group>";
 		};
 		A72B3BAF1711E611009EAAFD /* NSError */ = {
@@ -330,15 +313,6 @@
 				A72B3BB11711E611009EAAFD /* NSError+SLRESTfulCoreData.m */,
 			);
 			path = NSError;
-			sourceTree = "<group>";
-		};
-		A72B3BB21711E611009EAAFD /* NSMutableDictionary */ = {
-			isa = PBXGroup;
-			children = (
-				A72B3BB31711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.h */,
-				A72B3BB41711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.m */,
-			);
-			path = NSMutableDictionary;
 			sourceTree = "<group>";
 		};
 		A72B3BB51711E611009EAAFD /* NSString */ = {
@@ -539,9 +513,7 @@
 				A72B3BD11711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m in Sources */,
 				A72B3BD21711E611009EAAFD /* NSManagedObject+SLRESTfulCoreDataSetup.m in Sources */,
 				A72B3BD31711E611009EAAFD /* NSManagedObjectContext+SLRESTfulCoreData.m in Sources */,
-				A72B3BD41711E611009EAAFD /* SLArray+CTRESTfulCoreData.m in Sources */,
 				A72B3BD61711E611009EAAFD /* NSError+SLRESTfulCoreData.m in Sources */,
-				A72B3BD71711E611009EAAFD /* NSMutableDictionary+SLRESTfulCoreData.m in Sources */,
 				A72B3BD81711E611009EAAFD /* NSString+SLRESTfulCoreData.m in Sources */,
 				A72B3BD91711E611009EAAFD /* NSURL+SLRESTfulCoreData.m in Sources */,
 				A72B3BDA1711E611009EAAFD /* SLBlockValueTransformer.m in Sources */,

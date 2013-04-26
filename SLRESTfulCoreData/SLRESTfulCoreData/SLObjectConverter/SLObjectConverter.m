@@ -25,14 +25,22 @@
 //
 
 #import "SLRESTfulCoreData.h"
-#import "NSMutableDictionary+SLRESTfulCoreData.h"
 
 char *const SLObjectConverterDefaultDateTimeFormatKey;
 char *const SLObjectConverterDefaultTimeZoneKey;
 
-static inline BOOL NSAttributeTypeIsNSNumber(NSAttributeType attributeType)
+static BOOL NSAttributeTypeIsNSNumber(NSAttributeType attributeType)
 {
     return NSInteger16AttributeType == attributeType || NSInteger32AttributeType == attributeType || NSInteger64AttributeType == attributeType || NSDecimalAttributeType == attributeType || NSDoubleAttributeType == attributeType || NSFloatAttributeType == attributeType || NSBooleanAttributeType == attributeType;
+}
+
+static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary *otherDictionary)
+{
+    for (id key in otherDictionary) {
+        if (!mainDictionary[key]) {
+            mainDictionary[key] = otherDictionary[key];
+        }
+    }
 }
 
 
@@ -72,7 +80,7 @@ static inline BOOL NSAttributeTypeIsNSNumber(NSAttributeType attributeType)
         [nextConvert.registeredSubclassesDictionary enumerateKeysAndObjectsUsingBlock:^(id key, NSMutableDictionary *otherSubclassDictionary, BOOL *stop) {
             NSMutableDictionary *thisSubclassDictionary = [self _subclassDictionaryForManagedObjectAttributeName:key inDictionary:mergedSubclassesDictionary];
             
-            [thisSubclassDictionary mergeWithValuesFromDictionary:otherSubclassDictionary];
+            mergeDictionaries(thisSubclassDictionary, otherSubclassDictionary);
         }];
         
         managedObjectClass = [managedObjectClass superclass];
@@ -87,7 +95,7 @@ static inline BOOL NSAttributeTypeIsNSNumber(NSAttributeType attributeType)
     Class managedObjectClass = [NSClassFromString(self.managedObjectClassName) superclass];
     
     while ([[managedObjectClass class] isSubclassOfClass:[NSManagedObject class]] && [managedObjectClass class] != [NSManagedObject class]) {
-        [mergedValueTransformers mergeWithValuesFromDictionary:[managedObjectClass objectConverter].valueTransformers];
+        mergeDictionaries(mergedValueTransformers, [managedObjectClass objectConverter].valueTransformers);
         managedObjectClass = [managedObjectClass superclass];
     }
     

@@ -25,11 +25,19 @@
 //
 
 #import "SLObjectDescription.h"
-#import "NSMutableDictionary+SLRESTfulCoreData.h"
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
 #import "NSManagedObject+SLRESTfulCoreData.h"
 
 char *const SLObjectDescriptionDefaultUniqueIdentifierOfJSONObjectsKey;
+
+static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary *otherDictionary)
+{
+    for (id key in otherDictionary) {
+        if (!mainDictionary[key]) {
+            mainDictionary[key] = otherDictionary[key];
+        }
+    }
+}
 
 
 
@@ -56,7 +64,7 @@ char *const SLObjectDescriptionDefaultUniqueIdentifierOfJSONObjectsKey;
     Class managedObjectClass = [NSClassFromString(self.managedObjectClassName) superclass];
     
     while ([[managedObjectClass class] isSubclassOfClass:[NSManagedObject class]] && [managedObjectClass class] != [NSManagedObject class]) {
-        [mergedCRUDBaseURLs mergeWithValuesFromDictionary:[managedObjectClass objectDescription].CRUDBaseURLs];
+        mergeDictionaries(mergedCRUDBaseURLs, [managedObjectClass objectDescription].CRUDBaseURLs);
         managedObjectClass = [managedObjectClass superclass];
     }
     

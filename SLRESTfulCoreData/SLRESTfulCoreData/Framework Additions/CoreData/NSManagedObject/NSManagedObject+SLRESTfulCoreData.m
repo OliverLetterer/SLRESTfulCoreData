@@ -24,11 +24,14 @@
 //  THE SOFTWARE.
 //
 
-#import "SLRESTfulCoreData.h"
-#import "NSArray+SLRESTfulCoreData.h"
+#import "NSManagedObject+SLRESTfulCoreData.h"
 #import "NSManagedObject+SLRESTfulCoreDataQueryInterface.h"
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
 #import "NSManagedObject+SLRESTfulCoreDataHelpers.h"
+#import "NSError+SLRESTfulCoreData.h"
+#import "SLObjectConverter.h"
+#import "SLObjectDescription.h"
+#import "SLAttributeMapping.h"
 #import <objc/message.h>
 
 char *const SLRESTfulCoreDataBackgroundQueueNameKey;
@@ -272,21 +275,20 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     return rawJSONDictionary;
 }
 
-- (BOOL)shouldDeleteManagedObjectAfterFetch:(NSManagedObject *)object forRelationship:(NSString *)relationship
-{
-    return YES;
-}
-
 - (NSArray *)updateObjectsForRelationship:(NSString *)relationship
                            withJSONObject:(id)JSONObject
                                   fromURL:(NSURL *)URL
                    deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
                                     error:(NSError *__autoreleasing *)error
 {
+    NSManagedObjectContext *context = [self.class mainThreadManagedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
+                                                         inManagedObjectContext:context];
+    
     NSMutableArray *updatedObjects = [NSMutableArray array];
     
     // get relationship description, name of destination entity and the name of the invers relation.
-    NSRelationshipDescription *relationshipDescription = [self.class relationshipDescriptionNamed:relationship];
+    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
     NSAssert(relationshipDescription != nil, @"There is no relationship %@ for %@", relationship, self.class);
     
     NSString *destinationClassName = relationshipDescription.destinationEntity.managedObjectClassName;
@@ -363,9 +365,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
         
         for (id object in deletionSet) {
-            if ([self shouldDeleteManagedObjectAfterFetch:object forRelationship:relationship]) {
-                [self.managedObjectContext deleteObject:object];
-            }
+            [self.managedObjectContext deleteObject:object];
         }
     }
     

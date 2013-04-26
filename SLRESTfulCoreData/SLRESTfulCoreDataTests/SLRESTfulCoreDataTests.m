@@ -151,11 +151,6 @@
     
     STAssertNil(error, @"error while fetching");
     STAssertTrue(objects.count == 1, @"only one object should be in the database");
-    
-    [TTEntity1 deleteObjectsWithoutRemoteIDs:@[] inManagedObjectContext:self.managedObjectContext];
-    fetchedEntity = [TTEntity1 objectWithRemoteIdentifier:@5
-                                   inManagedObjectContext:self.managedObjectContext];
-    STAssertNil(fetchedEntity, @"entity should be nil after delete");
 }
 
 - (void)testUpdateWithBadJSONObject
@@ -293,7 +288,14 @@
     STAssertEqualObjects(managedWorkflow2.identifier, @2, @"id wrong");
     STAssertEqualObjects(managedWorkflow2.subclassAttribute, @"some value", @"subclassAttribute wrong");
     
-    updatedObjects = [newDashboard objectsFromRelationship:@"workflows" sortedByAttribute:@"identifier"];
+    NSMutableArray *newObjects = [NSMutableArray arrayWithCapacity:newDashboard.workflows.count];
+    for (id object in newDashboard.workflows) {
+        [newObjects addObject:object];
+    }
+    [newObjects sortUsingComparator:^NSComparisonResult(TTWorkflow *obj1, TTWorkflow *obj2) {
+        return [obj1.identifier compare:obj2.identifier];
+    }];
+    updatedObjects = newObjects;
     STAssertEquals(updatedObjects.count, 2u, @"two objects should be updated");
     managedWorkflow1 = updatedObjects[0];
     managedWorkflow2 = updatedObjects[1];
@@ -409,11 +411,6 @@
     STAssertNotNil(fetchedEntity, @"no entity found");
     STAssertEqualObjects(fetchedEntity.identifier, @"oliver", @"identifier wrong");
     STAssertEqualObjects(fetchedEntity.name, @"letterer", @"name wrong");
-    
-    [Entity3 deleteObjectsWithoutRemoteIDs:@[] inManagedObjectContext:self.managedObjectContext];
-    fetchedEntity = [Entity3 objectWithRemoteIdentifier:@"oliver"
-                                 inManagedObjectContext:self.managedObjectContext];
-    STAssertNil(fetchedEntity, @"entity should be nil after delete");
 }
 
 - (void)testUpdatedObjectWithStringAsCustomUniqueTypeIdentifier
@@ -435,11 +432,6 @@
     STAssertNotNil(fetchedEntity, @"no entity found");
     STAssertEqualObjects(fetchedEntity.uniqueClientIdentifier, @"oliver", @"identifier wrong");
     STAssertEqualObjects(fetchedEntity.name, @"letterer", @"name wrong");
-    
-    [Entity4 deleteObjectsWithoutRemoteIDs:@[] inManagedObjectContext:self.managedObjectContext];
-    fetchedEntity = [Entity4 objectWithRemoteIdentifier:@"oliver"
-                                 inManagedObjectContext:self.managedObjectContext];
-    STAssertNil(fetchedEntity, @"entity should be nil after delete");
 }
 
 - (void)testAutoOneToOneRelationshipUpdateWithIdentifier

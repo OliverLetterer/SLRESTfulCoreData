@@ -35,14 +35,6 @@
 
 @implementation NSManagedObject (SLRESTfulCoreDataHelpers)
 
-+ (NSRelationshipDescription *)relationshipDescriptionNamed:(NSString *)relationshipName
-{
-    NSManagedObjectContext *context = [self mainThreadManagedObjectContext];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self)
-                                                         inManagedObjectContext:context];
-    return entityDescription.relationshipsByName[relationshipName];
-}
-
 + (NSArray *)attributeNames
 {
     NSManagedObjectContext *context = [self mainThreadManagedObjectContext];
@@ -102,52 +94,6 @@
     }
     
     return nil;
-}
-
-- (NSArray *)objectsFromRelationship:(NSString *)relationship sortedByAttribute:(NSString *)attribute
-{
-    return [self objectsFromRelationship:relationship sortedByAttribute:attribute ascending:YES];
-}
-
-- (NSArray *)objectsFromRelationship:(NSString *)relationship sortedByAttribute:(NSString *)attribute ascending:(BOOL)ascending
-{
-    NSRelationshipDescription *relationshipDescription = [self.class relationshipDescriptionNamed:relationship];
-    NSAssert(relationshipDescription != nil, @"no relationship with name %@ found", relationship);
-    
-    NSRelationshipDescription *inverseRelationshipDescription = relationshipDescription.inverseRelationship;
-    NSAssert(inverseRelationshipDescription != nil, @"invers relationship not found for relationship %@", relationship);
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:relationshipDescription.destinationEntity.managedObjectClassName];
-    
-    if (inverseRelationshipDescription.isToMany) {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@", inverseRelationshipDescription.name, self];
-    } else {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K == %@", inverseRelationshipDescription.name, self];
-    }
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:attribute ascending:ascending] ];
-    
-    NSError *error = nil;
-    NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:&error];
-    NSAssert(error == nil, @"error while fetching: %@", error);
-    
-    return objects;
-}
-
-+ (void)deleteObjectsWithoutRemoteIDs:(NSArray *)remoteIDs inManagedObjectContext:(NSManagedObjectContext *)context
-{
-    SLAttributeMapping *attributeMapping = [self attributeMapping];
-    NSString *idKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:[self objectDescription].uniqueIdentifierOfJSONObjects];
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(self)];
-    request.predicate = [NSPredicate predicateWithFormat:@"NOT (%K IN %@)", idKey, remoteIDs];
-    
-    NSError *error = nil;
-    NSArray *objectsToBeDeleted = [context executeFetchRequest:request error:&error];
-    NSAssert(error == nil, @"error while fetching: %@", error);
-    
-    for (id object in objectsToBeDeleted) {
-        [context deleteObject:object];
-    }
 }
 
 + (NSString *)JSONObjectPrefix

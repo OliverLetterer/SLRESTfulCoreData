@@ -24,7 +24,6 @@
 //  THE SOFTWARE.
 //
 
-#import "NSArray+SLRESTfulCoreData.h"
 #import "NSError+SLRESTfulCoreData.h"
 #import "NSString+SLRESTfulCoreData.h"
 #import "NSURL+SLRESTfulCoreData.h"
@@ -48,31 +47,3 @@
 
 extern NSString *const SLRESTfulCoreDataRemoteOperationDidStartNotification;
 extern NSString *const SLRESTfulCoreDataRemoteOperationDidFinishNotification;
-
-static inline NSArray *SLRESTfulCoreDataManagedObjectIDCollector(NSArray *objects)
-{
-    return [objects SLArrayByCollectionObjectsWithCollector:^id(id object, NSUInteger index, BOOL *stop) {
-        if ([object isKindOfClass:[NSArray class]]) {
-            return SLRESTfulCoreDataManagedObjectIDCollector(object);
-        } else if ([object isKindOfClass:[NSManagedObject class]]) {
-            return [(NSManagedObject *)object objectID];
-        }
-        
-        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-        return nil;
-    }];
-}
-
-static inline NSArray *SLRESTfulCoreDataManagedObjectCollector(NSArray *objectIDs, NSManagedObjectContext *context)
-{
-    return [objectIDs SLArrayByCollectionObjectsWithCollector:^id(id object, NSUInteger index, BOOL *stop) {
-        if ([object isKindOfClass:[NSArray class]]) {
-            return SLRESTfulCoreDataManagedObjectCollector(object, context);
-        } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
-            return [context objectWithID:object];
-        }
-        
-        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-        return nil;
-    }];
-}

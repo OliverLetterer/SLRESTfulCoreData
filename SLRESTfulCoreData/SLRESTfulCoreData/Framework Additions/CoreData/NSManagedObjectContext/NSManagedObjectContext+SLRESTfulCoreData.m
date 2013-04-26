@@ -27,6 +27,53 @@
 #import "NSManagedObjectContext+SLRESTfulCoreData.h"
 #import "SLRESTfulCoreData.h"
 
+static NSArray *arrayByCollectiongObjects(NSArray *array, id(^collector)(id object))
+{
+    NSCParameterAssert(collector);
+    
+    NSMutableArray *finalArray = [NSMutableArray arrayWithCapacity:array.count];
+    
+    for (id obj in array) {
+        id object = collector(obj);
+        
+        if (object) {
+            [finalArray addObject:object];
+        }
+    }
+    
+    return finalArray;
+}
+
+static NSArray *managedObjectIDCollector(NSArray *objects)
+{
+    return arrayByCollectiongObjects(objects, ^id(id object) {
+        if ([object isKindOfClass:[NSArray class]]) {
+            return managedObjectIDCollector(object);
+        } else if ([object isKindOfClass:[NSManagedObject class]]) {
+            return [(NSManagedObject *)object objectID];
+        }
+        
+        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
+        return nil;
+    });
+}
+
+static NSArray *managedObjectCollector(NSArray *objectIDs, NSManagedObjectContext *context)
+{
+    return arrayByCollectiongObjects(objectIDs, ^id(id object) {
+        if ([object isKindOfClass:[NSArray class]]) {
+            return managedObjectCollector(object, context);
+        } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
+            return [context objectWithID:object];
+        }
+        
+        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
+        return nil;
+    });
+}
+
+
+
 @implementation NSManagedObjectContext (SLRESTfulCoreData)
 
 - (void)performBlock:(void (^)(NSArray *objects))block withObjectIDs:(NSArray *)objectIDs
@@ -34,13 +81,14 @@
     NSParameterAssert(block);
     
     [self performBlock:^{
-        NSArray *objects = SLRESTfulCoreDataManagedObjectCollector(objectIDs, self);
+        NSArray *objects = managedObjectCollector(objectIDs, self);
         block(objects);
     }];
 }
 
 - (void)performBlock:(void (^)(NSArray *objects))block withObjects:(NSArray *)objects
 {
-    [self performBlock:block withObjectIDs:SLRESTfulCoreDataManagedObjectIDCollector(objects)];
+    [self performBlock:block withObjectIDs:managedObjectIDCollector(objects)];
 }
+
 @end

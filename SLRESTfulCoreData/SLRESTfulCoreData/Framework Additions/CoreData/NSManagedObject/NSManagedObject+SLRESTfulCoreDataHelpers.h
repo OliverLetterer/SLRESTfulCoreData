@@ -27,11 +27,6 @@
 @interface NSManagedObject (SLRESTfulCoreDataHelpers)
 
 /**
- @return NSRelationshipDescription whichs name is relationshipName.
- */
-+ (NSRelationshipDescription *)relationshipDescriptionNamed:(NSString *)relationshipName;
-
-/**
  @return NSArray with a NSString for each attribute belonging to this entity which should be mapped.
  */
 + (NSArray *)attributeNames;
@@ -40,21 +35,6 @@
  @return Fetches an object of this class from database with a given it of a remote object.
  */
 + (instancetype)objectWithRemoteIdentifier:(id)identifier inManagedObjectContext:(NSManagedObjectContext *)context;
-
-/**
- @return [self objectsFromRelationship:relationship sortedByAttribute:attribute ascending:YES].
- */
-- (NSArray *)objectsFromRelationship:(NSString *)relationship sortedByAttribute:(NSString *)attribute;
-
-/**
- @return Sorted array of a given relationship by a given attribute ascending.
- */
-- (NSArray *)objectsFromRelationship:(NSString *)relationship sortedByAttribute:(NSString *)attribute ascending:(BOOL)ascending;
-
-/**
- Deletes a set of objects with given remote IDs.
- */
-+ (void)deleteObjectsWithoutRemoteIDs:(NSArray *)remoteIDs inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
  Returns JSONObjectPrefix from attribute mapping

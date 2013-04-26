@@ -28,7 +28,17 @@
 #import "NSString+SLRESTfulCoreData.h"
 #import "NSManagedObject+SLRESTfulCoreData.h"
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
-#import "NSMutableDictionary+SLRESTfulCoreData.h"
+
+static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary *otherDictionary)
+{
+    for (id key in otherDictionary) {
+        if (!mainDictionary[key]) {
+            mainDictionary[key] = otherDictionary[key];
+        }
+    }
+}
+
+
 
 @interface SLAttributeMapping () {
     
@@ -69,8 +79,7 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     Class managedObjectClass = [NSClassFromString(self.managedObjectClassName) superclass];
     
     while ([[managedObjectClass class] isSubclassOfClass:[NSManagedObject class]] && [managedObjectClass class] != [NSManagedObject class]) {
-        [dictionary mergeWithValuesFromDictionary:[[managedObjectClass attributeMapping] valueForKey:value]];
-        
+        mergeDictionaries(dictionary, [[managedObjectClass attributeMapping] valueForKey:value]);
         managedObjectClass = [managedObjectClass superclass];
     }
     
