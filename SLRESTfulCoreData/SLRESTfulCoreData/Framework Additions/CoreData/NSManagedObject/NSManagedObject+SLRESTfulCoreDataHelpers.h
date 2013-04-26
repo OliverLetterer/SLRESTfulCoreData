@@ -36,9 +36,4 @@
  */
 + (instancetype)objectWithRemoteIdentifier:(id)identifier inManagedObjectContext:(NSManagedObjectContext *)context;
 
-/**
- Returns JSONObjectPrefix from attribute mapping
- */
-+ (NSString *)JSONObjectPrefix;
-
 @end

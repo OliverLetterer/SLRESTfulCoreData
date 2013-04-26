@@ -96,9 +96,4 @@
     return nil;
 }
 
-+ (NSString *)JSONObjectPrefix
-{
-    return [self objectDescription].JSONObjectPrefix;
-}
-
 @end

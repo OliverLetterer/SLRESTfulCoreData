@@ -5,5 +5,8 @@
     "some_number" : 7,
     "some_super_strange_string" : "Super Strange String",
     "some_array" : ["Array"],
-    "some_dictionary" : {"key":"value"}
+    "some_dictionary" : {"key":"value"},
+    "key_path_value": {
+        "second_string_key": "keyPathValue"
+    }
 }

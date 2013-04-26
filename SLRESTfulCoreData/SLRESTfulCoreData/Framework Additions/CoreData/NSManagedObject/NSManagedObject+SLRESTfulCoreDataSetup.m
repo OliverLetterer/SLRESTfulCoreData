@@ -119,11 +119,6 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
     [[self objectConverter] registerValueTransformer:valueTransformer forManagedObjectAttributeName:managedObjectAttributeName];
 }
 
-+ (void)registerJSONObjectPrefix:(NSString *)JSONObjectPrefix
-{
-    [self objectDescription].JSONObjectPrefix = JSONObjectPrefix;
-}
-
 + (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
 {
     [[self attributeMapping] registerObjcNamingConvention:objcNamingConvention forJSONNamingConvention:JSONNamingConvention];

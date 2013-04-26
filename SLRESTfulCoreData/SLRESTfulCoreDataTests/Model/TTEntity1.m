@@ -35,12 +35,14 @@
 @dynamic someNumber;
 @dynamic someStrangeString;
 @dynamic someString;
-@dynamic unregisteredValue, printerIdentifier;
+@dynamic unregisteredValue, printerIdentifier, keyPathValue;
 
 + (void)initialize
 {
     [self unregisterAttributeName:@"unregisteredValue"];
     [self registerAttributeName:@"someStrangeString" forJSONObjectKeyPath:@"some_super_strange_string"];
+    
+    [self registerAttributeName:@"keyPathValue" forJSONObjectKeyPath:@"key_path_value.second_string_key"];
     
     [self registerObjcNamingConvention:@"oliverLetterer" forJSONNamingConvention:@"oli_lett"];
 }

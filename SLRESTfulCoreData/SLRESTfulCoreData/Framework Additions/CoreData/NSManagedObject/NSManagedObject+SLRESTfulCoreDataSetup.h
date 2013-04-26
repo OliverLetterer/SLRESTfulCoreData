@@ -108,11 +108,6 @@
 + (void)registerValueTransformer:(NSValueTransformer *)valueTransformer forManagedObjectAttributeName:(NSString *)managedObjectAttributeName;
 
 /**
- POSTing objects will will be done by this prefix. If JSONObjectPrefix would be `registration` and the rawJSONObject would be { id: 5 } then SLRESTfulCoreData would POST { 'registration' : {id: 5} }, if JSONObjectPrefix is nil, SLRESTfulCoreData would simply POST rawJSONObject.
- */
-+ (void)registerJSONObjectPrefix:(NSString *)JSONObjectPrefix;
-
-/**
  Registers a naming convention. Registering identifier with id will cause all _id_ appearences to be replaced with _identifier_. printer_id will then be automatically converted into printerIdentifier.
  */
 + (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;

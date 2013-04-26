@@ -35,6 +35,7 @@
 @property (nonatomic, retain) NSString *someStrangeString;
 @property (nonatomic, retain) NSString *someString;
 @property (nonatomic, retain) NSString *unregisteredValue;
+@property (nonatomic, strong) NSString *keyPathValue;
 
 @property (nonatomic, strong) NSNumber *printerIdentifier;
 

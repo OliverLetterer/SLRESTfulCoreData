@@ -258,19 +258,34 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     
     NSMutableDictionary *rawJSONDictionary = [NSMutableDictionary dictionary];
     
-    [[self.class attributeNames] enumerateObjectsUsingBlock:^(NSString *attributeName, NSUInteger idx, BOOL *stop) {
+    for (NSString *attributeName in [self.class attributeNames]) {
         id value = [self valueForKey:attributeName];
         
         if (value) {
-            NSString *JSONObjectKey = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
+            NSString *JSONObjectKeyPath = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
             id JSONObjectValue = [objectConverter JSONObjectObjectFromManagedObjectObject:value
                                                                 forManagedObjectAttribute:attributeName];
             
-            if (JSONObjectKey && JSONObjectValue) {
-                rawJSONDictionary[JSONObjectKey] = JSONObjectValue;
+            if (!JSONObjectValue) {
+                continue;
             }
+            
+            __block NSMutableDictionary *currentDictionary = rawJSONDictionary;
+            
+            NSArray *JSONObjectKeyPaths = [JSONObjectKeyPath componentsSeparatedByString:@"."];
+            NSUInteger count = JSONObjectKeyPaths.count;
+            [JSONObjectKeyPaths enumerateObjectsUsingBlock:^(NSString *JSONObjectKey, NSUInteger idx, BOOL *stop) {
+                if (idx == count - 1) {
+                    currentDictionary[JSONObjectKey] = JSONObjectValue;
+                } else {
+                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+                    
+                    currentDictionary[JSONObjectKey] = dictionary;
+                    currentDictionary = dictionary;
+                }
+            }];
         }
-    }];
+    }
     
     return rawJSONDictionary;
 }

@@ -103,7 +103,7 @@
 - (void)testAttributeNames
 {
     NSArray *attributeNames = [TTEntity1 attributeNames];
-    NSArray *expectedAttributes = @[ @"identifier", @"someDate", @"someNumber", @"someStrangeString", @"someString" ];
+    NSArray *expectedAttributes = @[ @"identifier", @"keyPathValue", @"someDate", @"someNumber", @"someStrangeString", @"someString" ];
     
     STAssertEqualObjects(attributeNames, expectedAttributes, @"+[NSManagedObject attributeNamesInManagedObjectContext] not returning correct attribute names");
 }
@@ -123,6 +123,18 @@
     STAssertEqualObjects(entity.someString, @"String", @"someString not correct (%@)", entity);
     STAssertEqualObjects(entity.someNumber, @7, @"someNumber not correct (%@)", entity);
     STAssertEqualObjects(entity.someStrangeString, @"Super Strange String", @"someStrangeString not correct (%@)", entity);
+    STAssertEqualObjects(entity.keyPathValue, @"keyPathValue", @"keyPathValue wrong");
+    
+    NSDictionary *rawJSONDictionary = entity.rawJSONDictionary;
+    NSDictionary *exptetedRawJSONDictionary = @{
+                                                @"id": @5,
+                                                @"some_string": @"String",
+                                                @"some_date": @"2012-02-24T08:22:43Z",
+                                                @"some_number": @7,
+                                                @"some_super_strange_string": @"Super Strange String",
+                                                @"key_path_value": @{ @"second_string_key": @"keyPathValue" },
+                                                };
+    STAssertEqualObjects(rawJSONDictionary, exptetedRawJSONDictionary, @"rawJSONDictionary not working");
     
     TTEntity1 *fetchedEntity = [TTEntity1 objectWithRemoteIdentifier:@5
                                               inManagedObjectContext:self.managedObjectContext];

@@ -455,12 +455,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
         NSAssert(saveError == nil, @"error while saving: %@", saveError);
     }
     
-    NSString *JSONObjectPrefix = [self.class JSONObjectPrefix];
     NSDictionary *rawJSONDictionary = self.rawJSONDictionary;
-    
-    if (JSONObjectPrefix) {
-        rawJSONDictionary = @{ JSONObjectPrefix: rawJSONDictionary };
-    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
@@ -506,12 +501,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
         NSAssert(saveError == nil, @"error while saving: %@", saveError);
     }
     
-    NSString *JSONObjectPrefix = [self.class JSONObjectPrefix];
     NSDictionary *rawJSONDictionary = self.rawJSONDictionary;
-    
-    if (JSONObjectPrefix) {
-        rawJSONDictionary = @{ JSONObjectPrefix: rawJSONDictionary };
-    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
