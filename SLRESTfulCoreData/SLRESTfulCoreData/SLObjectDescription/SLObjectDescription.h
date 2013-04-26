@@ -37,8 +37,6 @@
 + (void)setDefaultUniqueIdentifierOfJSONObjects:(NSString *)uniqueIdentifierOfJSONObjects;
 + (NSString *)defaultUniqueIdentifierOfJSONObjects; // @"id" by default
 
-@property (nonatomic, copy) NSString *JSONObjectPrefix;
-
 @property (nonatomic, copy) NSURL *CRUDBaseURL;
 - (void)registerCRUDBaseURL:(NSURL *)CRUDBaseURL forRelationship:(NSString *)relationship;
 - (NSURL *)CRUDBaseURLForRelationship:(NSString *)relationship;
