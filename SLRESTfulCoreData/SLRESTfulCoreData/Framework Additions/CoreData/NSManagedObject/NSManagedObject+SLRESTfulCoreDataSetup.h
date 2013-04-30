@@ -24,6 +24,8 @@
 //  THE SOFTWARE.
 //
 
+#import <CoreData/CoreData.h>
+
 @class SLAttributeMapping, SLObjectConverter, SLObjectDescription;
 
 

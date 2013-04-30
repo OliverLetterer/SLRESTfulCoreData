@@ -10,12 +10,4 @@ Pod::Spec.new do |spec|
   spec.homepage     = 'https://github.com/OliverLetterer/SLRESTfulCoreData'
   spec.summary      = 'Map your REST API to your CoreData model in minutes.'
   spec.author       = { 'Oliver Letterer' => 'oliver.letterer@gmail.com' }
-  spec.prefix_header_contents = <<-EOS
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import <CoreData/CoreData.h>
-    #import <objc/runtime.h>
-    #import <UIKit/UIKit.h>
-#endif
-EOS
 end

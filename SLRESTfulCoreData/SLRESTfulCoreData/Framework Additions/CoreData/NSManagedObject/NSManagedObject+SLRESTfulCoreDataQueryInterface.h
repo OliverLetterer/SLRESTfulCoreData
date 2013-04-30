@@ -24,6 +24,8 @@
 //  THE SOFTWARE.
 //
 
+#import <CoreData/CoreData.h>
+
 
 
 @interface NSManagedObject (SLRESTfulCoreDataQueryInterface)

@@ -27,6 +27,7 @@
 #import "SLObjectDescription.h"
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
 #import "NSManagedObject+SLRESTfulCoreData.h"
+#import <objc/runtime.h>
 
 char *const SLObjectDescriptionDefaultUniqueIdentifierOfJSONObjectsKey;
 

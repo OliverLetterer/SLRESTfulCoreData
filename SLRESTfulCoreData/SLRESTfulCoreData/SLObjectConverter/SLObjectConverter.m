@@ -25,6 +25,7 @@
 //
 
 #import "SLRESTfulCoreData.h"
+#import <objc/runtime.h>
 
 char *const SLObjectConverterDefaultDateTimeFormatKey;
 char *const SLObjectConverterDefaultTimeZoneKey;

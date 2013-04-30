@@ -24,6 +24,9 @@
 //  THE SOFTWARE.
 //
 
+#import <CoreData/CoreData.h>
+#import <UIKit/UIKit.h>
+
 
 
 /**

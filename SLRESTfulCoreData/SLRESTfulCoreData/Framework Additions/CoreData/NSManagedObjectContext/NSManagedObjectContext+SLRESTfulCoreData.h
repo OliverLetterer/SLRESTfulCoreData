@@ -24,6 +24,10 @@
 //  THE SOFTWARE.
 //
 
+#import <CoreData/CoreData.h>
+
+
+
 @interface NSManagedObjectContext (SLRESTfulCoreData)
 
 - (void)performBlock:(void (^)(NSArray *objects))block withObjectIDs:(NSArray *)objectIDs;

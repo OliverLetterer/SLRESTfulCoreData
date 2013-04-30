@@ -30,6 +30,7 @@
 #import "SLAttributeMapping.h"
 #import "SLObjectConverter.h"
 #import "SLObjectDescription.h"
+#import <objc/runtime.h>
 
 char *const SLRESTfulCoreDataAttributeMappingKey;
 char *const SLRESTfulCoreDataObjectConverterKey;

@@ -25,6 +25,7 @@
 //
 
 #import "SLRESTfulCoreDataBackgroundQueue.h"
+#import <CoreData/CoreData.h>
 
 @class SLAttributeMapping, SLObjectConverter;
 
