@@ -139,6 +139,10 @@ static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary 
 {
     NSString *string = CRUDURL.relativeString;
     
+    if (!string) {
+        return nil;
+    }
+    
     NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:@":[a-z]([a-zA-Z_0-9\\.])+"
                                                                                        options:NSRegularExpressionCaseInsensitive
                                                                                          error:NULL];

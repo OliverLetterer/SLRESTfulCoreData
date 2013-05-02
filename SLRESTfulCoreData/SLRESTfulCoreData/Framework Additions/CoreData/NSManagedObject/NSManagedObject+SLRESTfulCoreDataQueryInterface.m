@@ -224,18 +224,18 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     NSRange range = [selectorName rangeOfString:@"WithCompletionHandler:"];
     NSString *relationship = [selectorName substringToIndex:range.location];
     
-    NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationship];
-    
-    if (!CRUDBaseURL) {
-        NSLog(@"No CRUDBaseURL found for %@, relationship: %@", className, relationship);
-        return NO;
-    }
-    
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:className
                                                          inManagedObjectContext:[class mainThreadManagedObjectContext]];
     NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
     
-    if (!relationship) {
+    if (!relationshipDescription) {
+        return NO;
+    }
+    
+    NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationship];
+    
+    if (!CRUDBaseURL) {
+        NSLog(@"No CRUDBaseURL found for %@, relationship: %@", className, relationship);
         return NO;
     }
     
