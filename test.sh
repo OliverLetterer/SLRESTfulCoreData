@@ -3,6 +3,7 @@
 git clone https://github.com/facebook/xctool.git /tmp/xctool
 
 runTest() {
+	ls -la
 	/tmp/xctool/xctool.sh -project "SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj" -scheme "SLRESTfulCoreData" -configuration "$1" test -test-sdk "$2"
 	if [ $? != 0 ]; then 
 		exit 1
