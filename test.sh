@@ -4,6 +4,7 @@ git clone https://github.com/OliverLetterer/xctool.git /tmp/xctool
 
 me=$(whoami)
 
+mkdir -p ~/Library/Logs/DiagnosticReports
 mkdir -p SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad/xcschemes
 cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/oliver.xcuserdatad/xcschemes/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad/xcschemes
 cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/oliver.xcuserdatad/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/$me.xcuserdatad
