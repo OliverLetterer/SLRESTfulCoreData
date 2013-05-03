@@ -3,8 +3,9 @@
 git clone https://github.com/OliverLetterer/xctool.git /tmp/xctool
 
 me=$(whoami)
-
 cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/oliver.xcuserdatad/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad
+
+ls -la SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata
 
 runTest() {
 	/tmp/xctool/xctool.sh -project "SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj" -scheme "SLRESTfulCoreData" -configuration "$1" test -test-sdk "$2"
