@@ -1,6 +1,6 @@
 #!/bin/sh
 
-git clone git@github.com:OliverLetterer/xctool.git /tmp/xctool
+git clone https://github.com/OliverLetterer/xctool.git /tmp/xctool
 
 runTest() {
 	/tmp/xctool/xctool.sh -project "SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj" -scheme "SLRESTfulCoreData" -configuration "$1" test -test-sdk "$2"
