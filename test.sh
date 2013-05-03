@@ -14,4 +14,3 @@ runTest "Release" "iphonesimulator5.1"
 runTest "Debug" "iphonesimulator6.1"
 runTest "Release" "iphonesimulator6.1"
 
-rm -rf /tmp/xctool
