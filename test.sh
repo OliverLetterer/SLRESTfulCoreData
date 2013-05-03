@@ -2,6 +2,10 @@
 
 git clone https://github.com/OliverLetterer/xctool.git /tmp/xctool
 
+me=$(whoami)
+
+cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/oliver.xcuserdatad/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad
+
 runTest() {
 	/tmp/xctool/xctool.sh -project "SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj" -scheme "SLRESTfulCoreData" -configuration "$1" test -test-sdk "$2"
 	if [ $? != 0 ]; then 
