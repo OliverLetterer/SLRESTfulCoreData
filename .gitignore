@@ -6,9 +6,7 @@
 *.pyc
 *~.nib/
 build/
-xcuserdata/
-xcuserdata/*
-*.xcuserdatad/
+
  
 # Textmate - if you build your xcode projects with it
 *.tm_build_errors
