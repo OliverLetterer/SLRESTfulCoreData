@@ -1,16 +1,14 @@
 #!/bin/sh
 
-git clone https://github.com/OliverLetterer/xctool.git /tmp/xctool
+git clone https://github.com/facebook/xctool.git /tmp/xctool
 
 me=$(whoami)
 
 mkdir -p ~/Library/Logs/DiagnosticReports
 mkdir -p SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad/xcschemes
-cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/oliver.xcuserdatad/xcschemes/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad/xcschemes
-cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/oliver.xcuserdatad/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/$me.xcuserdatad
 
-ls -la SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/*.xcuserdatad/xcschemes
-ls -la SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
+cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/oliver.xcuserdatad/xcschemes/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/xcuserdata/$me.xcuserdatad/xcschemes
+# cp -r SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/oliver.xcuserdatad/* SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace/xcuserdata/$me.xcuserdatad
 
 runTest() {
 	/tmp/xctool/xctool.sh -project "SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj" -scheme "SLRESTfulCoreData" -configuration "$1" test -test-sdk "$2"
