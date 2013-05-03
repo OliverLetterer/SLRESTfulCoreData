@@ -4,7 +4,7 @@ printf "\e[32m Installing xctool...\n"
 git clone https://github.com/facebook/xctool.git /tmp/xctool >/dev/null
 
 if [ $? != 0 ]; then 
-	printf "\e[31m Cloning xctool failed"
+	printf "\e[31m Cloning xctool failed\n"
 	exit 1
 fi
 
