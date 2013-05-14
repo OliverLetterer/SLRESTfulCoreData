@@ -194,6 +194,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     
     for (NSString *relationshipName in relationshipsByName) {
         NSRelationshipDescription *relationship = relationshipsByName[relationshipName];
+        NSAssert(relationship.inverseRelationship != nil, @"No inverseRelationship found for relationship %@ on %@", relationshipName, self.class);
+        
         Class destinationClass = NSClassFromString(relationship.destinationEntity.managedObjectClassName);
         NSString *uniqueJSONObjectIdentifier = [destinationClass objectDescription].uniqueIdentifierOfJSONObjects;
         NSString *uniqueManagedObjectIdentifier = [[destinationClass attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueJSONObjectIdentifier];
