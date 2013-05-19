@@ -36,7 +36,7 @@
 /* Begin PBXFileReference section */
 		A635A10E08464FAB9954963D /* Pods-ios.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = SOURCE_ROOT; };
 		A7AEC82F1749291A00564EE7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		A7AEC83D1749291A00564EE7 /* SLRESTfulCoreDataTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SLRESTfulCoreDataTests.octest; path = "iOS Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7AEC83D1749291A00564EE7 /* iOS Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7AEC83E1749291A00564EE7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A7AEC8481749291A00564EE7 /* SLRESTfulCoreDataTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SLRESTfulCoreDataTests-Info.plist"; sourceTree = "<group>"; };
 		A7AEC84A1749291A00564EE7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		A7AEC82D1749291A00564EE7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A7AEC83D1749291A00564EE7 /* SLRESTfulCoreDataTests.octest */,
+				A7AEC83D1749291A00564EE7 /* iOS Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 			);
 			name = "iOS Tests";
 			productName = SLRESTfulCoreDataTests;
-			productReference = A7AEC83D1749291A00564EE7 /* SLRESTfulCoreDataTests.octest */;
+			productReference = A7AEC83D1749291A00564EE7 /* iOS Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
