@@ -24,6 +24,10 @@
 //  THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
+
+
+
 extern NSString *const SLRESTfulCoreDataErrorDomain;
 
 typedef enum {

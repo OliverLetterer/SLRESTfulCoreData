@@ -1,3 +1,7 @@
 language: objective-c
-before_install: "(which ios-sim || brew install ios-sim) && sudo gem update --system"
-script: "./test.sh"
+before_install:
+    - brew update
+    - brew install xctool --HEAD
+    - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
+    - mkdir -p "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes/"
+script: rake test
