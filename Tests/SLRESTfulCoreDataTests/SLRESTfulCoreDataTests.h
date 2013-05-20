@@ -7,3 +7,4 @@
 //
 
 #import "SLRESTfulCoreData.h"
+#import "SLTestDataStore.h"

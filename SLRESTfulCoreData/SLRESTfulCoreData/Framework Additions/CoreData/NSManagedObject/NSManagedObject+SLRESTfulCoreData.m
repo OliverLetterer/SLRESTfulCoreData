@@ -134,7 +134,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         return nil;
     }
     
-    NSAssert([[self attributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found to %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
+    NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found for %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:[self mainThreadManagedObjectContext]];
     NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
     
@@ -170,7 +170,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                                                          inManagedObjectContext:self.managedObjectContext];
     NSDictionary *attributesByName = [entityDescription attributesByName];
     
-    NSArray *attributes = [self.class attributeNames];
+    NSArray *attributes = [self.class registeredAttributeNames];
     SLObjectConverter *objectConverter = [self.class objectConverter];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
     
@@ -260,7 +260,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     
     NSMutableDictionary *rawJSONDictionary = [NSMutableDictionary dictionary];
     
-    for (NSString *attributeName in [self.class attributeNames]) {
+    for (NSString *attributeName in [self.class registeredAttributeNames]) {
         id value = [self valueForKey:attributeName];
         
         if (value) {

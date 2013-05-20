@@ -12,6 +12,7 @@
 		A721A511174A0A5900B2D9D4 /* TestDataStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A721A50F174A0A5900B2D9D4 /* TestDataStore.xcdatamodeld */; };
 		A721A514174A0A8400B2D9D4 /* SLRESTfulCoreDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A721A513174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.m */; };
 		A721A517174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A721A516174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m */; };
+		A721A51A174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A721A519174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m */; };
 		A7AEC83F1749291A00564EE7 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC83E1749291A00564EE7 /* SenTestingKit.framework */; };
 		A7AEC8421749291A00564EE7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC82F1749291A00564EE7 /* Foundation.framework */; };
 		A7AEC84B1749291A00564EE7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A7AEC8491749291A00564EE7 /* InfoPlist.strings */; };
@@ -47,6 +48,7 @@
 		A721A512174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataTests.h; sourceTree = "<group>"; };
 		A721A513174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataTests.m; sourceTree = "<group>"; };
 		A721A516174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataSetupTests.m; sourceTree = "<group>"; };
+		A721A519174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataHelpersTests.m; sourceTree = "<group>"; };
 		A7AEC82F1749291A00564EE7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A7AEC83D1749291A00564EE7 /* iOS Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7AEC83E1749291A00564EE7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -157,6 +159,7 @@
 				A721A513174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.m */,
 				A721A508174A071300B2D9D4 /* SLAttributeMappingTests.m */,
 				A721A516174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m */,
+				A721A519174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m */,
 				A721A50B174A09EA00B2D9D4 /* SLTestDataStore */,
 				A7AEC8471749291A00564EE7 /* Supporting Files */,
 			);
@@ -445,6 +448,7 @@
 				A721A511174A0A5900B2D9D4 /* TestDataStore.xcdatamodeld in Sources */,
 				A721A514174A0A8400B2D9D4 /* SLRESTfulCoreDataTests.m in Sources */,
 				A721A517174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m in Sources */,
+				A721A51A174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

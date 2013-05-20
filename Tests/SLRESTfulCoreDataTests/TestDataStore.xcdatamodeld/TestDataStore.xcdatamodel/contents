@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="SLEntity1" representedClassName="SLEntity1" syncable="YES"/>
+    <entity name="SLEntity2" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unregisteredAttribute" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SLEntity3" syncable="YES">
+        <attribute name="someValue" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="SLSubclassOfEntity1" representedClassName="SLSubclassOfEntity1" parentEntity="SLEntity1" syncable="YES"/>
     <elements>
         <element name="SLEntity1" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLSubclassOfEntity1" positionX="160" positionY="192" width="128" height="45"/>
+        <element name="SLEntity2" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="SLEntity3" positionX="160" positionY="192" width="128" height="60"/>
     </elements>
 </model>
