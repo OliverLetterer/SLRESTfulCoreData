@@ -16,7 +16,7 @@
 
 
 
-@interface SLRESTfulCoreDataSetupTests : SenInterfaceTestCase
+@interface SLRESTfulCoreDataSetupTests : SenTestCase
 
 @end
 
