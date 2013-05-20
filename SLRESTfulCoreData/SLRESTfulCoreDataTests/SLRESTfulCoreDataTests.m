@@ -102,7 +102,7 @@
 
 - (void)testAttributeNames
 {
-    NSArray *attributeNames = [TTEntity1 attributeNames];
+    NSArray *attributeNames = [TTEntity1 registeredAttributeNames];
     NSArray *expectedAttributes = @[ @"identifier", @"keyPathValue", @"someDate", @"someNumber", @"someStrangeString", @"someString" ];
     
     STAssertEqualObjects(attributeNames, expectedAttributes, @"+[NSManagedObject attributeNamesInManagedObjectContext] not returning correct attribute names");

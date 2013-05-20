@@ -179,6 +179,15 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         NSString *JSONObjectKeyPath = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
         id rawJSONObject = [rawDictionary valueForKeyPath:JSONObjectKeyPath];
         
+        if (!rawJSONObject) {
+            continue;
+        }
+        
+        if ([rawJSONObject isEqual:[NSNull null]]) {
+            [self setValue:nil forKey:attributeName];
+            continue;
+        }
+        
         id myValue = [objectConverter managedObjectObjectFromJSONObjectObject:rawJSONObject
                                                     forManagedObjectAttribute:attributeName];
         
