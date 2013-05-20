@@ -24,6 +24,11 @@
 
 @implementation SLRESTfulCoreDataSetupTests
 
+- (void)setUp
+{
+    
+}
+
 - (void)testThatEachNSManagedObjectSubclassReturnsItsOwnMappingModel
 {
     expect([SLEntity1 attributeMapping]).toNot.beNil();
