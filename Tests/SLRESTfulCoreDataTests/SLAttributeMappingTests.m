@@ -143,4 +143,39 @@
     expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"fooBarLURLL"]).to.equal(@"foo_bar_lurll");
 }
 
+- (void)testThatAttributeMappingRegistersDefaultAttributeMappings
+{
+    [SLAttributeMapping registerDefaultAttribute:@"someURL" forJSONObjectKeyPath:@"some_url"];
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_url"]).to.equal(@"someURL");
+    expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someURL"]).to.equal(@"some_url");
+    
+    [SLAttributeMapping unregisterDefaultAttribute:@"someURL" forJSONObjectKeyPath:@"some_url"];
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_url"]).to.equal(@"someUrl");
+    expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someURL"]).to.equal(@"some_url");
+}
+
+- (void)testThatInstanceAttributeMappingBindsStrongerThanDefaultAttributeMappings
+{
+    [SLAttributeMapping registerDefaultAttribute:@"someURL" forJSONObjectKeyPath:@"some_url"];
+    [self.attributeMapping registerAttribute:@"someValue" forJSONObjectKeyPath:@"some_url"];
+    [self.attributeMapping registerAttribute:@"someURL" forJSONObjectKeyPath:@"some_value"];
+    
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_url"]).to.equal(@"someValue");
+    expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someURL"]).to.equal(@"some_value");
+    
+    [SLAttributeMapping unregisterDefaultAttribute:@"someURL" forJSONObjectKeyPath:@"some_url"];
+}
+
+- (void)testThatAttributeMappingRegistersDefaultNamingConventions
+{
+    [SLAttributeMapping registerDefaultObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+    
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_id"]).to.equal(@"someIdentifier");
+    expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someIdentifier"]).to.equal(@"some_id");
+    
+    [SLAttributeMapping unregisterDefaultObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_id"]).to.equal(@"someId");
+    expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someIdentifier"]).to.equal(@"some_identifier");
+}
+
 @end

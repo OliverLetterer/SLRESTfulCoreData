@@ -36,6 +36,7 @@
 - (id)initWithManagedObjectClassName:(NSString *)managedObjectClassName;
 
 + (void)registerDefaultAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
++ (void)unregisterDefaultAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
 
 - (void)registerAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
 - (void)unregisterAttributeName:(NSString *)attributeName;
@@ -45,6 +46,7 @@
  registers naming conventions. can be used for example to always convert _id_ into _identifier_ and vice versa.
  */
 + (void)registerDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
++ (void)unregisterDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 - (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 
 - (NSString *)convertManagedObjectAttributeToJSONObjectAttribute:(NSString *)attribute;

@@ -151,21 +151,33 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
 
 - (NSDictionary *)mergedManagedObjectJSONObjectAttributesDictionary
 {
-    return SLAttributeMappingMergeDictionary(self, @"managedObjectJSONObjectAttributesDictionary");
+    NSMutableDictionary *mergedManagedObjectJSONObjectAttributesDictionary = SLAttributeMappingMergeDictionary(self, @"managedObjectJSONObjectAttributesDictionary").mutableCopy;
+    mergeDictionaries(mergedManagedObjectJSONObjectAttributesDictionary, [self.class managedObjectJSONObjectAttributesDictionary]);
+    
+    return mergedManagedObjectJSONObjectAttributesDictionary;
 }
 - (NSDictionary *)mergedJSONObjectManagedObjectAttributesDictionary
 {
-    return SLAttributeMappingMergeDictionary(self, @"JSONObjectManagedObjectAttributesDictionary");
+    NSMutableDictionary *mergedJSONObjectManagedObjectAttributesDictionary = SLAttributeMappingMergeDictionary(self, @"JSONObjectManagedObjectAttributesDictionary").mutableCopy;
+    mergeDictionaries(mergedJSONObjectManagedObjectAttributesDictionary, [self.class JSONObjectManagedObjectAttributesDictionary]);
+    
+    return mergedJSONObjectManagedObjectAttributesDictionary;
 }
 
 - (NSDictionary *)mergedManagedObjectJSONObjectNamingConventions
 {
-    return SLAttributeMappingMergeDictionary(self, @"managedObjectJSONObjectNamingConventions");
+    NSMutableDictionary *mergedManagedObjectJSONObjectNamingConventions = SLAttributeMappingMergeDictionary(self, @"managedObjectJSONObjectNamingConventions").mutableCopy;
+    mergeDictionaries(mergedManagedObjectJSONObjectNamingConventions, [self.class managedObjectJSONObjectNamingConventions]);
+    
+    return mergedManagedObjectJSONObjectNamingConventions;
 }
 
 - (NSDictionary *)mergedJSONObjectManagedObjectNamingConventions
 {
-    return SLAttributeMappingMergeDictionary(self, @"JSONObjectManagedObjectNamingConventions");
+    NSMutableDictionary *mergedJSONObjectManagedObjectNamingConventions = SLAttributeMappingMergeDictionary(self, @"JSONObjectManagedObjectNamingConventions").mutableCopy;
+    mergeDictionaries(mergedJSONObjectManagedObjectNamingConventions, [self.class JSONObjectManagedObjectNamingConventions]);
+    
+    return mergedJSONObjectManagedObjectNamingConventions;
 }
 
 #pragma mark - Initialization
@@ -197,6 +209,12 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     [self JSONObjectManagedObjectAttributesDictionary][JSONObjectKeyPath] = attribute;
 }
 
++ (void)unregisterDefaultAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
+{
+    [[self managedObjectJSONObjectAttributesDictionary] removeObjectForKey:attribute];
+    [[self JSONObjectManagedObjectAttributesDictionary] removeObjectForKey:JSONObjectKeyPath];
+}
+
 - (void)registerAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
 {
     NSAssert(attribute != nil, @"No attribute specified");
@@ -225,6 +243,12 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     
     [self managedObjectJSONObjectNamingConventions][objcNamingConvention] = JSONNamingConvention;
     [self JSONObjectManagedObjectNamingConventions][JSONNamingConvention] = objcNamingConvention;
+}
+
++ (void)unregisterDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
+{
+    [[self managedObjectJSONObjectNamingConventions] removeObjectForKey:objcNamingConvention];
+    [[self JSONObjectManagedObjectNamingConventions] removeObjectForKey:JSONNamingConvention];
 }
 
 - (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
