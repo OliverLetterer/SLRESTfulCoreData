@@ -284,6 +284,10 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     }];
     
     for (NSString *namingConvention in possibleConventions) {
+        if ([namingConvention isEqualToString:attribute]) {
+            return mergedManagedObjectJSONObjectNamingConventions[namingConvention];
+        }
+        
         NSRange range = [attribute.uppercaseString rangeOfString:namingConvention.uppercaseString];
         
         if (range.location == NSNotFound) {
@@ -352,6 +356,10 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     }];
     
     for (NSString *namingConvention in possibleConventions) {
+        if ([JSONObjectKeyPath isEqualToString:namingConvention]) {
+            return mergedJSONObjectManagedObjectNamingConventions[JSONObjectKeyPath];
+        }
+        
         NSRange range = [JSONObjectKeyPath rangeOfString:namingConvention];
         
         if (range.location == NSNotFound) {
