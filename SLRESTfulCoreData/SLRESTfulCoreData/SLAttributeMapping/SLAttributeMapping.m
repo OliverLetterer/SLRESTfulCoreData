@@ -244,9 +244,9 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         return key;
     }
     
-    NSMutableCharacterSet *leftCharacterSet = [NSMutableCharacterSet lowercaseLetterCharacterSet];
-    [leftCharacterSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
-    NSMutableCharacterSet *rightCharacterSet = [NSMutableCharacterSet uppercaseLetterCharacterSet];
+    NSMutableCharacterSet *lowercaseCharacterSet = [NSMutableCharacterSet lowercaseLetterCharacterSet];
+    [lowercaseCharacterSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
+    NSMutableCharacterSet *uppercaseCharacterSet = [NSMutableCharacterSet uppercaseLetterCharacterSet];
     
     NSDictionary *mergedManagedObjectJSONObjectNamingConventions = self.mergedManagedObjectJSONObjectNamingConventions;
     NSArray *possibleConventions = [mergedManagedObjectJSONObjectNamingConventions.allKeys sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
@@ -278,11 +278,15 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         BOOL isRightCharacterValid = isAtEndOfString;
         
         if (!isLeftCharacterValid && !isAtStartOfString) {
-            isLeftCharacterValid = [leftCharacterSet characterIsMember:[attribute characterAtIndex:range.location - 1]];
+            isLeftCharacterValid = [lowercaseCharacterSet characterIsMember:[attribute characterAtIndex:range.location - 1]];
         }
         
         if (!isRightCharacterValid && !isAtEndOfString) {
-            isRightCharacterValid = [rightCharacterSet characterIsMember:[attribute characterAtIndex:range.location + range.length]];
+            if (attribute.length > range.location + range.length + 1) {
+                isRightCharacterValid = ![uppercaseCharacterSet characterIsMember:[attribute characterAtIndex:range.location + range.length + 1]];
+            } else {
+                isRightCharacterValid = [lowercaseCharacterSet characterIsMember:[attribute characterAtIndex:range.location + range.length]];
+            }
         }
         
         // string is in the middle, only allow substitution of full path components
