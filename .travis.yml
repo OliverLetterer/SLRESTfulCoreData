@@ -2,6 +2,7 @@ language: objective-c
 before_install:
     - brew update
     - brew install xctool --HEAD
+    - pod repo add sparrow-labs https://github.com/Sparrow-Labs/Specs.git
     - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
     - mkdir -p "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes/"
 script: rake test

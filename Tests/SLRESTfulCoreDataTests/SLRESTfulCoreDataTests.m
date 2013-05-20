@@ -1,35 +1,57 @@
 //
 //  SLRESTfulCoreDataTests.m
-//  SLRESTfulCoreDataTests
+//  SLRESTfulCoreData
 //
-//  Created by Oliver Letterer on 19.05.13.
-//  Copyright (c) 2013 Sparrow-Labs. All rights reserved.
+//  Created by Oliver Letterer on 20.05.13.
+//  Copyright 2013 Sparrow-Labs. All rights reserved.
 //
 
 #import "SLRESTfulCoreDataTests.h"
-#import "OCMock.h"
+#import "SLTestDataStore.h"
+#import "SLRESTfulCoreData.h"
+
+
+
+__attribute__((constructor))
+void SLRESTfulCoreDataTestsInitialize(void)
+{
+    [NSManagedObject registerDefaultMainThreadManagedObjectContextWithAction:^NSManagedObjectContext *{
+        return [SLTestDataStore sharedInstance].mainThreadManagedObjectContext;
+    }];
+    
+    [NSManagedObject registerDefaultBackgroundThreadManagedObjectContextWithAction:^NSManagedObjectContext *{
+        return [SLTestDataStore sharedInstance].backgroundThreadManagedObjectContext;
+    }];
+}
+
+
+@interface SLRESTfulCoreDataTests () {
+    
+}
+
+@end
 
 
 
 @implementation SLRESTfulCoreDataTests
 
-- (void)setUp
+#pragma mark - Initialization
+
+- (id)init 
 {
-    [super setUp];
-    
-    // Set-up code here.
+    if (self = [super init]) {
+        // Initialization code
+    }
+    return self;
 }
 
-- (void)tearDown
+#pragma mark - Memory management
+
+- (void)dealloc
 {
-    // Tear-down code here.
     
-    [super tearDown];
 }
 
-- (void)testExample
-{
-    
-}
+#pragma mark - Private category implementation ()
 
 @end
