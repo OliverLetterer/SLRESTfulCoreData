@@ -9,11 +9,20 @@
     <entity name="SLEntity3" syncable="YES">
         <attribute name="someValue" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="SLEntity4" syncable="YES">
+        <attribute name="array" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="string" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SLEntity4Subclass" parentEntity="SLEntity4" syncable="YES"/>
     <entity name="SLSubclassOfEntity1" representedClassName="SLSubclassOfEntity1" parentEntity="SLEntity1" syncable="YES"/>
     <elements>
         <element name="SLEntity1" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLSubclassOfEntity1" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLEntity2" positionX="160" positionY="192" width="128" height="90"/>
         <element name="SLEntity3" positionX="160" positionY="192" width="128" height="60"/>
+        <element name="SLEntity4" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="SLEntity4Subclass" positionX="160" positionY="192" width="128" height="45"/>
     </elements>
 </model>
