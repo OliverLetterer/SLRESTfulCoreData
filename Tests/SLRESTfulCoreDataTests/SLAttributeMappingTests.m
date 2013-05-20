@@ -6,7 +6,7 @@
 //  Copyright 2013 Sparrow-Labs. All rights reserved.
 //
 
-#import "SLRESTfulCoreData.h"
+#import "SLRESTfulCoreDataTests.h"
 
 @interface SLAttributeMappingTests : SenTestCase
 

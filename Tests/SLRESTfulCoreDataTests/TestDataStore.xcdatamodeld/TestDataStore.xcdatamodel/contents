@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+    <entity name="SLEntity1" representedClassName="SLEntity1" syncable="YES"/>
+    <entity name="SLSubclassOfEntity1" representedClassName="SLSubclassOfEntity1" parentEntity="SLEntity1" syncable="YES"/>
+    <elements>
+        <element name="SLEntity1" positionX="160" positionY="192" width="128" height="45"/>
+        <element name="SLSubclassOfEntity1" positionX="160" positionY="192" width="128" height="45"/>
+    </elements>
 </model>

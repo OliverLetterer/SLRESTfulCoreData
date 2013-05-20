@@ -39,6 +39,7 @@
 + (void)unregisterDefaultAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
 
 - (void)registerAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
+- (void)removeAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath;
 - (void)unregisterAttributeName:(NSString *)attributeName;
 - (BOOL)isAttributeNameRegistered:(NSString *)attributeName;
 
@@ -48,6 +49,7 @@
 + (void)registerDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 + (void)unregisterDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 - (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
+- (void)unregisterObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 
 - (NSString *)convertManagedObjectAttributeToJSONObjectAttribute:(NSString *)attribute;
 - (NSString *)convertJSONObjectAttributeToManagedObjectAttribute:(NSString *)JSONObjectKeyPath;

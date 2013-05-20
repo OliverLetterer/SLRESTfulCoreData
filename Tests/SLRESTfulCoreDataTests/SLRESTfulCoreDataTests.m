@@ -23,35 +23,3 @@ void SLRESTfulCoreDataTestsInitialize(void)
         return [SLTestDataStore sharedInstance].backgroundThreadManagedObjectContext;
     }];
 }
-
-
-@interface SLRESTfulCoreDataTests () {
-    
-}
-
-@end
-
-
-
-@implementation SLRESTfulCoreDataTests
-
-#pragma mark - Initialization
-
-- (id)init 
-{
-    if (self = [super init]) {
-        // Initialization code
-    }
-    return self;
-}
-
-#pragma mark - Memory management
-
-- (void)dealloc
-{
-    
-}
-
-#pragma mark - Private category implementation ()
-
-@end

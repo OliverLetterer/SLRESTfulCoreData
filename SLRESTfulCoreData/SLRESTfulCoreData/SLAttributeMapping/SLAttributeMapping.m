@@ -225,6 +225,12 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     self.JSONObjectManagedObjectAttributesDictionary[JSONObjectKeyPath] = attribute;
 }
 
+- (void)removeAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
+{
+    [self.managedObjectJSONObjectAttributesDictionary removeObjectForKey:attribute];
+    [self.JSONObjectManagedObjectAttributesDictionary removeObjectForKey:JSONObjectKeyPath];
+}
+
 - (void)unregisterAttributeName:(NSString *)attributeName
 {
     NSAssert(attributeName != nil, @"attributeName cannot be nil");
@@ -258,6 +264,12 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     
     self.managedObjectJSONObjectNamingConventions[objcNamingConvention] = JSONNamingConvention;
     self.JSONObjectManagedObjectNamingConventions[JSONNamingConvention] = objcNamingConvention;
+}
+
+- (void)unregisterObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
+{
+    [self.managedObjectJSONObjectNamingConventions removeObjectForKey:objcNamingConvention];
+    [self.JSONObjectManagedObjectNamingConventions removeObjectForKey:JSONNamingConvention];
 }
 
 - (NSString *)convertManagedObjectAttributeToJSONObjectAttribute:(NSString *)attribute

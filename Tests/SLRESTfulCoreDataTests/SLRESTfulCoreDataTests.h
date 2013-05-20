@@ -6,11 +6,4 @@
 //  Copyright 2013 Sparrow-Labs. All rights reserved.
 //
 
-
-
-/**
- @abstract  <#abstract comment#>
- */
-@interface SLRESTfulCoreDataTests : NSObject
-
-@end
+#import "SLRESTfulCoreData.h"
