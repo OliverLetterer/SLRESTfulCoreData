@@ -7,7 +7,6 @@
 //
 
 #import "SLRESTfulCoreDataTests.h"
-#import "SLTestDataStore.h"
 #import "SLRESTfulCoreData.h"
 
 
@@ -23,3 +22,52 @@ void SLRESTfulCoreDataTestsInitialize(void)
         return [SLTestDataStore sharedInstance].backgroundThreadManagedObjectContext;
     }];
 }
+
+
+
+@implementation SLTestDataStore
+
+- (NSString *)managedObjectModelName
+{
+    return @"TestDataStore";
+}
+
+@end
+
+
+
+@implementation SLTestBackgroundQueue
+
++ (id<SLRESTfulCoreDataBackgroundQueue>)sharedQueue
+{
+    [NSException raise:NSInternalInconsistencyException format:@"%@ does not recognize selector %@", self, NSStringFromSelector(_cmd)];
+    return nil;
+}
+
+- (void)getRequestToURL:(NSURL *)URL
+      completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)deleteRequestToURL:(NSURL *)URL
+         completionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)postJSONObject:(id)JSONObject
+                 toURL:(NSURL *)URL
+     completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)putJSONObject:(id)JSONObject
+                toURL:(NSURL *)URL
+    completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+@end
