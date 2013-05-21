@@ -1,12 +1,12 @@
 namespace :test do
   desc "Run the SLRESTfulCoreData Tests for iOS"
   task :ios do
-    $ios_success = system("xctool -workspace SLRESTfulCoreData.xcworkspace -scheme 'iOS Tests' test -test-sdk iphonesimulator")
+    $ios_success = system("xctool -workspace SLRESTfulCoreData.xcworkspace -scheme 'iOS Tests' test -test-sdk iphonesimulator -configuration Release")
   end
   
   desc "Run the SLRESTfulCoreData Tests for Mac OS X"
   task :osx do
-    $osx_success = system("xctool -workspace SLRESTfulCoreData.xcworkspace -scheme 'OS X Tests' test -test-sdk macosx -sdk macosx")
+    $osx_success = system("xctool -workspace SLRESTfulCoreData.xcworkspace -scheme 'OS X Tests' test -test-sdk macosx -sdk macosx -configuration Release")
   end
 end
 

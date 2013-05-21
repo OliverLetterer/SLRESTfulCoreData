@@ -117,22 +117,47 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
         return NO;
     }
     
+    __block NSEntityDescription *entityDescription = nil;
+    
+    if ([NSThread currentThread].isMainThread) {
+        entityDescription = [NSEntityDescription entityForName:NSStringFromClass(class) inManagedObjectContext:[class mainThreadManagedObjectContext]];
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            entityDescription = [NSEntityDescription entityForName:NSStringFromClass(class) inManagedObjectContext:[class mainThreadManagedObjectContext]];
+        });
+    }
+    
     NSUInteger objectLength = @"Object".length;
     NSString *firstSelectorPartWithoutObject = [firstSelectorPart stringByReplacingCharactersInRange:NSMakeRange(firstSelectorPart.length - objectLength, objectLength) withString:@""];
     
     if ([firstSelectorPartWithoutObject hasPrefix:@"add"]) {
         // addFloorsObject:withCompletionHandler:
-        NSString *relationship = [firstSelectorPartWithoutObject substringFromIndex:3];
-        relationship = [relationship stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[relationship substringToIndex:1].lowercaseString];
+        NSString *relationshipName = [firstSelectorPartWithoutObject substringFromIndex:3];
+        relationshipName = [relationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[relationshipName substringToIndex:1].lowercaseString];
         
-        NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationship];
-        
-        if (!CRUDBaseURL) {
-            NSLog(@"No CRUDBaseURL found for %@, relationship: %@", class, relationship);
+        NSRelationshipDescription *relationship = entityDescription.relationshipsByName[relationshipName];
+        if (!relationship) {
+            NSLog(@"%@: relationship %@ was not found", class, relationshipName);
             return NO;
         }
         
+        NSParameterAssert(relationship.inverseRelationship);
+        NSString *inverseRelationshipName = relationship.inverseRelationship.name;
+        
+        Class destinationEntityClass = NSClassFromString(relationship.destinationEntity.name);
+        NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationshipName];
+        
+        if (!CRUDBaseURL) {
+            NSLog(@"No CRUDBaseURL found for %@, relationship: %@", class, relationshipName);
+            return NO;
+        }
+        
+        NSString *name = [[destinationEntityClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:inverseRelationshipName];
+        CRUDBaseURL = [NSURL URLWithString:[CRUDBaseURL.absoluteString stringByReplacingOccurrencesOfString:@":" withString:[NSString stringWithFormat:@":%@.", name]]];
+        
         IMP implementation = imp_implementationWithBlock(^(NSManagedObject *blockSelf, NSManagedObject *object, void(^completionHandler)(id object, NSError *error)) {
+            [object setValue:blockSelf forKey:inverseRelationshipName];
+            
             [object postToURL:CRUDBaseURL completionHandler:^(NSManagedObject *updatedObject, NSError *error) {
                 if (error) {
                     if (completionHandler) {
@@ -147,12 +172,12 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                     NSManagedObject *blockSelf = objects[1];
                     
                     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(class) inManagedObjectContext:context];
-                    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
+                    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationshipName];
                     NSAssert(relationshipDescription != nil, @"");
                     
                     if (relationshipDescription.isToMany) {
                         NSString *selectorName = [firstSelectorPart stringByAppendingString:@":"];
-                        (void)objc_msgSend(updatedObject, NSSelectorFromString(selectorName), blockSelf);
+                        (void)objc_msgSend(blockSelf, NSSelectorFromString(selectorName), updatedObject);
                     } else {
                         [updatedObject setValue:blockSelf forKey:relationshipDescription.name];
                     }
@@ -175,17 +200,32 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
         return YES;
     } else if ([firstSelectorPartWithoutObject hasPrefix:@"delete"]) {
         // deleteFloorsObject:withCompletionHandler:
-        NSString *relationship = [firstSelectorPartWithoutObject substringFromIndex:6];
-        relationship = [relationship stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[relationship substringToIndex:1].lowercaseString];
+        NSString *relationshipName = [firstSelectorPartWithoutObject substringFromIndex:6];
+        relationshipName = [relationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[relationshipName substringToIndex:1].lowercaseString];
         
-        NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationship];
-        
-        if (!CRUDBaseURL) {
-            NSLog(@"No CRUDBaseURL found for %@, relationship: %@", class, relationship);
+        NSRelationshipDescription *relationship = entityDescription.relationshipsByName[relationshipName];
+        if (!relationship) {
+            NSLog(@"%@: relationship %@ was not found", class, relationshipName);
             return NO;
         }
         
+        NSParameterAssert(relationship.inverseRelationship);
+        NSString *inverseRelationshipName = relationship.inverseRelationship.name;
+        
+        Class destinationEntityClass = NSClassFromString(relationship.destinationEntity.name);
+        NSURL *CRUDBaseURL = [[class objectDescription] CRUDBaseURLForRelationship:relationshipName];
+        
+        if (!CRUDBaseURL) {
+            NSLog(@"No CRUDBaseURL found for %@, relationship: %@", class, relationshipName);
+            return NO;
+        }
+        
+        NSString *name = [[destinationEntityClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:inverseRelationshipName];
+        CRUDBaseURL = [NSURL URLWithString:[CRUDBaseURL.absoluteString stringByReplacingOccurrencesOfString:@":" withString:[NSString stringWithFormat:@":%@.", name]]];
+        CRUDBaseURL = [CRUDBaseURL URLByAppendingPathComponent:[NSString stringWithFormat:@":%@", [destinationEntityClass objectDescription].uniqueIdentifierOfJSONObjects]];
+        
         IMP implementation = imp_implementationWithBlock(^(NSManagedObject *blockSelf, NSManagedObject *object, void(^completionHandler)(NSError *error)) {
+            [object setValue:blockSelf forKey:inverseRelationshipName];
             [object deleteToURL:CRUDBaseURL completionHandler:completionHandler];
         });
         
@@ -404,6 +444,12 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
              deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
                   completionHandler:(void (^)(NSArray *fetchedObjects, NSError *error))completionHandler
 {
+    if (self.isInserted || self.hasChanges) {
+        NSError *saveError = nil;
+        [self.managedObjectContext save:&saveError];
+        NSAssert(saveError == nil, @"error while saving: %@", saveError);
+    }
+    
     // send request to given URL
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
@@ -449,7 +495,6 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 - (void)postToURL:(NSURL *)URL completionHandler:(void (^)(id JSONObject, NSError *error))completionHandler
 {
     if (self.isInserted || self.hasChanges) {
-        // first save the context to self
         NSError *saveError = nil;
         [self.managedObjectContext save:&saveError];
         NSAssert(saveError == nil, @"error while saving: %@", saveError);
@@ -495,7 +540,6 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 - (void)putToURL:(NSURL *)URL completionHandler:(void (^)(id JSONObject, NSError *error))completionHandler
 {
     if (self.isInserted || self.hasChanges) {
-        // first save the context to self
         NSError *saveError = nil;
         [self.managedObjectContext save:&saveError];
         NSAssert(saveError == nil, @"error while saving: %@", saveError);
@@ -539,6 +583,12 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 
 - (void)deleteToURL:(NSURL *)URL completionHandler:(void (^)(NSError *error))completionHandler
 {
+    if (self.isInserted || self.hasChanges) {
+        NSError *saveError = nil;
+        [self.managedObjectContext save:&saveError];
+        NSAssert(saveError == nil, @"error while saving: %@", saveError);
+    }
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
     [[self.class backgroundQueue] deleteRequestToURL:[URL URLBySubstitutingAttributesWithManagedObject:self] completionHandler:^(NSError *error) {
@@ -573,6 +623,12 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 
 - (void)updateWithCompletionHandler:(void(^)(id managedObject, NSError *error))completionHandler
 {
+    if (self.isInserted || self.hasChanges) {
+        NSError *saveError = nil;
+        [self.managedObjectContext save:&saveError];
+        NSAssert(saveError == nil, @"error while saving: %@", saveError);
+    }
+    
     NSURL *CRUDBaseURL = [self.class objectDescription].CRUDBaseURL;
     NSParameterAssert(CRUDBaseURL);
     

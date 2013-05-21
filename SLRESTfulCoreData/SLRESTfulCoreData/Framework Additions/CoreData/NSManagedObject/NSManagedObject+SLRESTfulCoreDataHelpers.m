@@ -35,7 +35,7 @@
 
 @implementation NSManagedObject (SLRESTfulCoreDataHelpers)
 
-+ (NSArray *)attributeNames
++ (NSArray *)registeredAttributeNames
 {
     NSManagedObjectContext *context = [self mainThreadManagedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self)
@@ -71,7 +71,7 @@
         return nil;
     }
     
-    NSAssert([[self attributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found to %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
+    NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found to %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:[self mainThreadManagedObjectContext]];
     NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
     

@@ -115,7 +115,7 @@
 + (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention;
 
 /**
- Changes the default key, under which the unique identifier in a json object can be found. default is @"id".
+ Changes the default key, under which the unique identifier in a json object can be found. default is @"id". Must be in underscored naming conventions.
  */
 + (void)registerUniqueIdentifierOfJSONObjects:(NSString *)uniqueIdentifier;
 

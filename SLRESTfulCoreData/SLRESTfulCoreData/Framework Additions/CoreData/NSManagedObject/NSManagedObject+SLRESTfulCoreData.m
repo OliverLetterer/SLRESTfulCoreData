@@ -134,7 +134,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         return nil;
     }
     
-    NSAssert([[self attributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found to %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
+    NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found for %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:[self mainThreadManagedObjectContext]];
     NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
     
@@ -170,7 +170,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                                                          inManagedObjectContext:self.managedObjectContext];
     NSDictionary *attributesByName = [entityDescription attributesByName];
     
-    NSArray *attributes = [self.class attributeNames];
+    NSArray *attributes = [self.class registeredAttributeNames];
     SLObjectConverter *objectConverter = [self.class objectConverter];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
     
@@ -178,6 +178,15 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     for (NSString *attributeName in attributes) {
         NSString *JSONObjectKeyPath = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
         id rawJSONObject = [rawDictionary valueForKeyPath:JSONObjectKeyPath];
+        
+        if (!rawJSONObject) {
+            continue;
+        }
+        
+        if ([rawJSONObject isEqual:[NSNull null]]) {
+            [self setValue:nil forKey:attributeName];
+            continue;
+        }
         
         id myValue = [objectConverter managedObjectObjectFromJSONObjectObject:rawJSONObject
                                                     forManagedObjectAttribute:attributeName];
@@ -204,7 +213,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             // to one relationship
             
             // first check if there is an XXX_id for the foreign object
-            NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:[relationshipName stringByAppendingString:uniqueManagedObjectIdentifier.capitalizedString]];
+            NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName].mutableCopy;
+            JSONObjectKeyForDestinationIdentifier = [JSONObjectKeyForDestinationIdentifier stringByAppendingFormat:@"_%@", uniqueJSONObjectIdentifier];
             
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];
@@ -260,7 +270,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     
     NSMutableDictionary *rawJSONDictionary = [NSMutableDictionary dictionary];
     
-    for (NSString *attributeName in [self.class attributeNames]) {
+    for (NSString *attributeName in [self.class registeredAttributeNames]) {
         id value = [self valueForKey:attributeName];
         
         if (value) {

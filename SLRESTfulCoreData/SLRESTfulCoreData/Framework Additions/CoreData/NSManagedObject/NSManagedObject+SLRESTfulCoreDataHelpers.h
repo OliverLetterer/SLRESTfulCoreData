@@ -33,7 +33,7 @@
 /**
  @return NSArray with a NSString for each attribute belonging to this entity which should be mapped.
  */
-+ (NSArray *)attributeNames;
++ (NSArray *)registeredAttributeNames;
 
 /**
  @return Fetches an object of this class from database with a given it of a remote object.

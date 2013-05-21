@@ -65,7 +65,7 @@
  http://0.0.0.0:3000/api/object/:some_id/relationship
  where :some_id will be substituted with the content of the attribute from this self with someID or whatever mapping was specified.
  
- Supported relationships are 1-to-many and 1-to-1.
+ Supported relationships are one-to-many, many-to-one and one-to-one.
  */
 - (void)fetchObjectsForRelationship:(NSString *)relationship
                             fromURL:(NSURL *)URL
@@ -78,6 +78,13 @@
 
 /**
  CRUD methods available if CRUD base URL has been registered
+ 
+ Example: if CRUDBaseURL is equal to http://0.0.0.0:3000/api/objects/:object.id/childs, the runtime will provide the following generated methods for you:
+ 
+ -[NSManagedObject updateWithCompletionHandler:]    => GET      http://0.0.0.0:3000/api/objects/:object.id/childs/:id
+ -[NSManagedObject createWithCompletionHandler:]    => POST     http://0.0.0.0:3000/api/objects/:object.id/childs
+ -[NSManagedObject saveWithCompletionHandler:]      => PUT      http://0.0.0.0:3000/api/objects/:object.id/childs/:id
+ -[NSManagedObject deleteWithCompletionHandler:]    => DELETE   http://0.0.0.0:3000/api/objects/:object.id/childs/:id
  */
 - (void)updateWithCompletionHandler:(void(^)(id managedObject, NSError *error))completionHandler;
 - (void)createWithCompletionHandler:(void(^)(id managedObject, NSError *error))completionHandler;
