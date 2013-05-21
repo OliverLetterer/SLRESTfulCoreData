@@ -213,7 +213,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             // to one relationship
             
             // first check if there is an XXX_id for the foreign object
-            NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:[relationshipName stringByAppendingString:uniqueManagedObjectIdentifier.capitalizedString]];
+            NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName].mutableCopy;
+            JSONObjectKeyForDestinationIdentifier = [JSONObjectKeyForDestinationIdentifier stringByAppendingFormat:@"_%@", uniqueJSONObjectIdentifier];
             
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];

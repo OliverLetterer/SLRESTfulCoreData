@@ -34,9 +34,9 @@
 @implementation SLEntity3
 @dynamic someValue;
 
-+ (void)load
++ (void)initialize
 {
-    [self registerUniqueIdentifierOfJSONObjects:@"someValue"];
+    [self registerUniqueIdentifierOfJSONObjects:@"some_value"];
 }
 
 @end
@@ -167,7 +167,7 @@
     
     
     SLEntity3 *fetchedEntity = [SLEntity3 objectWithRemoteIdentifier:@"Hallo" inManagedObjectContext:context];
-    expect(fetchedEntity.managedObjectContext).to.equal(context);
+    expect(fetchedEntity).to.equal(entity);
 }
 
 @end

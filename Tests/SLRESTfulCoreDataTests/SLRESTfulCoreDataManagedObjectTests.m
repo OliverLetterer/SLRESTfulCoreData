@@ -8,12 +8,68 @@
 
 #import "SLRESTfulCoreDataTests.h"
 
+@class SLEntity5;
+
+
+
 @interface SLEntity5Child1 : NSManagedObject
 @property (nonatomic, strong) NSNumber *identifier;
 @end
 
 @implementation SLEntity5Child1
 @dynamic identifier;
+
++ (void)initialize
+{
+    [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+}
+
+@end
+
+
+
+@interface SLEntity5Child2 : NSManagedObject
+@property (nonatomic, strong) NSString *uniqueString;
+@end
+
+@implementation SLEntity5Child2
+@dynamic uniqueString;
+
++ (void)initialize
+{
+    [self registerUniqueIdentifierOfJSONObjects:@"unique_str"];
+    [self registerObjcNamingConvention:@"string" forJSONNamingConvention:@"str"];
+}
+
+@end
+
+
+
+@interface SLEntity5Child3 : NSManagedObject
+@property (nonatomic, strong) NSNumber *identifier;
+@property (nonatomic, strong) SLEntity5 *parent;
+@end
+
+@implementation SLEntity5Child3
+@dynamic identifier, parent;
+
++ (void)initialize
+{
+    [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+}
+
+@end
+
+
+
+@interface SLEntity5Child4 : NSManagedObject
+@property (nonatomic, strong) NSNumber *identifier;
+@property (nonatomic, strong) NSNumber *parentIdentifier;
+@property (nonatomic, strong) SLEntity5 *parent;
+@end
+
+@implementation SLEntity5Child4
+@dynamic identifier, parent, parentIdentifier;
 
 + (void)initialize
 {
@@ -31,10 +87,13 @@
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDictionary *dictionary;
 @property (nonatomic, strong) SLEntity5Child1 *child;
+@property (nonatomic, strong) SLEntity5Child2 *otherChild;
+@property (nonatomic, strong) NSSet *toManyChilds;
+@property (nonatomic, strong) NSSet *otherToManyChilds;
 @end
 
 @implementation SLEntity5
-@dynamic floatNumber, string, date, dictionary, identifier, child;
+@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds;
 
 + (void)initialize
 {
@@ -321,47 +380,89 @@
     expect(entity.child).to.equal(child);
 }
 
-#warning implement
 - (void)testThatManagedObjectUpdatesOneToOneRelationshipsWithDifferentUniqueJSONObjectIdentifier
 {
+    SLEntity5Child2 *child = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5Child2 class])
+                                                           inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    child.uniqueString = @"foo";
     
+    NSError *saveError = nil;
+    [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
+    NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"other_child_unique_str": @"foo"
+                                 };
+    
+    SLEntity5 *entity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    expect(entity.otherChild.uniqueString).to.equal(@"foo");
 }
 
 - (void)testThatManagedObjectUpdatesOneToOneRelationshipsWithJSONObject
 {
     NSDictionary *dictionary = @{
                                  @"id": @1,
-                                 @"child": @{
-                                         @"id": @4
-                                         }
+                                 @"child": @{ @"id": @6 }
                                  };
     
     SLEntity5 *entity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
-    expect(entity.child.identifier).to.equal(4);
+    expect(entity.child.identifier).to.equal(6);
 }
 
-#warning implement
-- (void)testThatManagedObjectUpdatesManyToOneRelationshipsWithJSONObject
+- (void)testThatManagedObjectUpdatesManyToOneRelationshipsAutomaticallyIfAnIdentifierIsStoredInCoreData
 {
+    SLEntity5Child4 *child = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5Child4 class])
+                                                           inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    child.identifier = @1;
+    child.parentIdentifier = @5;
     
+    NSError *saveError = nil;
+    [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
+    NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @5
+                                 };
+    SLEntity5 *parent = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary
+                                               inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(child.parent).to.equal(parent);
+    expect(parent.otherToManyChilds).to.contain(child);
 }
 
-#warning implement
-- (void)testThatManagedObjectUpdatesManyToOneRelationshipsWithJSONObjectIdentifier
-{
-    
-}
-
-#warning implement
 - (void)testThatManagedObjectUpdatesOneToManyRelationshipsWithJSONObject
 {
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"parent": @{ @"id": @5 }
+                                 };
     
+    SLEntity5Child3 *entity = [SLEntity5Child3 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.parent.identifier).to.equal(5);
+    expect(entity.parent.toManyChilds).to.contain(entity);
 }
 
-#warning implement
 - (void)testThatManagedObjectUpdatesOneToManyRelationshipsWithJSONObjectIdentifier
 {
+    SLEntity5 *parent = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5 class])
+                                                      inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    parent.identifier = @5;
     
+    NSError *saveError = nil;
+    [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
+    NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"parent_id": @5
+                                 };
+    
+    SLEntity5Child3 *entity = [SLEntity5Child3 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.parent).to.equal(parent);
+    expect(parent.toManyChilds).to.contain(entity);
 }
 
 @end
