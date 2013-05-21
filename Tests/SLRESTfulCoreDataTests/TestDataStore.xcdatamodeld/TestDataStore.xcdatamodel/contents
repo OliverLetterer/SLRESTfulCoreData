@@ -46,6 +46,15 @@
         <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5" inverseName="otherToManyChilds" inverseEntity="SLEntity5" syncable="YES"/>
     </entity>
     <entity name="SLEntity5Subclass" representedClassName="SLEntity5Subclass" parentEntity="SLEntity5" syncable="YES"/>
+    <entity name="SLEntity6" representedClassName="SLEntity6" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLEntity6Child" inverseName="parent" inverseEntity="SLEntity6Child" syncable="YES"/>
+    </entity>
+    <entity name="SLEntity6Child" representedClassName="SLEntity6Child" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity6" inverseName="children" inverseEntity="SLEntity6" syncable="YES"/>
+    </entity>
     <elements>
         <element name="SLEntity1" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLEntity1Subclass" positionX="160" positionY="192" width="128" height="45"/>
@@ -55,9 +64,11 @@
         <element name="SLEntity4Subclass" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLEntity5" positionX="160" positionY="192" width="128" height="180"/>
         <element name="SLEntity5Child1" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="SLEntity5Subclass" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLEntity5Child2" positionX="160" positionY="192" width="128" height="75"/>
         <element name="SLEntity5Child3" positionX="160" positionY="192" width="128" height="75"/>
         <element name="SLEntity5Child4" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="SLEntity5Subclass" positionX="160" positionY="192" width="128" height="45"/>
+        <element name="SLEntity6" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="SLEntity6Child" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>
