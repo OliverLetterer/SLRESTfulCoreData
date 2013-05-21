@@ -75,7 +75,7 @@
     NSMutableString *finalURLString = string.mutableCopy;
     [substitutionDictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
         [finalURLString replaceOccurrencesOfString:key
-                                        withString:[NSString stringWithFormat:@"%@", obj]
+                                        withString:[[NSString stringWithFormat:@"%@", obj] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
                                            options:NSLiteralSearch
                                              range:NSMakeRange(0, finalURLString.length)];
     }];
