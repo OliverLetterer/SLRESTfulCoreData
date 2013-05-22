@@ -39,6 +39,7 @@
 		A7AEC8DA17492A6900564EE7 /* SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8C817492A6900564EE7 /* SLRESTfulCoreData.m */; };
 		A7AEC8DC17492B9900564EE7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DB17492B9900564EE7 /* CoreData.framework */; };
 		A7AEC8DE17492BAB00564EE7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DD17492BAB00564EE7 /* UIKit.framework */; };
+		A7B08D24174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */; };
 		E26FBFCB8B474AD5AEEE8498 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FDE37480ED34249B6A6892B /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 		A7AEC8C917492A6900564EE7 /* SLRESTfulCoreDataBackgroundQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataBackgroundQueue.h; sourceTree = "<group>"; };
 		A7AEC8DB17492B9900564EE7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A7AEC8DD17492BAB00564EE7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m; sourceTree = "<group>"; };
 		FB6E808D0A794CF7B367BBF3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -152,10 +154,11 @@
 		A7AEC8461749291A00564EE7 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A721A525174B62A200B2D9D4 /* SLRESTfulCoreDataNSURLCategoryTests.m */,
-				A721A528174B62B400B2D9D4 /* SLRESTfulCoreDataNSStringCategoryTests.m */,
 				A721A512174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.h */,
 				A721A513174A0A8300B2D9D4 /* SLRESTfulCoreDataTests.m */,
+				A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */,
+				A721A525174B62A200B2D9D4 /* SLRESTfulCoreDataNSURLCategoryTests.m */,
+				A721A528174B62B400B2D9D4 /* SLRESTfulCoreDataNSStringCategoryTests.m */,
 				A721A508174A071300B2D9D4 /* SLAttributeMappingTests.m */,
 				A721A516174A246800B2D9D4 /* SLRESTfulCoreDataSetupTests.m */,
 				A721A519174A2C2200B2D9D4 /* SLRESTfulCoreDataHelpersTests.m */,
@@ -455,6 +458,7 @@
 				A721A523174B606C00B2D9D4 /* SLRESTfulCoreDataQueryInterfaceTests.m in Sources */,
 				A721A526174B62A200B2D9D4 /* SLRESTfulCoreDataNSURLCategoryTests.m in Sources */,
 				A721A529174B62B400B2D9D4 /* SLRESTfulCoreDataNSStringCategoryTests.m in Sources */,
+				A7B08D24174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

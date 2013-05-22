@@ -30,7 +30,11 @@
 
 @interface NSManagedObjectContext (SLRESTfulCoreData)
 
-- (void)performBlock:(void (^)(NSArray *objects))block withObjectIDs:(NSArray *)objectIDs;
-- (void)performBlock:(void (^)(NSArray *objects))block withObjects:(NSArray *)objects;
+/**
+ @param object can be an NSManagedObject, an NSManagedObjectID or one or multiple array(s) of these both.
+ 
+ @example [context performBlock:... withObject:@[ object1, objectID2, @[ someOtherObject ] ]];
+ */
+- (void)performBlock:(void (^)(id object))block withObject:(id)object;
 
 @end

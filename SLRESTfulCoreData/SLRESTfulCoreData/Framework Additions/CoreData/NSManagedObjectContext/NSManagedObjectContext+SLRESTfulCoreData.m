@@ -27,7 +27,7 @@
 #import "NSManagedObjectContext+SLRESTfulCoreData.h"
 #import "SLRESTfulCoreData.h"
 
-static NSArray *arrayByCollectiongObjects(NSArray *array, id(^collector)(id object))
+static NSArray *arrayByCollectingObjects(NSArray *array, id(^collector)(id object))
 {
     NSCParameterAssert(collector);
     
@@ -44,51 +44,68 @@ static NSArray *arrayByCollectiongObjects(NSArray *array, id(^collector)(id obje
     return finalArray;
 }
 
-static NSArray *managedObjectIDCollector(NSArray *objects)
+static id managedObjectIDCollector(id object)
 {
-    return arrayByCollectiongObjects(objects, ^id(id object) {
-        if ([object isKindOfClass:[NSArray class]]) {
-            return managedObjectIDCollector(object);
-        } else if ([object isKindOfClass:[NSManagedObject class]]) {
-            return [(NSManagedObject *)object objectID];
-        }
-        
-        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-        return nil;
-    });
+    if ([object isKindOfClass:[NSArray class]]) {
+        return arrayByCollectingObjects(object, ^id(id object) {
+            if ([object isKindOfClass:[NSArray class]]) {
+                return managedObjectIDCollector(object);
+            } else if ([object isKindOfClass:[NSManagedObject class]]) {
+                return [(NSManagedObject *)object objectID];
+            } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
+                return object;
+            }
+            
+            NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
+            return nil;
+        });
+    } else if ([object isKindOfClass:[NSManagedObject class]]) {
+        return [object objectID];
+    } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
+        return object;
+    }
+    
+    NSCAssert(NO, @"%@ is unsupported by performBlock:withObject:", object);
+    return nil;
 }
 
-static NSArray *managedObjectCollector(NSArray *objectIDs, NSManagedObjectContext *context)
+static id managedObjectCollector(id objectIDs, NSManagedObjectContext *context)
 {
-    return arrayByCollectiongObjects(objectIDs, ^id(id object) {
-        if ([object isKindOfClass:[NSArray class]]) {
-            return managedObjectCollector(object, context);
-        } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
-            return [context objectWithID:object];
-        }
-        
-        NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-        return nil;
-    });
+    if ([objectIDs isKindOfClass:[NSArray class]]) {
+        return arrayByCollectingObjects(objectIDs, ^id(id object) {
+            if ([object isKindOfClass:[NSArray class]]) {
+                return managedObjectCollector(object, context);
+            } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
+                return [context objectWithID:object];
+            }
+            
+            NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
+            return nil;
+        });
+    } else if ([objectIDs isKindOfClass:[NSManagedObjectID class]]) {
+        return [context objectWithID:objectIDs];
+    }
+    
+    NSCAssert(NO, @"%@ is unsupported by performBlock:withObject:", objectIDs);
+    return nil;
 }
 
 
 
 @implementation NSManagedObjectContext (SLRESTfulCoreData)
 
-- (void)performBlock:(void (^)(NSArray *objects))block withObjectIDs:(NSArray *)objectIDs
+- (void)__SLRESTfulCoreDataPerformBlock:(void (^)(id object))block withObjectIDs:(id)objectIDs
 {
     NSParameterAssert(block);
     
     [self performBlock:^{
-        NSArray *objects = managedObjectCollector(objectIDs, self);
-        block(objects);
+        block(managedObjectCollector(objectIDs, self));
     }];
 }
 
-- (void)performBlock:(void (^)(NSArray *objects))block withObjects:(NSArray *)objects
+- (void)performBlock:(void (^)(id object))block withObject:(id)object
 {
-    [self performBlock:block withObjectIDs:managedObjectIDCollector(objects)];
+    [self __SLRESTfulCoreDataPerformBlock:block withObjectIDs:managedObjectIDCollector(object)];
 }
 
 @end

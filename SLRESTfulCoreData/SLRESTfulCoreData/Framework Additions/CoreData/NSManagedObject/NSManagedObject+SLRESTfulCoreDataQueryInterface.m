@@ -190,8 +190,8 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                         if (completionHandler) {
                             completionHandler(objects[0], nil);
                         }
-                    } withObjects:@[ updatedObject ]];
-                } withObjects:@[ updatedObject, blockSelf ]];
+                    } withObject:@[ updatedObject ]];
+                } withObject:@[ updatedObject, blockSelf ]];
             }];
         });
         
@@ -359,7 +359,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                      if (completionHandler) {
                          completionHandler(objects, nil);
                      }
-                 } withObjects:objects];
+                 } withObject:objects];
              };
              
              void(^failureBlock)(NSError *error) = ^(NSError *error) {
@@ -486,7 +486,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                      if (completionHandler) {
                          completionHandler(objects, error);
                      }
-                 } withObjects:updatedObjects];
+                 } withObject:updatedObjects];
              }];
          }
      }];
