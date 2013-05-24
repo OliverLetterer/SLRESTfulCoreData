@@ -465,4 +465,25 @@
     expect(parent.toManyChilds).to.contain(entity);
 }
 
+- (void)testThatToManyRelationGetsUpdatedWhenJSONObjectContainsAnArray
+{
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"to_many_childs": @[ @{ @"id": @1 }, @{ @"id": @2 } ]
+                                 };
+    
+    SLEntity5 *entity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.toManyChilds.count).to.equal(2);
+    
+    SLEntity5Child3 *child1 = [SLEntity5Child3 objectWithRemoteIdentifier:@1 inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    SLEntity5Child3 *child2 = [SLEntity5Child3 objectWithRemoteIdentifier:@2 inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(child1).toNot.beNil();
+    expect(child2).toNot.beNil();
+    
+    expect(entity.toManyChilds).to.contain(child1);
+    expect(entity.toManyChilds).to.contain(child2);
+}
+
 @end

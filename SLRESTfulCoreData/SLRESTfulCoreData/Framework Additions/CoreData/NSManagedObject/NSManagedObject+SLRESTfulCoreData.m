@@ -209,13 +209,17 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         NSString *uniqueJSONObjectIdentifier = [destinationClass objectDescription].uniqueIdentifierOfJSONObjects;
         NSString *uniqueManagedObjectIdentifier = [[destinationClass attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueJSONObjectIdentifier];
         
-        if (!relationship.isToMany) {
-            // to one relationship
+        NSString *JSONRelationshipName = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName];
+        NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName].mutableCopy;
+        JSONObjectKeyForDestinationIdentifier = [JSONObjectKeyForDestinationIdentifier stringByAppendingFormat:@"_%@", uniqueJSONObjectIdentifier];
+        
+        if (rawDictionary[JSONRelationshipName]) {
+            // directly update relationship if present
+            NSURL *dummyURL = [NSURL URLWithString:@""];
+            NSError *error = nil;
             
-            // first check if there is an XXX_id for the foreign object
-            NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName].mutableCopy;
-            JSONObjectKeyForDestinationIdentifier = [JSONObjectKeyForDestinationIdentifier stringByAppendingFormat:@"_%@", uniqueJSONObjectIdentifier];
-            
+            [self updateObjectsForRelationship:relationshipName withJSONObject:rawDictionary[JSONRelationshipName] fromURL:dummyURL deleteEveryOtherObject:YES error:&error];
+        } else if (rawDictionary[JSONObjectKeyForDestinationIdentifier] && !relationship.isToMany) {
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];
             if (uniqueIdentifier) {
@@ -385,14 +389,24 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
     }
     
-    if (deleteEveryOtherObject && relationshipDescription.isToMany) {
+    if (relationshipDescription.isToMany) {
         NSMutableSet *deletionSet = [[self valueForKey:relationship] mutableCopy];
         for (id object in updatedObjects) {
             [deletionSet removeObject:object];
         }
         
         for (id object in deletionSet) {
-            [self.managedObjectContext deleteObject:object];
+            if (deleteEveryOtherObject) {
+                [context deleteObject:object];
+            } else {
+                NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                                                                  withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
+                
+                NSString *selectorName = [NSString stringWithFormat:@"remove%@Object:", name];
+                SEL selector = NSSelectorFromString(selectorName);
+                
+                (void)objc_msgSend(self, selector, object);
+            }
         }
     }
     
