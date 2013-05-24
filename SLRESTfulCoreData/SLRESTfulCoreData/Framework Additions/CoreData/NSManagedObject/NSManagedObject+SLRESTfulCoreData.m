@@ -312,9 +312,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                    deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
                                     error:(NSError *__autoreleasing *)error
 {
-    NSManagedObjectContext *context = [self.class mainThreadManagedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
-                                                         inManagedObjectContext:context];
+                                                         inManagedObjectContext:self.managedObjectContext];
     
     NSMutableArray *updatedObjects = [NSMutableArray array];
     
@@ -397,7 +396,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         
         for (id object in deletionSet) {
             if (deleteEveryOtherObject) {
-                [context deleteObject:object];
+                [self.managedObjectContext deleteObject:object];
             } else {
                 NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
                                                                                   withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
