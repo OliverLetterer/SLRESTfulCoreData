@@ -122,4 +122,15 @@
     expect(success).will.beTruthy();
 }
 
+- (void)testPerformBlockWithNilObject
+{
+    __block BOOL success = NO;
+    
+    [self.backgroundContext performBlock:^(NSArray *objects) {
+        success = YES;
+    } withObject:nil];
+    
+    expect(success).will.beTruthy();
+}
+
 @end

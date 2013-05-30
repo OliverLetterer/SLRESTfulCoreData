@@ -63,6 +63,8 @@ static id managedObjectIDCollector(id object)
         return [object objectID];
     } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
         return object;
+    } else if (!object) {
+        return nil;
     }
     
     NSCAssert(NO, @"%@ is unsupported by performBlock:withObject:", object);
@@ -84,6 +86,8 @@ static id managedObjectCollector(id objectIDs, NSManagedObjectContext *context)
         });
     } else if ([objectIDs isKindOfClass:[NSManagedObjectID class]]) {
         return [context objectWithID:objectIDs];
+    } else if (!objectIDs) {
+        return nil;
     }
     
     NSCAssert(NO, @"%@ is unsupported by performBlock:withObject:", objectIDs);
