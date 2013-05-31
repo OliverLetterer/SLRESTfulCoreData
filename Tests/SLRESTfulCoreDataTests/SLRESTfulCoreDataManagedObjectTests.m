@@ -80,6 +80,23 @@
 
 
 
+@interface SLEntity5Child5 : NSManagedObject
+@property (nonatomic, strong) NSNumber *identifier;
+@property (nonatomic, strong) SLEntity5 *parent;
+@end
+
+@implementation SLEntity5Child5
+@dynamic identifier, parent;
+
++ (void)initialize
+{
+    [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+}
+
+@end
+
+
+
 @interface SLEntity5 : NSManagedObject
 @property (nonatomic, strong) NSNumber *floatNumber;
 @property (nonatomic, strong) NSNumber *identifier;
@@ -90,13 +107,15 @@
 @property (nonatomic, strong) SLEntity5Child2 *otherChild;
 @property (nonatomic, strong) NSSet *toManyChilds;
 @property (nonatomic, strong) NSSet *otherToManyChilds;
+@property (nonatomic, strong) NSSet *camelizedChilds;
 @end
 
 @implementation SLEntity5
-@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds;
+@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds;
 
 + (void)initialize
 {
+    [self registerAttributeName:@"camelizedChilds" forJSONObjectKeyPath:@"camelizedChilds"];
     [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
     [self registerValueTransformer:[[SLIdentityValueTransformer alloc] initWithExpectedClass:[NSDictionary class]] forManagedObjectAttributeName:@"dictionary"];
 }
@@ -484,6 +503,23 @@
     
     expect(entity.toManyChilds).to.contain(child1);
     expect(entity.toManyChilds).to.contain(child2);
+}
+
+- (void)testThatToManyRelationGetsUpdatedWhenJSONObjectContainsAnArrayAndRelationshipIsRegisteredWithAttributeMapping
+{
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"camelizedChilds": @[ @{ @"id": @1 } ]
+                                 };
+    
+    SLEntity5 *entity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.camelizedChilds.count).to.equal(1);
+    
+    SLEntity5Child5 *child1 = [SLEntity5Child5 objectWithRemoteIdentifier:@1 inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(child1).toNot.beNil();
+    expect(entity.camelizedChilds).to.contain(child1);
 }
 
 @end

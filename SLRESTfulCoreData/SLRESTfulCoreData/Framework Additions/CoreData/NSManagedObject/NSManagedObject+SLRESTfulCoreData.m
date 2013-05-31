@@ -210,15 +210,18 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         NSString *uniqueManagedObjectIdentifier = [[destinationClass attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueJSONObjectIdentifier];
         
         NSString *JSONRelationshipName = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName];
+        NSString *myRelationshipName = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:relationshipName];
         NSString *JSONObjectKeyForDestinationIdentifier = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName].mutableCopy;
         JSONObjectKeyForDestinationIdentifier = [JSONObjectKeyForDestinationIdentifier stringByAppendingFormat:@"_%@", uniqueJSONObjectIdentifier];
         
-        if (rawDictionary[JSONRelationshipName]) {
+        id relationshipObject = rawDictionary[JSONRelationshipName] ?: rawDictionary[myRelationshipName];
+        
+        if (relationshipObject) {
             // directly update relationship if present
             NSURL *dummyURL = [NSURL URLWithString:@""];
             NSError *error = nil;
             
-            [self updateObjectsForRelationship:relationshipName withJSONObject:rawDictionary[JSONRelationshipName] fromURL:dummyURL deleteEveryOtherObject:YES error:&error];
+            [self updateObjectsForRelationship:relationshipName withJSONObject:relationshipObject fromURL:dummyURL deleteEveryOtherObject:YES error:&error];
         } else if (rawDictionary[JSONObjectKeyForDestinationIdentifier] && !relationship.isToMany) {
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];

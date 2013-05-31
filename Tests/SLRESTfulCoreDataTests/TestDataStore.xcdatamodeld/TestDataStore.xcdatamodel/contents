@@ -23,6 +23,7 @@
         <attribute name="floatNumber" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="string" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="camelizedChilds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLEntity5Child5" inverseName="parent" inverseEntity="SLEntity5Child5" syncable="YES"/>
         <relationship name="child" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5Child1" inverseName="parent" inverseEntity="SLEntity5Child1" syncable="YES"/>
         <relationship name="otherChild" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5Child2" inverseName="parent" inverseEntity="SLEntity5Child2" syncable="YES"/>
         <relationship name="otherToManyChilds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLEntity5Child4" inverseName="parent" inverseEntity="SLEntity5Child4" syncable="YES"/>
@@ -45,6 +46,10 @@
         <attribute name="parentIdentifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5" inverseName="otherToManyChilds" inverseEntity="SLEntity5" syncable="YES"/>
     </entity>
+    <entity name="SLEntity5Child5" representedClassName="SLEntity5Child5" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5" inverseName="camelizedChilds" inverseEntity="SLEntity5" syncable="YES"/>
+    </entity>
     <entity name="SLEntity5Subclass" representedClassName="SLEntity5Subclass" parentEntity="SLEntity5" syncable="YES"/>
     <entity name="SLEntity6" representedClassName="SLEntity6" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -62,7 +67,7 @@
         <element name="SLEntity3" positionX="160" positionY="192" width="128" height="60"/>
         <element name="SLEntity4" positionX="160" positionY="192" width="128" height="105"/>
         <element name="SLEntity4Subclass" positionX="160" positionY="192" width="128" height="45"/>
-        <element name="SLEntity5" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="SLEntity5" positionX="160" positionY="192" width="128" height="195"/>
         <element name="SLEntity5Child1" positionX="160" positionY="192" width="128" height="75"/>
         <element name="SLEntity5Child2" positionX="160" positionY="192" width="128" height="75"/>
         <element name="SLEntity5Child3" positionX="160" positionY="192" width="128" height="75"/>
@@ -70,5 +75,6 @@
         <element name="SLEntity5Subclass" positionX="160" positionY="192" width="128" height="45"/>
         <element name="SLEntity6" positionX="160" positionY="192" width="128" height="90"/>
         <element name="SLEntity6Child" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="SLEntity5Child5" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>
