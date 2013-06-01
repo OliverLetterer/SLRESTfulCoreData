@@ -360,7 +360,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 NSString *selectorName = [NSString stringWithFormat:@"add%@Object:", name];
                 SEL selector = NSSelectorFromString(selectorName);
                 
-                objc_msgSend(object, selector, self);
+                ((void(*)(id, SEL, ...))objc_msgSend)(object, selector, self);
             } else {
                 [object setValue:self forKey:inverseRelationshipName];
             }
@@ -407,7 +407,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 NSString *selectorName = [NSString stringWithFormat:@"remove%@Object:", name];
                 SEL selector = NSSelectorFromString(selectorName);
                 
-                (void)objc_msgSend(self, selector, object);
+                ((void(*)(id, SEL, ...))objc_msgSend)(self, selector, object);
             }
         }
     }

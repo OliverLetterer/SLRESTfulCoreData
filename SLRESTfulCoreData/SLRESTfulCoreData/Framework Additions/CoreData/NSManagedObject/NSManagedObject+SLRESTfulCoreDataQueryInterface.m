@@ -177,7 +177,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                     
                     if (relationshipDescription.isToMany) {
                         NSString *selectorName = [firstSelectorPart stringByAppendingString:@":"];
-                        (void)objc_msgSend(blockSelf, NSSelectorFromString(selectorName), updatedObject);
+                        ((void(*)(id, SEL, ...))objc_msgSend)(blockSelf, NSSelectorFromString(selectorName), updatedObject);
                     } else {
                         [updatedObject setValue:blockSelf forKey:relationshipDescription.name];
                     }
