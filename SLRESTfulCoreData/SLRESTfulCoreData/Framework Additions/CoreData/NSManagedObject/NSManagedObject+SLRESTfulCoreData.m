@@ -135,7 +135,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     }
     
     NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found for %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:[self mainThreadManagedObjectContext]];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:context];
     NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
     
     NSAssert(attributeDescription != nil, @"no attributeDescription found for %@[%@]", self, managedObjectUniqueKey);
