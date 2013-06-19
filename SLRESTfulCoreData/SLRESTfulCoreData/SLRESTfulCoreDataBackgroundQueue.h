@@ -49,4 +49,7 @@
                 toURL:(NSURL *)URL
     completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler;
 
+/** set a default network timeout */
+- (void)setDefaultTimeout:(NSNumber *)defaultTimeout;
+
 @end
