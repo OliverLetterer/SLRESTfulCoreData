@@ -27,6 +27,9 @@
 #import "NSManagedObject+SLRESTfulCoreDataHelpers.h"
 #import "NSManagedObject+SLRESTfulCoreData.h"
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
+
+#import "SLRESTfulCoreDataObjectCache.h"
+
 #import "SLAttributeMapping.h"
 #import "SLObjectDescription.h"
 #import "SLObjectConverter.h"
@@ -57,43 +60,7 @@
 
 + (instancetype)objectWithRemoteIdentifier:(id)identifier inManagedObjectContext:(NSManagedObjectContext *)context
 {
-    SLAttributeMapping *attributeMapping = [self attributeMapping];
-    SLObjectConverter *objectConverter = [self objectConverter];
-    
-    NSString *uniqueKeyForJSONDictionary = [self objectDescription].uniqueIdentifierOfJSONObjects;
-    NSString *managedObjectUniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
-    
-    id managedObjectID = [objectConverter managedObjectObjectFromJSONObjectObject:identifier
-                                                        forManagedObjectAttribute:managedObjectUniqueKey];
-    
-    if (!managedObjectID) {
-        NSLog(@"WARNING: cannot convert JSON object %@ into CoreData object", identifier);
-        return nil;
-    }
-    
-    NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found to %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:[self mainThreadManagedObjectContext]];
-    NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
-    
-    NSAssert(attributeDescription != nil, @"no attributeDescription found for %@[%@]", self, managedObjectUniqueKey);
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(self)];
-    
-    if (attributeDescription.attributeType == NSStringAttributeType) {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K LIKE %@", managedObjectUniqueKey, managedObjectID];
-    } else {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K == %@", managedObjectUniqueKey, managedObjectID];
-    }
-    
-    NSError *error = nil;
-    NSArray *objects = [context executeFetchRequest:request error:&error];
-    NSAssert(error == nil, @"error while fetching: %@", error);
-    
-    if (objects.count > 0) {
-        return objects[0];
-    }
-    
-    return nil;
+    return [[SLRESTfulCoreDataObjectCache sharedCacheForManagedObjectContext:context] objectOfClass:self withRemoteIdentifier:identifier];
 }
 
 @end
