@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'SLRESTfulCoreData'
-  spec.version      = '1.2.4'
+  spec.version      = '1.2.5'
   spec.platform     = :ios, '6.0'
   spec.license      = 'MIT'
   spec.source       = { :git => 'https://github.com/OliverLetterer/SLRESTfulCoreData.git', :tag => spec.version.to_s }
