@@ -463,6 +463,21 @@
     expect(entity.parent.toManyChilds).to.contain(entity);
 }
 
+- (void)testThatManagedObjectDoesntUpdatesOneToManyRelationshipsWithJSONObjectAndZeroRelationshipUpdateLevel
+{
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"parent": @{ @"id": @5 }
+                                 };
+    
+    [SLEntity5Child3 setRelationshipUpdateLevel:0];
+    SLEntity5Child3 *entity = [SLEntity5Child3 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.parent.identifier).to.beNil();
+    
+    [SLEntity5Child3 setRelationshipUpdateLevel:NSIntegerMax];
+}
+
 - (void)testThatManagedObjectUpdatesOneToManyRelationshipsWithJSONObjectIdentifier
 {
     SLEntity5 *parent = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5 class])

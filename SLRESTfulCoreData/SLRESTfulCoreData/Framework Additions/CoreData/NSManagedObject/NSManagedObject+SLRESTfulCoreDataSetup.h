@@ -124,4 +124,9 @@
  */
 + (void)registerTimezone:(NSTimeZone *)timezone;
 
+/**
+ relationshipUpdateLevel specifies, how deep any object update should look for contained relationships. A value smaller or equal to zero is equivilant to no relationship updates. Default is NSIntergerMax
+ */
++ (void)setRelationshipUpdateLevel:(NSInteger)relationshipUpdateLevel;
+
 @end

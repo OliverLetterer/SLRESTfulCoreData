@@ -79,6 +79,7 @@ static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary 
     if (self = [super init]) {
         _managedObjectClassName = managedObjectClassName;
         
+        self.relationshipUpdateLevel = NSIntegerMax;
         self.uniqueIdentifierOfJSONObjects = [self.class defaultUniqueIdentifierOfJSONObjects];
         self.CRUDBaseURLs = [NSMutableDictionary dictionary];
     }

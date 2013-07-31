@@ -135,4 +135,9 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
     [self objectConverter].timeZone = timezone;
 }
 
++ (void)setRelationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
+{
+    [self objectDescription].relationshipUpdateLevel = relationshipUpdateLevel;
+}
+
 @end

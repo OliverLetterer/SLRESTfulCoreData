@@ -110,6 +110,15 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 + (instancetype)updatedObjectWithRawJSONDictionary:(NSDictionary *)rawDictionary
                             inManagedObjectContext:(NSManagedObjectContext *)context
 {
+    return [self updatedObjectWithRawJSONDictionary:rawDictionary
+                            relationshipUpdateLevel:[self objectDescription].relationshipUpdateLevel
+                             inManagedObjectContext:context];
+}
+
++ (instancetype)updatedObjectWithRawJSONDictionary:(NSDictionary *)rawDictionary
+                           relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
+                            inManagedObjectContext:(NSManagedObjectContext *)context
+{
     SLAttributeMapping *attributeMapping = [self attributeMapping];
     SLObjectConverter *objectConverter = [self objectConverter];
     
@@ -139,12 +148,18 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                                                inManagedObjectContext:context];
     }
     
-    [object updateWithRawJSONDictionary:rawDictionary];
+    [object updateWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel];
     
     return object;
 }
 
 - (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
+{
+    [self updateWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:[self.class objectDescription].relationshipUpdateLevel];
+}
+
+- (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
+            relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
 {
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
@@ -179,6 +194,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     }
     
     // update my relationships
+    if (relationshipUpdateLevel <= 0) {
+        return;
+    }
+    
     NSDictionary *relationshipsByName = entityDescription.relationshipsByName;
     
     for (NSString *relationshipName in relationshipsByName) {
@@ -201,7 +220,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             NSURL *dummyURL = [NSURL URLWithString:@""];
             NSError *error = nil;
             
-            [self updateObjectsForRelationship:relationshipName withJSONObject:relationshipObject fromURL:dummyURL deleteEveryOtherObject:YES error:&error];
+            [self updateObjectsForRelationship:relationshipName withJSONObject:relationshipObject fromURL:dummyURL deleteEveryOtherObject:YES relationshipUpdateLevel:relationshipUpdateLevel - 1 error:&error];
         } else if (rawDictionary[JSONObjectKeyForDestinationIdentifier] && !relationship.isToMany) {
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];
@@ -215,6 +234,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             
             if ([destinationDictionary isKindOfClass:[NSDictionary class]]) {
                 id relationshipEntity = [destinationClass updatedObjectWithRawJSONDictionary:destinationDictionary
+                                                                     relationshipUpdateLevel:relationshipUpdateLevel - 1
                                                                       inManagedObjectContext:self.managedObjectContext];
                 [self setValue:relationshipEntity forKey:relationshipName];
             }
@@ -295,6 +315,17 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                    deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
                                     error:(NSError *__autoreleasing *)error
 {
+    return [self updateObjectsForRelationship:relationship withJSONObject:JSONObject fromURL:URL deleteEveryOtherObject:deleteEveryOtherObject relationshipUpdateLevel:[self.class objectDescription].relationshipUpdateLevel error:error];
+}
+
+#warning use relationshipUpdateLevel
+- (NSArray *)updateObjectsForRelationship:(NSString *)relationship
+                           withJSONObject:(id)JSONObject
+                                  fromURL:(NSURL *)URL
+                   deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
+                  relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
+                                    error:(NSError *__autoreleasing *)error
+{
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     
@@ -331,7 +362,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 return nil;
             }
             
-            id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:rawDictionary inManagedObjectContext:self.managedObjectContext];
+            id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel inManagedObjectContext:self.managedObjectContext];
             
             if (inverseRelationship.isToMany) {
                 NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
