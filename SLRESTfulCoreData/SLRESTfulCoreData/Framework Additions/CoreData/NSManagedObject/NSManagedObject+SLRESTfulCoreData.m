@@ -390,7 +390,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
         
         // update destination entity with JSON object.
-        id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:JSONObject inManagedObjectContext:self.managedObjectContext];
+        id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:JSONObject relationshipUpdateLevel:relationshipUpdateLevel - 1 inManagedObjectContext:self.managedObjectContext];
         [self setValue:object forKey:relationship];
         
         if (object) {
