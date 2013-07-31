@@ -124,7 +124,6 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     NSString *modelClassName = NSStringFromClass(modelClass);
     NSString *managedObjectUniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:modelClassName];
     id JSONObjectID = rawDictionary[uniqueKeyForJSONDictionary];
     id managedObjectID = [objectConverter managedObjectObjectFromJSONObjectObject:JSONObjectID
                                                         forManagedObjectAttribute:managedObjectUniqueKey];
@@ -134,27 +133,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         return nil;
     }
     
-    NSAssert([[self registeredAttributeNames] containsObject:managedObjectUniqueKey], @"no unique key attribute found for %@. tried to map %@ to %@", self, uniqueKeyForJSONDictionary, managedObjectUniqueKey);
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([self class]) inManagedObjectContext:context];
-    NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
-    
-    NSAssert(attributeDescription != nil, @"no attributeDescription found for %@[%@]", self, managedObjectUniqueKey);
-    
-    if (attributeDescription.attributeType == NSStringAttributeType) {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K LIKE %@", managedObjectUniqueKey, managedObjectID];
-    } else {
-        request.predicate = [NSPredicate predicateWithFormat:@"%K == %@", managedObjectUniqueKey, managedObjectID];
-    }
-    
-    NSError *error = nil;
-    NSArray *objects = [context executeFetchRequest:request
-                                              error:&error];
-    NSAssert(error == nil, @"error while fetching: %@", error);
-    
-    NSManagedObject *object = nil;
-    if (objects.count > 0) {
-        object = objects[0];
-    } else {
+    NSManagedObject *object = [self objectWithRemoteIdentifier:managedObjectID inManagedObjectContext:context];
+    if (!object) {
         object = [NSEntityDescription insertNewObjectForEntityForName:modelClassName
                                                inManagedObjectContext:context];
     }
