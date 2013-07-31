@@ -318,7 +318,6 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     return [self updateObjectsForRelationship:relationship withJSONObject:JSONObject fromURL:URL deleteEveryOtherObject:deleteEveryOtherObject relationshipUpdateLevel:[self.class objectDescription].relationshipUpdateLevel error:error];
 }
 
-#warning use relationshipUpdateLevel
 - (NSArray *)updateObjectsForRelationship:(NSString *)relationship
                            withJSONObject:(id)JSONObject
                                   fromURL:(NSURL *)URL
