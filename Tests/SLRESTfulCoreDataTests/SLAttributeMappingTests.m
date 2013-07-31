@@ -150,7 +150,7 @@
     expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someURL"]).to.equal(@"some_url");
     
     [SLAttributeMapping unregisterDefaultAttribute:@"someURL" forJSONObjectKeyPath:@"some_url"];
-    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_url"]).to.equal(@"someUrl");
+    expect([self.attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:@"some_url"]).will.equal(@"someUrl");
     expect([self.attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:@"someURL"]).to.equal(@"some_url");
 }
 

@@ -38,6 +38,35 @@ static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary 
     }
 }
 
+static NSPointerArray *globalObservers = nil;
+
+static void registerGlobalObserver(SLAttributeMapping *globalObserver)
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        globalObservers = [NSPointerArray pointerArrayWithOptions:NSPointerFunctionsWeakMemory];
+    });
+    
+    [globalObservers addPointer:(__bridge void *)globalObserver];
+}
+
+static void unregisterGlobalObserver(SLAttributeMapping *globalObserver)
+{
+    NSInteger index = NSNotFound;
+    
+    for (int i = 0; i < globalObservers.count; i++) {
+        id object = (__bridge __weak id)[globalObservers pointerAtIndex:i];
+        if (object == globalObservers) {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index != NSNotFound) {
+        [globalObservers removePointerAtIndex:index];
+    }
+}
+
 
 
 @interface SLAttributeMapping () {
@@ -51,6 +80,8 @@ static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary 
 + (NSMutableDictionary *)JSONObjectManagedObjectNamingConventions;
 
 @property (nonatomic, copy) NSString *managedObjectClassName;
+
+@property (readonly) NSCache *attributesCache;
 
 @property (nonatomic, strong) NSMutableArray *unregisteresAttributeNames;
 @property (nonatomic, readonly) NSArray *mergedUnregisteresAttributeNames;
@@ -68,10 +99,19 @@ static void mergeDictionaries(NSMutableDictionary *mainDictionary, NSDictionary 
 @property (nonatomic, readonly) NSDictionary *mergedJSONObjectManagedObjectNamingConventions;
 
 - (void)_mergeDictionary:(NSMutableDictionary *)thisDictionary withOtherDictionary:(NSMutableDictionary *)otherDictionary;
+- (void)_clearCache;
 
 @end
 
 
+
+static void clearCacheOfGlobalObservers(void)
+{
+    for (int i = 0; i < globalObservers.count; i++) {
+        SLAttributeMapping *object = (__bridge __weak id)[globalObservers pointerAtIndex:i];
+        [object _clearCache];
+    }
+}
 
 static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self, NSString *value)
 {
@@ -89,8 +129,20 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
 
 
 @implementation SLAttributeMapping
+@synthesize attributesCache = _attributesCache;
 
 #pragma mark - setters and getters
+
+- (NSCache *)attributesCache
+{
+    @synchronized(self) {
+        if (!_attributesCache) {
+            _attributesCache = [[NSCache alloc] init];
+        }
+        
+        return _attributesCache;
+    }
+}
 
 + (NSMutableDictionary *)managedObjectJSONObjectAttributesDictionary
 {
@@ -194,8 +246,15 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         self.JSONObjectManagedObjectNamingConventions = [self.class JSONObjectManagedObjectNamingConventions].mutableCopy;
         
         self.unregisteresAttributeNames = [NSMutableArray array];
+        
+        registerGlobalObserver(self);
     }
     return self;
+}
+
+- (void)dealloc
+{
+    unregisterGlobalObserver(self);
 }
 
 #pragma mark - instance methods
@@ -207,12 +266,16 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     
     [self managedObjectJSONObjectAttributesDictionary][attribute] = JSONObjectKeyPath;
     [self JSONObjectManagedObjectAttributesDictionary][JSONObjectKeyPath] = attribute;
+    
+    clearCacheOfGlobalObservers();
 }
 
 + (void)unregisterDefaultAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
 {
     [[self managedObjectJSONObjectAttributesDictionary] removeObjectForKey:attribute];
     [[self JSONObjectManagedObjectAttributesDictionary] removeObjectForKey:JSONObjectKeyPath];
+    
+    clearCacheOfGlobalObservers();
 }
 
 - (void)registerAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
@@ -223,18 +286,24 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     [self.unregisteresAttributeNames removeObject:attribute];
     self.managedObjectJSONObjectAttributesDictionary[attribute] = JSONObjectKeyPath;
     self.JSONObjectManagedObjectAttributesDictionary[JSONObjectKeyPath] = attribute;
+    
+    [self.attributesCache removeAllObjects];
 }
 
 - (void)removeAttribute:(NSString *)attribute forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
 {
     [self.managedObjectJSONObjectAttributesDictionary removeObjectForKey:attribute];
     [self.JSONObjectManagedObjectAttributesDictionary removeObjectForKey:JSONObjectKeyPath];
+    
+    [self.attributesCache removeAllObjects];
 }
 
 - (void)unregisterAttributeName:(NSString *)attributeName
 {
     NSAssert(attributeName != nil, @"attributeName cannot be nil");
+    
     [self.unregisteresAttributeNames addObject:attributeName];
+    [self.attributesCache removeAllObjects];
 }
 
 - (BOOL)isAttributeNameRegistered:(NSString *)attributeName
@@ -249,12 +318,16 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     
     [self managedObjectJSONObjectNamingConventions][objcNamingConvention] = JSONNamingConvention;
     [self JSONObjectManagedObjectNamingConventions][JSONNamingConvention] = objcNamingConvention;
+    
+    clearCacheOfGlobalObservers();
 }
 
 + (void)unregisterDefaultObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
 {
     [[self managedObjectJSONObjectNamingConventions] removeObjectForKey:objcNamingConvention];
     [[self JSONObjectManagedObjectNamingConventions] removeObjectForKey:JSONNamingConvention];
+    
+    clearCacheOfGlobalObservers();
 }
 
 - (void)registerObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
@@ -264,19 +337,30 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
     
     self.managedObjectJSONObjectNamingConventions[objcNamingConvention] = JSONNamingConvention;
     self.JSONObjectManagedObjectNamingConventions[JSONNamingConvention] = objcNamingConvention;
+    
+    [self.attributesCache removeAllObjects];
 }
 
 - (void)unregisterObjcNamingConvention:(NSString *)objcNamingConvention forJSONNamingConvention:(NSString *)JSONNamingConvention
 {
     [self.managedObjectJSONObjectNamingConventions removeObjectForKey:objcNamingConvention];
     [self.JSONObjectManagedObjectNamingConventions removeObjectForKey:JSONNamingConvention];
+    
+    [self.attributesCache removeAllObjects];
 }
 
 - (NSString *)convertManagedObjectAttributeToJSONObjectAttribute:(NSString *)attribute
 {
+    NSCache *attributesCache = self.attributesCache;
+    NSString *cachedKey = [attributesCache objectForKey:attribute];
+    if (cachedKey) {
+        return cachedKey;
+    }
+    
     NSString *key = self.mergedManagedObjectJSONObjectAttributesDictionary[attribute];
     
     if (key) {
+        [attributesCache setObject:key forKey:attribute];
         return key;
     }
     
@@ -295,6 +379,7 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         return NSOrderedSame;
     }];
     
+    NSString *originalAttribute = attribute;
     for (NSString *namingConvention in possibleConventions) {
         if ([namingConvention isEqualToString:attribute]) {
             return mergedManagedObjectJSONObjectNamingConventions[namingConvention];
@@ -345,14 +430,23 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         }
     }
     
-    return attribute.stringByUnderscoringString;
+    NSString *underscoredString = attribute.stringByUnderscoringString;
+    [attributesCache setObject:underscoredString forKey:originalAttribute];
+    
+    return underscoredString;
 }
 
 - (NSString *)convertJSONObjectAttributeToManagedObjectAttribute:(NSString *)JSONObjectKeyPath
 {
-    NSString *key = self.mergedJSONObjectManagedObjectAttributesDictionary[JSONObjectKeyPath];
+    NSCache *attributesCache = self.attributesCache;
+    NSString *cachedKey = [attributesCache objectForKey:JSONObjectKeyPath];
+    if (cachedKey) {
+        return cachedKey;
+    }
     
+    NSString *key = self.mergedJSONObjectManagedObjectAttributesDictionary[JSONObjectKeyPath];
     if (key) {
+        [attributesCache setObject:key forKey:JSONObjectKeyPath];
         return key;
     }
     
@@ -367,6 +461,7 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         return NSOrderedSame;
     }];
     
+    NSString *originalJSONObjectKeyPath = JSONObjectKeyPath;
     for (NSString *namingConvention in possibleConventions) {
         if ([JSONObjectKeyPath isEqualToString:namingConvention]) {
             return mergedJSONObjectManagedObjectNamingConventions[JSONObjectKeyPath];
@@ -403,7 +498,10 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
         }
     }
     
-    return JSONObjectKeyPath.stringByCamelizingString;
+    NSString *camelizedString = JSONObjectKeyPath.stringByCamelizingString;
+    [attributesCache setObject:camelizedString forKey:originalJSONObjectKeyPath];
+    
+    return camelizedString;
 }
 
 #pragma mark - Private category implementation ()
@@ -415,6 +513,11 @@ static NSDictionary *SLAttributeMappingMergeDictionary(SLAttributeMapping *self,
             thisDictionary[key] = obj;
         }
     }];
+}
+
+- (void)_clearCache
+{
+    [self.attributesCache removeAllObjects];
 }
 
 @end

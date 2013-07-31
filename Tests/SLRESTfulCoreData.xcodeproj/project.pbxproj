@@ -40,6 +40,8 @@
 		A7AEC8DC17492B9900564EE7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DB17492B9900564EE7 /* CoreData.framework */; };
 		A7AEC8DE17492BAB00564EE7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DD17492BAB00564EE7 /* UIKit.framework */; };
 		A7B08D24174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */; };
+		A7E0D1A717A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */; };
+		A7E0D1AA17A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E0D1A917A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m */; };
 		E26FBFCB8B474AD5AEEE8498 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FDE37480ED34249B6A6892B /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +103,9 @@
 		A7AEC8DB17492B9900564EE7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A7AEC8DD17492BAB00564EE7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m; sourceTree = "<group>"; };
+		A7E0D1A517A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataObjectCache.h; sourceTree = "<group>"; };
+		A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataObjectCache.m; sourceTree = "<group>"; };
+		A7E0D1A917A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataObjectCacheTests.m; sourceTree = "<group>"; };
 		FB6E808D0A794CF7B367BBF3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -165,6 +170,7 @@
 				A721A51C174A405E00B2D9D4 /* SLObjectConverterTests.m */,
 				A721A51F174A974100B2D9D4 /* SLRESTfulCoreDataManagedObjectTests.m */,
 				A721A522174B606C00B2D9D4 /* SLRESTfulCoreDataQueryInterfaceTests.m */,
+				A7E0D1A917A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m */,
 				A7AEC8471749291A00564EE7 /* Supporting Files */,
 			);
 			name = Tests;
@@ -185,6 +191,7 @@
 		A7AEC89917492A6900564EE7 /* SLRESTfulCoreData */ = {
 			isa = PBXGroup;
 			children = (
+				A7E0D1A417A8EF6D004BF773 /* SLRESTfulCoreDataObjectCache */,
 				A7AEC89A17492A6900564EE7 /* Framework Additions */,
 				A7AEC8B217492A6900564EE7 /* NSValueTransformers */,
 				A7AEC8BD17492A6900564EE7 /* SLAttributeMapping */,
@@ -322,6 +329,15 @@
 			path = SLObjectDescription;
 			sourceTree = "<group>";
 		};
+		A7E0D1A417A8EF6D004BF773 /* SLRESTfulCoreDataObjectCache */ = {
+			isa = PBXGroup;
+			children = (
+				A7E0D1A517A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.h */,
+				A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */,
+			);
+			path = SLRESTfulCoreDataObjectCache;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -440,10 +456,12 @@
 				A7AEC8D017492A6900564EE7 /* NSString+SLRESTfulCoreData.m in Sources */,
 				A7AEC8D117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m in Sources */,
 				A7AEC8D217492A6900564EE7 /* SLBlockValueTransformer.m in Sources */,
+				A7E0D1AA17A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m in Sources */,
 				A7AEC8D317492A6900564EE7 /* SLIdentityValueTransformer.m in Sources */,
 				A7AEC8D417492A6900564EE7 /* SLJSONStringValueTransformer.m in Sources */,
 				A7AEC8D517492A6900564EE7 /* SLNSURLValueTransformer.m in Sources */,
 				A7AEC8D617492A6900564EE7 /* SLRGBHexStringValueTransformer.m in Sources */,
+				A7E0D1A717A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m in Sources */,
 				A7AEC8D717492A6900564EE7 /* SLAttributeMapping.m in Sources */,
 				A7AEC8D817492A6900564EE7 /* SLObjectConverter.m in Sources */,
 				A7AEC8D917492A6900564EE7 /* SLObjectDescription.m in Sources */,

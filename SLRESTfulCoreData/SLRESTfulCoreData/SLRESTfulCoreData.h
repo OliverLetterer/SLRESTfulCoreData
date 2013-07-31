@@ -40,6 +40,8 @@
 #import "SLObjectDescription.h"
 #import "SLRESTfulCoreDataBackgroundQueue.h"
 
+#import "SLRESTfulCoreDataObjectCache.h"
+
 #import "SLBlockValueTransformer.h"
 #import "SLJSONStringValueTransformer.h"
 #import "SLIdentityValueTransformer.h"
