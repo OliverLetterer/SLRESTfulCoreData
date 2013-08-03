@@ -98,6 +98,7 @@
 
 
 @interface SLEntity5 : NSManagedObject
+
 @property (nonatomic, strong) NSNumber *floatNumber;
 @property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, strong) NSString *string;
@@ -108,16 +109,26 @@
 @property (nonatomic, strong) NSSet *toManyChilds;
 @property (nonatomic, strong) NSSet *otherToManyChilds;
 @property (nonatomic, strong) NSSet *camelizedChilds;
+@property (nonatomic, assign) BOOL updateMethodCalled;
+
 @end
 
 @implementation SLEntity5
 @dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds;
+@synthesize updateMethodCalled = _updateMethodCalled;
 
 + (void)initialize
 {
     [self registerAttributeName:@"camelizedChilds" forJSONObjectKeyPath:@"camelizedChilds"];
     [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
     [self registerValueTransformer:[[SLIdentityValueTransformer alloc] initWithExpectedClass:[NSDictionary class]] forManagedObjectAttributeName:@"dictionary"];
+}
+
+- (void)updateWithRawJSONDictionary:(NSDictionary *)dictionary
+{
+    [super updateWithRawJSONDictionary:dictionary];
+    
+    self.updateMethodCalled = YES;
 }
 
 @end
@@ -193,6 +204,41 @@
     expect(newEntity.string).to.equal(@"blubb");
     expect(newEntity.date.timeIntervalSince1970).to.equal(now.timeIntervalSince1970);
     expect(newEntity.dictionary).to.equal(dictionary[@"dictionary"]);
+}
+
+- (void)testThatUpdatedObjectWithRawJSONDictionaryCallsUpdateWithRawJSONDictionary
+{
+    SLEntity5 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5 class])
+                                                      inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    entity.identifier = @1;
+    
+    NSError *saveError = nil;
+    [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
+    NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    
+    NSDate *now = [NSDate date];
+    NSString *stringValue = [dateFormatter stringFromDate:now];
+    now = [dateFormatter dateFromString:stringValue];
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @2,
+                                 @"float_number": @1337,
+                                 @"string": @"blubb",
+                                 @"date": stringValue,
+                                 @"dictionary": @{ @"key": @"value" }
+                                 };
+    
+    SLEntity5 *newEntity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary
+                                                  inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(newEntity).toNot.beNil();
+    expect(newEntity).toNot.equal(entity);
+    
+    expect(newEntity.updateMethodCalled).to.beTruthy();
 }
 
 - (void)testThatUpdatedObjectWithRawJSONDictionaryUpdatesAnExistingInstances

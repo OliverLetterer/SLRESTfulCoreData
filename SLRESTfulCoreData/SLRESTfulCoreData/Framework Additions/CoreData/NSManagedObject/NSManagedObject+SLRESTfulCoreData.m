@@ -155,12 +155,6 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 
 - (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
 {
-    [self updateWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:[self.class objectDescription].relationshipUpdateLevel];
-}
-
-- (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
-            relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
-{
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     NSDictionary *attributesByName = [entityDescription attributesByName];
@@ -169,7 +163,6 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     SLObjectConverter *objectConverter = [self.class objectConverter];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
     
-    // update my attributes
     for (NSString *attributeName in attributes) {
         NSString *JSONObjectKeyPath = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
         id rawJSONObject = [rawDictionary valueForKeyPath:JSONObjectKeyPath];
@@ -192,8 +185,15 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             [self setValue:myValue forKey:attributeName];
         }
     }
+}
+
+- (void)updateRelationshipsWithRawJSONDictionary:(NSDictionary *)rawDictionary
+                         relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
+                                                         inManagedObjectContext:self.managedObjectContext];
+    SLAttributeMapping *attributeMapping = [self.class attributeMapping];
     
-    // update my relationships
     if (relationshipUpdateLevel <= 0) {
         return;
     }
@@ -268,6 +268,13 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             }
         }
     }
+}
+
+- (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
+            relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
+{
+    [self updateWithRawJSONDictionary:rawDictionary];
+    [self updateRelationshipsWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel];
 }
 
 - (NSDictionary *)rawJSONDictionary
