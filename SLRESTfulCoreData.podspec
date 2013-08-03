@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'SLRESTfulCoreData'
-  spec.version      = '1.2.5'
+  spec.version      = '1.2.6'
   spec.platform     = :ios, '6.0'
   spec.license      = 'MIT'
   spec.source       = { :git => 'https://github.com/OliverLetterer/SLRESTfulCoreData.git', :tag => spec.version.to_s }
@@ -19,7 +19,7 @@ Pod::Spec.new do |spec|
   spec.subspec 'Complete' do |sp|
     sp.dependency 'SLRESTfulCoreData/Core'
 
-    sp.dependency 'AFNetworking', '>= 1.2.1'
+    sp.dependency 'AFNetworking', '~> 1.3.1'
     sp.dependency 'AFRESTfulCoreDataBackgroundQueue', '>= 1.0.1'
     sp.dependency 'SLCoreDataStack', '>= 0.2.0'
   end
