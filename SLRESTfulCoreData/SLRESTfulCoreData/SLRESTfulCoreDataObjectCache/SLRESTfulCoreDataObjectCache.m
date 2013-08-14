@@ -130,9 +130,11 @@
         NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
         NSString *managedObjectUniqueKey = [[class attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
         
-        id identifier = [deletedObject valueForKey:managedObjectUniqueKey];
-        NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
-        [self.internalCache removeObjectForKey:cachedKey];
+        if ([class instancesRespondToSelector:NSSelectorFromString(managedObjectUniqueKey)]) {
+            id identifier = [deletedObject valueForKey:managedObjectUniqueKey];
+            NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+            [self.internalCache removeObjectForKey:cachedKey];
+        }
     }
 }
 
