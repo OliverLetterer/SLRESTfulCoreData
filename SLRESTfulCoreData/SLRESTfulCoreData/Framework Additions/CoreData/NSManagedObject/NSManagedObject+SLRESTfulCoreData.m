@@ -162,6 +162,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     NSArray *attributes = [self.class registeredAttributeNames];
     SLObjectConverter *objectConverter = [self.class objectConverter];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
+    BOOL checksAttributesForEqualityBeforeAssigning = objectConverter.checksAttributesForEqualityBeforeAssigning;
     
     for (NSString *attributeName in attributes) {
         NSString *JSONObjectKeyPath = [attributeMapping convertManagedObjectAttributeToJSONObjectAttribute:attributeName];
@@ -172,7 +173,13 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
         
         if ([rawJSONObject isEqual:[NSNull null]]) {
-            [self setValue:nil forKey:attributeName];
+            if (checksAttributesForEqualityBeforeAssigning) {
+                if ([self valueForKey:attributeName]) {
+                    [self setValue:nil forKey:attributeName];
+                }
+            } else {
+                [self setValue:nil forKey:attributeName];
+            }
             continue;
         }
         
@@ -182,7 +189,15 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         NSAttributeDescription *attributeDescription = attributesByName[attributeName];
         
         if (myValue || attributeDescription.isOptional) {
-            [self setValue:myValue forKey:attributeName];
+            if (checksAttributesForEqualityBeforeAssigning) {
+                id previousValue = [self valueForKey:attributeName];
+                
+                if (![myValue isEqual:previousValue]) {
+                    [self setValue:myValue forKey:attributeName];
+                }
+            } else {
+                [self setValue:myValue forKey:attributeName];
+            }
         }
     }
 }
@@ -193,6 +208,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
+    SLObjectConverter *objectConverter = [self.class objectConverter];
+    BOOL checksAttributesForEqualityBeforeAssigning = objectConverter.checksAttributesForEqualityBeforeAssigning;
     
     if (relationshipUpdateLevel <= 0) {
         return;
@@ -226,7 +243,14 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];
             if (uniqueIdentifier) {
                 id relationshipEntity = [destinationClass objectWithRemoteIdentifier:uniqueIdentifier inManagedObjectContext:self.managedObjectContext];
-                [self setValue:relationshipEntity forKey:relationshipName];
+                
+                if (checksAttributesForEqualityBeforeAssigning) {
+                    if (relationshipEntity != [self valueForKey:relationshipName]) {
+                        [self setValue:relationshipEntity forKey:relationshipName];
+                    }
+                } else {
+                    [self setValue:relationshipEntity forKey:relationshipName];
+                }
             }
             
             NSString *destinationDictionaryKey = [[destinationClass attributeMapping] convertManagedObjectAttributeToJSONObjectAttribute:relationshipName];
@@ -236,7 +260,14 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 id relationshipEntity = [destinationClass updatedObjectWithRawJSONDictionary:destinationDictionary
                                                                      relationshipUpdateLevel:relationshipUpdateLevel - 1
                                                                       inManagedObjectContext:self.managedObjectContext];
-                [self setValue:relationshipEntity forKey:relationshipName];
+                
+                if (checksAttributesForEqualityBeforeAssigning) {
+                    if ([self valueForKey:relationshipName] != relationshipEntity) {
+                        [self setValue:relationshipEntity forKey:relationshipName];
+                    }
+                } else {
+                    [self setValue:relationshipEntity forKey:relationshipName];
+                }
             }
         }
         
@@ -264,7 +295,13 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             NSAssert(error == nil, @"error while fetching entities which should be updated for this remote object: %@", error);
             
             for (id entity in matchingEntities) {
-                [entity setValue:self forKey:inverseRelationship.name];
+                if (checksAttributesForEqualityBeforeAssigning) {
+                    if ([entity valueForKey:inverseRelationship.name] != self) {
+                        [entity setValue:self forKey:inverseRelationship.name];
+                    }
+                } else {
+                    [entity setValue:self forKey:inverseRelationship.name];
+                }
             }
         }
     }
@@ -370,6 +407,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             
             id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel inManagedObjectContext:self.managedObjectContext];
             
+            BOOL checksAttributesForEqualityBeforeAssigning = [NSClassFromString(destinationClassName) objectConverter].checksAttributesForEqualityBeforeAssigning;
+            
             if (inverseRelationship.isToMany) {
                 NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
                                                                                   withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
@@ -379,7 +418,13 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 
                 ((void(*)(id, SEL, ...))objc_msgSend)(object, selector, self);
             } else {
-                [object setValue:self forKey:inverseRelationshipName];
+                if (checksAttributesForEqualityBeforeAssigning) {
+                    if ([object valueForKey:inverseRelationshipName] != self) {
+                        [object setValue:self forKey:inverseRelationshipName];
+                    }
+                } else {
+                    [object setValue:self forKey:inverseRelationshipName];
+                }
             }
             
             if (object) {

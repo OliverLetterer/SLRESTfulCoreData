@@ -58,6 +58,8 @@
 + (NSTimeZone *)defaultTimeZone;
 + (void)setDefaultTimeZone:(NSTimeZone *)timeZone;
 
+@property (nonatomic, assign) BOOL checksAttributesForEqualityBeforeAssigning;
+
 /**
  single table inheritens
  */
