@@ -3,7 +3,7 @@
 
 ![Version Badge](http://cocoapod-badges.herokuapp.com/v/SLRESTfulCoreData/badge.png)
 
-`SLRESTfulCoreData` builds on top of [AFNetworking](https://github.com/AFNetworking/AFNetworking) and [SLCoreDataStack](https://github.com/OliverLetterer/SLCoreDataStack) and let's you map your JSON REST API to your CoreData model in minutes. Checkout [this blog post](http://sparrow-labs.github.io/2013/04/22/introducing_slrestfulcoredata.html)  or [this sample project](https://github.com/OliverLetterer/GitHubAPI?source=cr) for getting started. 
+`SLRESTfulCoreData` builds on top of [AFNetworking](https://github.com/AFNetworking/AFNetworking) and [SLCoreDataStack](https://github.com/OliverLetterer/SLCoreDataStack) and lets you map your JSON REST API to your CoreData model in minutes. Checkout [this blog post](http://sparrow-labs.github.io/2013/04/22/introducing_slrestfulcoredata.html)  or [this sample project](https://github.com/OliverLetterer/GitHubAPI?source=cr) for getting started. 
 
 ## Getting started
 
@@ -52,7 +52,7 @@ and register your background queue as the default background queue in
 @end
 ```
 
-and rigister both contexts 
+and register both contexts 
 
 ```
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -71,7 +71,7 @@ and rigister both contexts
 
 ## Attribute mappings
 
-`SLRESTfulCoreData` maps underscored API attributes to camelized objc attributes by default. That means by default `some_json_value` will be mapped to `someJsonValue` and `user_id` to `userId`. Custom attribute mappings can be registered in your `NSManagedObject` subclasses initializer:
+`SLRESTfulCoreData` maps underscored API attributes to camelized objc attributes by default. That means by default `some_json_value` will be mapped to `someJsonValue` and `user_id` to `userId`. Custom attribute mappings can be registered in your `NSManagedObject` subclass's initializer:
 
 ```
 + (void)initialize
@@ -179,7 +179,7 @@ and use the following methods
 
 ### URL substitution
 
-The above used key path `repository.full_name` will be transformed to the objc key path `repository.fullName` based on your register attribute mappings and naming conventions and will be evaluated with the correct NSManagedObject instance.
+The above used key path `repository.full_name` will be transformed to the objc key path `repository.fullName` based on your registered attribute mappings and naming conventions and will be evaluated with the correct NSManagedObject instance.
 
 ### CRUD for relationships
 
