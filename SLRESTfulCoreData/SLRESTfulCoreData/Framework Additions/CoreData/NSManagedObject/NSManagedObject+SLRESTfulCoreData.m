@@ -490,8 +490,8 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             if (deleteEveryOtherObject) {
                 [self.managedObjectContext deleteObject:object];
             } else {
-                NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                                                                  withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
+                NSString *name = [relationship stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                                                       withString:[relationship substringToIndex:1].uppercaseString];
                 
                 NSString *selectorName = [NSString stringWithFormat:@"remove%@Object:", name];
                 SEL selector = NSSelectorFromString(selectorName);
