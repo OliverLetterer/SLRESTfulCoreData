@@ -20,6 +20,8 @@
 - (id)objectOfClass:(Class)class withRemoteIdentifier:(id)identifier;
 - (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSArray *)identifiers;
 
+- (void)prepopulateCacheWithObjects:(NSSet *)managedObjects;
+
 @end
 
 

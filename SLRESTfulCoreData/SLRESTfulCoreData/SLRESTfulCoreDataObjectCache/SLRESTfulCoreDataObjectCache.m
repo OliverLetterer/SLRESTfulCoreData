@@ -165,6 +165,31 @@
     return [indexedObjects copy];
 }
 
+- (void)prepopulateCacheWithObjects:(NSSet *)managedObjects
+{
+    NSMutableDictionary *uniqueKeyCache = [NSMutableDictionary dictionary];
+    
+    for (NSManagedObject *object in managedObjects) {
+        Class class = NSClassFromString(object.entity.name);
+        NSString *uniqueKey = uniqueKeyCache[object.entity.name];
+        
+        if (!uniqueKey) {
+            SLAttributeMapping *attributeMapping = [class attributeMapping];
+            SLObjectConverter *objectConverter = [class objectConverter];
+            
+            NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
+            uniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
+            
+            uniqueKeyCache[object.entity.name] = uniqueKey;
+        }
+        
+        id identifier = [object valueForKey:uniqueKey];
+        NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+        
+        [self.internalCache setObject:object forKey:cacheKey];
+    }
+}
+
 #pragma mark - Memory management
 
 - (void)dealloc
