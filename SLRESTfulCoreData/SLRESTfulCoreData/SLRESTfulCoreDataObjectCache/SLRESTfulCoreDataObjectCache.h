@@ -12,12 +12,13 @@
 /**
  @abstract  <#abstract comment#>
  */
-@interface SLRESTfulCoreDataObjectCache : NSObject 
+@interface SLRESTfulCoreDataObjectCache : NSObject
 
 @property (nonatomic, weak) NSManagedObjectContext *managedObjectContext;
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)context;
 
 - (id)objectOfClass:(Class)class withRemoteIdentifier:(id)identifier;
+- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSArray *)identifiers;
 
 @end
 

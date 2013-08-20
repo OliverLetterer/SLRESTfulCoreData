@@ -29,9 +29,12 @@
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
 #import "NSManagedObject+SLRESTfulCoreDataHelpers.h"
 #import "NSError+SLRESTfulCoreData.h"
+
 #import "SLObjectConverter.h"
 #import "SLObjectDescription.h"
 #import "SLAttributeMapping.h"
+#import "SLRESTfulCoreDataObjectCache.h"
+
 #import <objc/message.h>
 
 char *const SLRESTfulCoreDataBackgroundQueueNameKey;
@@ -387,6 +390,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     NSRelationshipDescription *inverseRelationship = relationshipDescription.inverseRelationship;
     NSAssert(inverseRelationship != nil, @"%@ does not have an inverse", relationship);
     
+    Class destinationClass = NSClassFromString(destinationClassName);
+    SLObjectDescription *destinationDescription = [destinationClass objectDescription];
+    NSString *destinationObjectUniqueJSONObjectKeyPath = destinationDescription.uniqueIdentifierOfJSONObjects;
+    
     // update attributes based in relationship type
     if (relationshipDescription.isToMany) {
         // is a 1-to-many relation
@@ -397,7 +404,9 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
         NSArray *JSONObjectsArray = JSONObject;
         
-        // enumerate raw JSON objects and update destination entity with these.
+        // grab each unique identifier from JSONObjectsArray
+        NSMutableArray *allUniqueIdentifiers = [NSMutableArray arrayWithCapacity:JSONObjectsArray.count];
+        
         for (NSDictionary *rawDictionary in JSONObjectsArray) {
             if (![rawDictionary isKindOfClass:NSDictionary.class]) {
                 // make sure JSONObject has correct class
@@ -405,9 +414,27 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 return nil;
             }
             
-            id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel inManagedObjectContext:self.managedObjectContext];
+            NSString *uniqueIdentifier = rawDictionary[destinationDescription.uniqueIdentifierOfJSONObjects];
             
-            BOOL checksAttributesForEqualityBeforeAssigning = [NSClassFromString(destinationClassName) objectConverter].checksAttributesForEqualityBeforeAssigning;
+            if (uniqueIdentifier) {
+                [allUniqueIdentifiers addObject:uniqueIdentifier];
+            }
+        }
+        
+        NSDictionary *indexedObjects = [[SLRESTfulCoreDataObjectCache sharedCacheForManagedObjectContext:self.managedObjectContext] indexedObjectsOfClass:destinationClass withRemoteIdentifiers:allUniqueIdentifiers];
+        
+        // enumerate raw JSON objects and update destination entity with these.
+        for (NSDictionary *rawDictionary in JSONObjectsArray) {
+            id identifier = rawDictionary[destinationObjectUniqueJSONObjectKeyPath];
+            id object = indexedObjects[identifier];
+            
+            if (object) {
+                [object updateWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel];
+            } else {
+                object = [destinationClass updatedObjectWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel inManagedObjectContext:self.managedObjectContext];
+            }
+            
+            BOOL checksAttributesForEqualityBeforeAssigning = [destinationClass objectConverter].checksAttributesForEqualityBeforeAssigning;
             
             if (inverseRelationship.isToMany) {
                 NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
@@ -442,7 +469,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
         
         // update destination entity with JSON object.
-        id object = [NSClassFromString(destinationClassName) updatedObjectWithRawJSONDictionary:JSONObject relationshipUpdateLevel:relationshipUpdateLevel - 1 inManagedObjectContext:self.managedObjectContext];
+        id object = [destinationClass updatedObjectWithRawJSONDictionary:JSONObject relationshipUpdateLevel:relationshipUpdateLevel - 1 inManagedObjectContext:self.managedObjectContext];
         [self setValue:object forKey:relationship];
         
         if (object) {

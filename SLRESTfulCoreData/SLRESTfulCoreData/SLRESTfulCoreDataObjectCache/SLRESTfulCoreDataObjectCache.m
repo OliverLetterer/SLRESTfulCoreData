@@ -111,6 +111,60 @@
     return nil;
 }
 
+- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSArray *)identifiers
+{
+    while ([class class] != class) {
+        class = [class class];
+    }
+    
+    NSMutableDictionary *indexedObjects = [NSMutableDictionary dictionaryWithCapacity:identifiers.count];
+    NSMutableArray *identifiersToFetch = [NSMutableArray arrayWithCapacity:identifiers.count];
+    
+    for (id identifier in identifiers) {
+        NSString *key = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+        
+        id cachedObject = [self.internalCache objectForKey:key];
+        
+        if (cachedObject) {
+            indexedObjects[identifier] = cachedObject;
+        } else {
+            [identifiersToFetch addObject:identifier];
+        }
+    }
+    
+    NSAssert([class isSubclassOfClass:[NSManagedObject class]], @"class %@ must be a subclass of NSManagedObject", class);
+    NSManagedObjectContext *context = self.managedObjectContext;
+    
+    SLAttributeMapping *attributeMapping = [class attributeMapping];
+    SLObjectConverter *objectConverter = [class objectConverter];
+    
+    NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
+    NSString *managedObjectUniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(class) inManagedObjectContext:context];
+    NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
+    
+    NSAssert(attributeDescription != nil, @"no attributeDescription found for %@[%@]", class, managedObjectUniqueKey);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(class)];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K IN %@", managedObjectUniqueKey, identifiersToFetch];
+    
+    NSError *error = nil;
+    NSArray *fetchedObjects = [context executeFetchRequest:request error:&error];
+    NSAssert(error == nil, @"error while fetching: %@", error);
+    
+    for (NSManagedObject *managedObject in fetchedObjects) {
+        id identifier = [managedObject valueForKey:managedObjectUniqueKey];
+        NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+        
+        [self.internalCache setObject:managedObject forKey:cacheKey];
+        
+        indexedObjects[identifier] = managedObject;
+    }
+    
+    return [indexedObjects copy];
+}
+
 #pragma mark - Memory management
 
 - (void)dealloc
