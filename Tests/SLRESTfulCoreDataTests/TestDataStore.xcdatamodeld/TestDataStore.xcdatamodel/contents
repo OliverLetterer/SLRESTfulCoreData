@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3394" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="SLEntity1" representedClassName="SLEntity1" syncable="YES"/>
     <entity name="SLEntity1Subclass" representedClassName="SLSubclassOfEntity1" parentEntity="SLEntity1" syncable="YES"/>
     <entity name="SLEntity2" syncable="YES">
@@ -22,6 +22,7 @@
         <attribute name="dictionary" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="floatNumber" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="otherString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="string" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="camelizedChilds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLEntity5Child5" inverseName="parent" inverseEntity="SLEntity5Child5" syncable="YES"/>
         <relationship name="child" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity5Child1" inverseName="parent" inverseEntity="SLEntity5Child1" syncable="YES"/>
@@ -61,20 +62,20 @@
         <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SLEntity6" inverseName="children" inverseEntity="SLEntity6" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SLEntity1" positionX="160" positionY="192" width="128" height="45"/>
-        <element name="SLEntity1Subclass" positionX="160" positionY="192" width="128" height="45"/>
-        <element name="SLEntity2" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="SLEntity3" positionX="160" positionY="192" width="128" height="60"/>
-        <element name="SLEntity4" positionX="160" positionY="192" width="128" height="105"/>
-        <element name="SLEntity4Subclass" positionX="160" positionY="192" width="128" height="45"/>
-        <element name="SLEntity5" positionX="160" positionY="192" width="128" height="195"/>
-        <element name="SLEntity5Child1" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="SLEntity5Child2" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="SLEntity5Child3" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="SLEntity5Child4" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="SLEntity5Subclass" positionX="160" positionY="192" width="128" height="45"/>
-        <element name="SLEntity6" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="SLEntity6Child" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="SLEntity5Child5" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="SLEntity1" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity1Subclass" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity2" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity3" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity4" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity4Subclass" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Child1" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Child2" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Child3" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Child4" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Child5" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity5Subclass" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity6" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="SLEntity6Child" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

@@ -102,6 +102,7 @@
 @property (nonatomic, strong) NSNumber *floatNumber;
 @property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, strong) NSString *string;
+@property (nonatomic, strong) NSString *otherString;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDictionary *dictionary;
 @property (nonatomic, strong) SLEntity5Child1 *child;
@@ -114,12 +115,14 @@
 @end
 
 @implementation SLEntity5
-@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds;
+@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds, otherString;
 @synthesize updateMethodCalled = _updateMethodCalled;
 
 + (void)initialize
 {
     [self registerAttributeName:@"camelizedChilds" forJSONObjectKeyPath:@"camelizedChilds"];
+    [self registerAttributeName:@"otherString" forJSONObjectKeyPath:@"some_dictionary.string_value"];
+    
     [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
     [self registerValueTransformer:[[SLIdentityValueTransformer alloc] initWithExpectedClass:[NSDictionary class]] forManagedObjectAttributeName:@"dictionary"];
 }
@@ -377,6 +380,34 @@
     expect(newEntity).to.beNil();
 }
 
+- (void)testThatManageObjectUpdatesWithJSONObjectKeyPaths
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    
+    NSDate *now = [NSDate date];
+    NSString *stringValue = [dateFormatter stringFromDate:now];
+    now = [dateFormatter dateFromString:stringValue];
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"float_number": @1337,
+                                 @"string": [NSNull null],
+                                 @"date": stringValue,
+                                 @"dictionary": @{ @"key": @"value" },
+                                 
+                                 @"some_dictionary": @{
+                                         @"string_value": @"wuff"
+                                         }
+                                 };
+    
+    SLEntity5 *newEntity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary
+                                                  inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(newEntity.otherString).to.equal(@"wuff");
+}
+
 - (void)testThatManagedObjectConvertsItselfIntoAnJSONObject
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -407,6 +438,43 @@
                                  @"string": @"maFooBar",
                                  @"date": stringValue,
                                  @"dictionary": @{ @"key": @"value" }
+                                 };
+    
+    expect(entity.rawJSONDictionary).to.equal(dictionary);
+}
+
+- (void)testThatManagedObjectConvertsItselfIntoAnJSONObjectWithJSONObjectKeyPaths
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    
+    NSDate *now = [NSDate date];
+    NSString *stringValue = [dateFormatter stringFromDate:now];
+    now = [dateFormatter dateFromString:stringValue];
+    
+    SLEntity5 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5 class])
+                                                      inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    entity.identifier = @1;
+    entity.string = @"maFooBar";
+    entity.date = now;
+    entity.floatNumber = @3.5f;
+    entity.dictionary = @{ @"key": @"value" };
+    entity.otherString = @"otherString";
+    
+    NSError *saveError = nil;
+    [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
+    NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+    
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"float_number": @3.5f,
+                                 @"string": @"maFooBar",
+                                 @"date": stringValue,
+                                 @"dictionary": @{ @"key": @"value" },
+                                 @"some_dictionary": @{
+                                         @"string_value": @"otherString"
+                                         }
                                  };
     
     expect(entity.rawJSONDictionary).to.equal(dictionary);

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSNumber *floatNumber;
 @property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, strong) NSString *string;
+@property (nonatomic, strong) NSString *otherString;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDictionary *dictionary;
 @property (nonatomic, strong) SLEntity5Child1 *child;
