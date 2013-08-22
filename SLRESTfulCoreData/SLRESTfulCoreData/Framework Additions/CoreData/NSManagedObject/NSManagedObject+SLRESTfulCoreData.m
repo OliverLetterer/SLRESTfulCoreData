@@ -405,7 +405,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         NSArray *JSONObjectsArray = JSONObject;
         
         // grab each unique identifier from JSONObjectsArray
-        NSMutableArray *allUniqueIdentifiers = [NSMutableArray arrayWithCapacity:JSONObjectsArray.count];
+        NSMutableSet *allUniqueIdentifiers = [NSMutableSet setWithCapacity:JSONObjectsArray.count];
         
         for (NSDictionary *rawDictionary in JSONObjectsArray) {
             if (![rawDictionary isKindOfClass:NSDictionary.class]) {

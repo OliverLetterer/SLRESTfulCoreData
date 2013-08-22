@@ -111,14 +111,14 @@
     return nil;
 }
 
-- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSArray *)identifiers
+- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSSet *)identifiers
 {
     while ([class class] != class) {
         class = [class class];
     }
     
     NSMutableDictionary *indexedObjects = [NSMutableDictionary dictionaryWithCapacity:identifiers.count];
-    NSMutableArray *identifiersToFetch = [NSMutableArray arrayWithCapacity:identifiers.count];
+    NSMutableSet *identifiersToFetch = [NSMutableSet setWithCapacity:identifiers.count];
     
     for (id identifier in identifiers) {
         NSString *key = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];

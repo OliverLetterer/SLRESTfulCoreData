@@ -18,7 +18,7 @@
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)context;
 
 - (id)objectOfClass:(Class)class withRemoteIdentifier:(id)identifier;
-- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSArray *)identifiers;
+- (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSSet *)identifiers;
 
 - (void)prepopulateCacheWithObjects:(NSSet *)managedObjects;
 
