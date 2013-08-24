@@ -136,7 +136,6 @@
     NSManagedObjectContext *context = self.managedObjectContext;
     
     SLAttributeMapping *attributeMapping = [class attributeMapping];
-    SLObjectConverter *objectConverter = [class objectConverter];
     
     NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
     NSString *managedObjectUniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
@@ -175,7 +174,6 @@
         
         if (!uniqueKey) {
             SLAttributeMapping *attributeMapping = [class attributeMapping];
-            SLObjectConverter *objectConverter = [class objectConverter];
             
             NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
             uniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
