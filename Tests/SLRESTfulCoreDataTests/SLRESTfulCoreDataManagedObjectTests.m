@@ -97,6 +97,24 @@
 
 
 
+@interface SLEntity5Child6 : NSManagedObject
+@property (nonatomic, strong) NSNumber *fooIdentifier;
+@property (nonatomic, strong) SLEntity5 *parent;
+@end
+
+@implementation SLEntity5Child6
+@dynamic fooIdentifier, parent;
+
++ (void)initialize
+{
+    [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
+    [self registerUniqueIdentifierOfJSONObjects:@"foo_id"];
+}
+
+@end
+
+
+
 @interface SLEntity5 : NSManagedObject
 
 @property (nonatomic, strong) NSNumber *floatNumber;
@@ -110,18 +128,20 @@
 @property (nonatomic, strong) NSSet *toManyChilds;
 @property (nonatomic, strong) NSSet *otherToManyChilds;
 @property (nonatomic, strong) NSSet *camelizedChilds;
+@property (nonatomic, strong) NSSet *differentChilds;
 @property (nonatomic, assign) BOOL updateMethodCalled;
 
 @end
 
 @implementation SLEntity5
-@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds, otherString;
+@dynamic floatNumber, string, date, dictionary, identifier, child, otherChild, toManyChilds, otherToManyChilds, camelizedChilds, otherString, differentChilds;
 @synthesize updateMethodCalled = _updateMethodCalled;
 
 + (void)initialize
 {
     [self registerAttributeName:@"camelizedChilds" forJSONObjectKeyPath:@"camelizedChilds"];
     [self registerAttributeName:@"otherString" forJSONObjectKeyPath:@"some_dictionary.string_value"];
+    [self registerAttributeName:@"differentChilds" forJSONObjectKeyPath:@"differentChilds"];
     
     [self registerObjcNamingConvention:@"identifier" forJSONNamingConvention:@"id"];
     [self registerValueTransformer:[[SLIdentityValueTransformer alloc] initWithExpectedClass:[NSDictionary class]] forManagedObjectAttributeName:@"dictionary"];
@@ -649,6 +669,23 @@
     
     expect(child1).toNot.beNil();
     expect(entity.camelizedChilds).to.contain(child1);
+}
+
+- (void)testThatToManyRelationGetsUpdatedWhenJSONObjectContainsAnArrayAndChildEntityHasDifferentUniqueIdentifier
+{
+    NSDictionary *dictionary = @{
+                                 @"id": @1,
+                                 @"differentChilds": @[ @{ @"foo_id": @1 } ]
+                                 };
+    
+    SLEntity5 *entity = [SLEntity5 updatedObjectWithRawJSONDictionary:dictionary inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(entity.differentChilds.count).to.equal(1);
+    
+    SLEntity5Child6 *child1 = [SLEntity5Child6 objectWithRemoteIdentifier:@1 inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    
+    expect(child1).toNot.beNil();
+    expect(entity.differentChilds).to.contain(child1);
 }
 
 @end
