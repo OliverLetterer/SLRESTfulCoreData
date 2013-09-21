@@ -25,7 +25,6 @@ Pod::Spec.new do |spec|
     sp.dependency 'SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue'
 
     sp.dependency 'AFNetworking', '~> 1.3.1'
-    sp.dependency 'AFRESTfulCoreDataBackgroundQueue', '>= 1.0.1'
     sp.dependency 'SLCoreDataStack', '>= 0.2.0'
   end
 end
