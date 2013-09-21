@@ -18,6 +18,22 @@ Pod::Spec.new do |spec|
 
   spec.subspec 'AFRESTfulCoreDataBackgroundQueue' do |sp|
     sp.source_files = 'AFRESTfulCoreDataBackgroundQueue/*.{h,m}'
+
+	sp.prefix_header_contents = <<-EOS
+	#import <Availability.h>
+
+	#define _AFNETWORKING_PIN_SSL_CERTIFICATES_
+
+	#if __IPHONE_OS_VERSION_MIN_REQUIRED
+	  #import <SystemConfiguration/SystemConfiguration.h>
+	  #import <MobileCoreServices/MobileCoreServices.h>
+	  #import <Security/Security.h>
+	#else
+	  #import <SystemConfiguration/SystemConfiguration.h>
+	  #import <CoreServices/CoreServices.h>
+	  #import <Security/Security.h>
+	#endif
+	EOS
   end
 
   spec.subspec 'Complete' do |sp|
