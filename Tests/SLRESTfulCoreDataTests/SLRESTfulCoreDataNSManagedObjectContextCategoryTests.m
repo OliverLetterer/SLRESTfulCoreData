@@ -115,9 +115,10 @@
         SLEntity2 *entity1 = objects[0];
         SLEntity2 *entity2 = objects[1];
         SLEntity2 *entity3 = objects[2][0];
+        SLEntity2 *entity4 = objects[3][@"key"];
         
-        success = [entity1.identifier isEqual:@1] && [entity2.identifier isEqual:@1] && [entity3.identifier isEqual:@1];
-    } withObject:@[ entity, entity.objectID, @[ entity ] ]];
+        success = [entity1.identifier isEqual:@1] && [entity2.identifier isEqual:@1] && [entity3.identifier isEqual:@1] && [entity4.identifier isEqual:@1];
+    } withObject:@[ entity, entity.objectID, @[ entity ], @{ @"key": entity } ]];
     
     expect(success).will.beTruthy();
 }

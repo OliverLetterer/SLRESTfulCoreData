@@ -27,38 +27,26 @@
 #import "NSManagedObjectContext+SLRESTfulCoreData.h"
 #import "SLRESTfulCoreData.h"
 
-static NSArray *arrayByCollectingObjects(NSArray *array, id(^collector)(id object))
-{
-    NSCParameterAssert(collector);
-    
-    NSMutableArray *finalArray = [NSMutableArray arrayWithCapacity:array.count];
-    
-    for (id obj in array) {
-        id object = collector(obj);
-        
-        if (object) {
-            [finalArray addObject:object];
-        }
-    }
-    
-    return finalArray;
-}
-
 static id managedObjectIDCollector(id object)
 {
     if ([object isKindOfClass:[NSArray class]]) {
-        return arrayByCollectingObjects(object, ^id(id object) {
-            if ([object isKindOfClass:[NSArray class]]) {
-                return managedObjectIDCollector(object);
-            } else if ([object isKindOfClass:[NSManagedObject class]]) {
-                return [(NSManagedObject *)object objectID];
-            } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
-                return object;
-            }
-            
-            NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-            return nil;
-        });
+        NSArray *array = object;
+        NSMutableArray *newArray = [NSMutableArray arrayWithCapacity:array.count];
+        
+        for (id managedObject in array) {
+            [newArray addObject:managedObjectIDCollector(managedObject)];
+        }
+        
+        return newArray;
+    } else if ([object isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dictionary = object;
+        NSMutableDictionary *newDictionary = [NSMutableDictionary dictionaryWithCapacity:dictionary.count];
+        
+        for (id key in dictionary) {
+            newDictionary[key] = managedObjectIDCollector(dictionary[key]);
+        }
+        
+        return newDictionary;
     } else if ([object isKindOfClass:[NSManagedObject class]]) {
         return [object objectID];
     } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
@@ -74,16 +62,23 @@ static id managedObjectIDCollector(id object)
 static id managedObjectCollector(id objectIDs, NSManagedObjectContext *context)
 {
     if ([objectIDs isKindOfClass:[NSArray class]]) {
-        return arrayByCollectingObjects(objectIDs, ^id(id object) {
-            if ([object isKindOfClass:[NSArray class]]) {
-                return managedObjectCollector(object, context);
-            } else if ([object isKindOfClass:[NSManagedObjectID class]]) {
-                return [context objectWithID:object];
-            }
-            
-            NSCAssert(NO, @"%@ is unsupported by SLRESTfulCoreDataManagedObjectIDCollector", object);
-            return nil;
-        });
+        NSArray *array = objectIDs;
+        NSMutableArray *newArray = [NSMutableArray arrayWithCapacity:array.count];
+        
+        for (id object in array) {
+            [newArray addObject:managedObjectCollector(object, context)];
+        }
+        
+        return newArray;
+    } else if ([objectIDs isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dictionary = objectIDs;
+        NSMutableDictionary *newDictionary = [NSMutableDictionary dictionaryWithCapacity:dictionary.count];
+        
+        for (id key in dictionary) {
+            newDictionary[key] = managedObjectCollector(dictionary[key], context);
+        }
+        
+        return newDictionary;
     } else if ([objectIDs isKindOfClass:[NSManagedObjectID class]]) {
         return [context objectWithID:objectIDs];
     } else if (!objectIDs) {
