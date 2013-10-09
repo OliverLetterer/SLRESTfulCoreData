@@ -47,23 +47,6 @@ static void deleteObjectsWithoutRemoteIDs(NSManagedObjectContext *context, Class
     }
 }
 
-static NSArray *arrayByCollectiongObjects(NSArray *array, id(^collector)(id object))
-{
-    NSCParameterAssert(collector);
-    
-    NSMutableArray *finalArray = [NSMutableArray arrayWithCapacity:array.count];
-    
-    for (id obj in array) {
-        id object = collector(obj);
-        
-        if (object) {
-            [finalArray addObject:object];
-        }
-    }
-    
-    return finalArray;
-}
-
 static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSelector)
 {
     Method origMethod = class_getInstanceMethod(class, originalSelector);
@@ -333,7 +316,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
     [[self backgroundQueue] getRequestToURL:URL
-                        completionHandler:^(id JSONObject, NSError *error)
+                          completionHandler:^(id JSONObject, NSError *error)
      {
          NSMutableArray *fetchedObjectIDs = [NSMutableArray array];
          
@@ -454,7 +437,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
     [[self.class backgroundQueue] getRequestToURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
-                              completionHandler:^(id JSONObject, NSError *error)
+                                completionHandler:^(id JSONObject, NSError *error)
      {
          if (error) {
              // check for error
@@ -505,36 +488,36 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
     [[self.class backgroundQueue] postJSONObject:rawJSONDictionary
-                                         toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
-                             completionHandler:^(id JSONObject, NSError *error) {
-                                 if (error) {
-                                     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                                     
-                                     if (completionHandler) {
-                                         completionHandler(self, error);
-                                     }
-                                 } else {
-                                     NSManagedObjectID *objectID = self.objectID;
-                                     
-                                     NSManagedObjectContext *context = [self.class backgroundThreadManagedObjectContext];
-                                     [context performBlock:^{
-                                         NSManagedObject *backgroundSelf = [context objectWithID:objectID];
-                                         [backgroundSelf updateWithRawJSONDictionary:JSONObject];
-                                         
-                                         NSError *saveError = nil;
-                                         [context save:&saveError];
-                                         NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
-                                         
-                                         dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                             [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                                             
-                                             if (completionHandler) {
-                                                 completionHandler(self, nil);
-                                             }
-                                         });
-                                     }];
-                                 }
-                             }];
+                                           toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
+                               completionHandler:^(id JSONObject, NSError *error) {
+                                   if (error) {
+                                       [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                                       
+                                       if (completionHandler) {
+                                           completionHandler(self, error);
+                                       }
+                                   } else {
+                                       NSManagedObjectID *objectID = self.objectID;
+                                       
+                                       NSManagedObjectContext *context = [self.class backgroundThreadManagedObjectContext];
+                                       [context performBlock:^{
+                                           NSManagedObject *backgroundSelf = [context objectWithID:objectID];
+                                           [backgroundSelf updateWithRawJSONDictionary:JSONObject];
+                                           
+                                           NSError *saveError = nil;
+                                           [context save:&saveError];
+                                           NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
+                                           
+                                           dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                               [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                                               
+                                               if (completionHandler) {
+                                                   completionHandler(self, nil);
+                                               }
+                                           });
+                                       }];
+                                   }
+                               }];
 }
 
 - (void)putToURL:(NSURL *)URL completionHandler:(void (^)(id JSONObject, NSError *error))completionHandler
@@ -550,35 +533,35 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
     
     [[self.class backgroundQueue] putJSONObject:rawJSONDictionary
-                                        toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
-                            completionHandler:^(id JSONObject, NSError *error) {
-                                if (error) {
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                                    
-                                    if (completionHandler) {
-                                        completionHandler(self, error);
-                                    }
-                                } else {
-                                    NSManagedObjectID *objectID = self.objectID;
-                                    
-                                    NSManagedObjectContext *context = [self.class backgroundThreadManagedObjectContext];
-                                    [context performBlock:^{
-                                        NSManagedObject *backgroundSelf = [context objectWithID:objectID];
-                                        [backgroundSelf updateWithRawJSONDictionary:JSONObject];
-                                        
-                                        NSError *saveError = nil;
-                                        [context save:&saveError];
-                                        
-                                        dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                            [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
-                                            
-                                            if (completionHandler) {
-                                                completionHandler(self, saveError);
-                                            }
-                                        });
-                                    }];
-                                }
-                            }];
+                                          toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
+                              completionHandler:^(id JSONObject, NSError *error) {
+                                  if (error) {
+                                      [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                                      
+                                      if (completionHandler) {
+                                          completionHandler(self, error);
+                                      }
+                                  } else {
+                                      NSManagedObjectID *objectID = self.objectID;
+                                      
+                                      NSManagedObjectContext *context = [self.class backgroundThreadManagedObjectContext];
+                                      [context performBlock:^{
+                                          NSManagedObject *backgroundSelf = [context objectWithID:objectID];
+                                          [backgroundSelf updateWithRawJSONDictionary:JSONObject];
+                                          
+                                          NSError *saveError = nil;
+                                          [context save:&saveError];
+                                          
+                                          dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                              [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidFinishNotification object:nil];
+                                              
+                                              if (completionHandler) {
+                                                  completionHandler(self, saveError);
+                                              }
+                                          });
+                                      }];
+                                  }
+                              }];
 }
 
 - (void)deleteToURL:(NSURL *)URL completionHandler:(void (^)(NSError *error))completionHandler

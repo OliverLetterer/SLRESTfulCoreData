@@ -51,9 +51,14 @@
 {
     NSAssert([self class] != [AFRESTfulCoreDataBackgroundQueue sharedQueue], @"AFRESTfulCoreDataBackgroundQueue is an abstract superclass. You need to subclass this class and implement +[YouSubclass sharedInstance].");
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    
     if (class_respondsToSelector(objc_getMetaClass(class_getName([self class])), @selector(sharedInstance))) {
-        return objc_msgSend([self class], @selector(sharedInstance));
+        return ((id(*)(id, SEL))objc_msgSend)([self class], @selector(sharedInstance));
     }
+    
+#pragma clang diagnostic pop
     
     [NSException raise:NSInternalInconsistencyException format:@"You need to implement +[%@ sharedInstance] and return a singleton instance there in order for AFRESTfulCoreDataBackgroundQueue to work.", NSStringFromClass(self)];
     
