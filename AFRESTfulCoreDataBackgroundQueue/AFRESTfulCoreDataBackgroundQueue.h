@@ -31,6 +31,6 @@
 /**
  @abstract  <#abstract comment#>
  */
-@interface AFRESTfulCoreDataBackgroundQueue : AFHTTPClient <SLRESTfulCoreDataBackgroundQueue>
+@interface AFRESTfulCoreDataBackgroundQueue : AFHTTPRequestOperationManager <SLRESTfulCoreDataBackgroundQueue>
 
 @end

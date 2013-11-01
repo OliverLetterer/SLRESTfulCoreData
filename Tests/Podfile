@@ -2,9 +2,10 @@ xcodeproj 'SLRESTfulCoreData'
 workspace '../SLRESTfulCoreData'
 inhibit_all_warnings!
 
-platform :ios, '5.0'
+platform :ios, '6.0'
 link_with 'iOS Tests'
 
-pod 'OCMock', '2.2'
-pod 'Expecta', '0.2.1'
+pod 'OCMock', '>= 2.2'
+pod 'Expecta', '>= 0.2.2'
 pod 'SLCoreDataStack', '>= 0.2.0'
+pod 'SLRESTfulCoreData', path: '../SLRESTfulCoreData.podspec'

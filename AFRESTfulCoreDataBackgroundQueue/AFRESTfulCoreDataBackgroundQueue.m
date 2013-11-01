@@ -36,11 +36,13 @@
 - (instancetype)initWithBaseURL:(NSURL *)url
 {
     if (self = [super initWithBaseURL:url]) {
-        [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+        self.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:0];
+        self.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:0];
         
-        [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"application/json"]];
-        [self setDefaultHeader:@"Accept" value:@"application/json"];
-        [self setDefaultHeader:@"Content-Type" value:@"application/json"];
+        [self.requestSerializer setValue:@"Accept" forHTTPHeaderField:@"application/json"];
+        [self.requestSerializer setValue:@"Content-Type" forHTTPHeaderField:@"application/json"];
+        
+        self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     }
     return self;
 }
@@ -68,7 +70,7 @@
 - (void)getRequestToURL:(NSURL *)URL
       completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:URL.absoluteString parameters:nil];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:nil];
     
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
@@ -80,13 +82,13 @@
         }
     }];
     
-    [self enqueueHTTPRequestOperation:requestOperation];
+    [self.operationQueue addOperation:requestOperation];
 }
 
 - (void)deleteRequestToURL:(NSURL *)URL
          completionHandler:(void(^)(NSError *error))completionHandler
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" path:URL.absoluteString parameters:nil];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:URL.absoluteString parameters:nil];
     
     NSDictionary *JSONObject = @{};
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:NULL];
@@ -104,7 +106,7 @@
         }
     }];
     
-    [self enqueueHTTPRequestOperation:requestOperation];
+    [self.operationQueue addOperation:requestOperation];
 }
 
 - (void)postJSONObject:(id)JSONObject
@@ -121,7 +123,7 @@
 {
     JSONObject = JSONObject ?: @{};
     
-    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:URL.absoluteString parameters:nil];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:URL.absoluteString parameters:nil];
     
     NSError *error = nil;
     NSData *JSONData = [NSData data];
@@ -152,7 +154,7 @@
             }
         }];
         
-        [self enqueueHTTPRequestOperation:requestOperation];
+        [self.operationQueue addOperation:requestOperation];
     }
 }
 
@@ -162,7 +164,7 @@
 {
     JSONObject = JSONObject ?: @{};
     
-    NSMutableURLRequest *request = [self requestWithMethod:@"PUT" path:URL.absoluteString parameters:nil];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:URL.absoluteString parameters:nil];
     
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
@@ -184,7 +186,7 @@
             }
         }];
         
-        [self enqueueHTTPRequestOperation:requestOperation];
+        [self.operationQueue addOperation:requestOperation];
     }
 }
 

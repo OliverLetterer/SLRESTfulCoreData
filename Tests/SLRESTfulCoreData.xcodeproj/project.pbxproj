@@ -20,27 +20,9 @@
 		A7AEC83F1749291A00564EE7 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC83E1749291A00564EE7 /* SenTestingKit.framework */; };
 		A7AEC8421749291A00564EE7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC82F1749291A00564EE7 /* Foundation.framework */; };
 		A7AEC84B1749291A00564EE7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A7AEC8491749291A00564EE7 /* InfoPlist.strings */; };
-		A7AEC8CA17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC89E17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.m */; };
-		A7AEC8CB17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8A017492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.m */; };
-		A7AEC8CC17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8A217492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m */; };
-		A7AEC8CD17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8A417492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.m */; };
-		A7AEC8CE17492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8A717492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.m */; };
-		A7AEC8CF17492A6900564EE7 /* NSError+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8AB17492A6900564EE7 /* NSError+SLRESTfulCoreData.m */; };
-		A7AEC8D017492A6900564EE7 /* NSString+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8AE17492A6900564EE7 /* NSString+SLRESTfulCoreData.m */; };
-		A7AEC8D117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8B117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m */; };
-		A7AEC8D217492A6900564EE7 /* SLBlockValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8B417492A6900564EE7 /* SLBlockValueTransformer.m */; };
-		A7AEC8D317492A6900564EE7 /* SLIdentityValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8B617492A6900564EE7 /* SLIdentityValueTransformer.m */; };
-		A7AEC8D417492A6900564EE7 /* SLJSONStringValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8B817492A6900564EE7 /* SLJSONStringValueTransformer.m */; };
-		A7AEC8D517492A6900564EE7 /* SLNSURLValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8BA17492A6900564EE7 /* SLNSURLValueTransformer.m */; };
-		A7AEC8D617492A6900564EE7 /* SLRGBHexStringValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8BC17492A6900564EE7 /* SLRGBHexStringValueTransformer.m */; };
-		A7AEC8D717492A6900564EE7 /* SLAttributeMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8BF17492A6900564EE7 /* SLAttributeMapping.m */; };
-		A7AEC8D817492A6900564EE7 /* SLObjectConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8C217492A6900564EE7 /* SLObjectConverter.m */; };
-		A7AEC8D917492A6900564EE7 /* SLObjectDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8C517492A6900564EE7 /* SLObjectDescription.m */; };
-		A7AEC8DA17492A6900564EE7 /* SLRESTfulCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = A7AEC8C817492A6900564EE7 /* SLRESTfulCoreData.m */; };
 		A7AEC8DC17492B9900564EE7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DB17492B9900564EE7 /* CoreData.framework */; };
 		A7AEC8DE17492BAB00564EE7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7AEC8DD17492BAB00564EE7 /* UIKit.framework */; };
 		A7B08D24174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */; };
-		A7E0D1A717A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */; };
 		A7E0D1AA17A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E0D1A917A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m */; };
 		E26FBFCB8B474AD5AEEE8498 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FDE37480ED34249B6A6892B /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -64,47 +46,9 @@
 		A7AEC83E1749291A00564EE7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A7AEC8481749291A00564EE7 /* SLRESTfulCoreDataTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SLRESTfulCoreDataTests-Info.plist"; sourceTree = "<group>"; };
 		A7AEC84A1749291A00564EE7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A7AEC89D17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A7AEC89E17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A7AEC89F17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+SLRESTfulCoreDataHelpers.h"; sourceTree = "<group>"; };
-		A7AEC8A017492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+SLRESTfulCoreDataHelpers.m"; sourceTree = "<group>"; };
-		A7AEC8A117492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+SLRESTfulCoreDataQueryInterface.h"; sourceTree = "<group>"; };
-		A7AEC8A217492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+SLRESTfulCoreDataQueryInterface.m"; sourceTree = "<group>"; };
-		A7AEC8A317492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+SLRESTfulCoreDataSetup.h"; sourceTree = "<group>"; };
-		A7AEC8A417492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+SLRESTfulCoreDataSetup.m"; sourceTree = "<group>"; };
-		A7AEC8A617492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A7AEC8A717492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A7AEC8AA17492A6900564EE7 /* NSError+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A7AEC8AB17492A6900564EE7 /* NSError+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A7AEC8AD17492A6900564EE7 /* NSString+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A7AEC8AE17492A6900564EE7 /* NSString+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A7AEC8B017492A6900564EE7 /* NSURL+SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+SLRESTfulCoreData.h"; sourceTree = "<group>"; };
-		A7AEC8B117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+SLRESTfulCoreData.m"; sourceTree = "<group>"; };
-		A7AEC8B317492A6900564EE7 /* SLBlockValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBlockValueTransformer.h; sourceTree = "<group>"; };
-		A7AEC8B417492A6900564EE7 /* SLBlockValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBlockValueTransformer.m; sourceTree = "<group>"; };
-		A7AEC8B517492A6900564EE7 /* SLIdentityValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLIdentityValueTransformer.h; sourceTree = "<group>"; };
-		A7AEC8B617492A6900564EE7 /* SLIdentityValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLIdentityValueTransformer.m; sourceTree = "<group>"; };
-		A7AEC8B717492A6900564EE7 /* SLJSONStringValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLJSONStringValueTransformer.h; sourceTree = "<group>"; };
-		A7AEC8B817492A6900564EE7 /* SLJSONStringValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLJSONStringValueTransformer.m; sourceTree = "<group>"; };
-		A7AEC8B917492A6900564EE7 /* SLNSURLValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNSURLValueTransformer.h; sourceTree = "<group>"; };
-		A7AEC8BA17492A6900564EE7 /* SLNSURLValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNSURLValueTransformer.m; sourceTree = "<group>"; };
-		A7AEC8BB17492A6900564EE7 /* SLRGBHexStringValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRGBHexStringValueTransformer.h; sourceTree = "<group>"; };
-		A7AEC8BC17492A6900564EE7 /* SLRGBHexStringValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRGBHexStringValueTransformer.m; sourceTree = "<group>"; };
-		A7AEC8BE17492A6900564EE7 /* SLAttributeMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAttributeMapping.h; sourceTree = "<group>"; };
-		A7AEC8BF17492A6900564EE7 /* SLAttributeMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAttributeMapping.m; sourceTree = "<group>"; };
-		A7AEC8C117492A6900564EE7 /* SLObjectConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLObjectConverter.h; sourceTree = "<group>"; };
-		A7AEC8C217492A6900564EE7 /* SLObjectConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLObjectConverter.m; sourceTree = "<group>"; };
-		A7AEC8C417492A6900564EE7 /* SLObjectDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLObjectDescription.h; sourceTree = "<group>"; };
-		A7AEC8C517492A6900564EE7 /* SLObjectDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLObjectDescription.m; sourceTree = "<group>"; };
-		A7AEC8C617492A6900564EE7 /* SLRESTfulCoreData-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLRESTfulCoreData-Prefix.pch"; sourceTree = "<group>"; };
-		A7AEC8C717492A6900564EE7 /* SLRESTfulCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreData.h; sourceTree = "<group>"; };
-		A7AEC8C817492A6900564EE7 /* SLRESTfulCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreData.m; sourceTree = "<group>"; };
-		A7AEC8C917492A6900564EE7 /* SLRESTfulCoreDataBackgroundQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataBackgroundQueue.h; sourceTree = "<group>"; };
 		A7AEC8DB17492B9900564EE7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A7AEC8DD17492BAB00564EE7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A7B08D23174D5C7900C03D13 /* SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataNSManagedObjectContextCategoryTests.m; sourceTree = "<group>"; };
-		A7E0D1A517A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRESTfulCoreDataObjectCache.h; sourceTree = "<group>"; };
-		A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataObjectCache.m; sourceTree = "<group>"; };
 		A7E0D1A917A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRESTfulCoreDataObjectCacheTests.m; sourceTree = "<group>"; };
 		FB6E808D0A794CF7B367BBF3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -128,7 +72,6 @@
 		A7AEC8231749291A00564EE7 = {
 			isa = PBXGroup;
 			children = (
-				A7AEC89917492A6900564EE7 /* SLRESTfulCoreData */,
 				A7AEC8461749291A00564EE7 /* Tests */,
 				A7AEC82E1749291A00564EE7 /* Frameworks */,
 				A7AEC82D1749291A00564EE7 /* Products */,
@@ -186,156 +129,6 @@
 				A721A50A174A079300B2D9D4 /* SLRESTfulCoreData-prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A7AEC89917492A6900564EE7 /* SLRESTfulCoreData */ = {
-			isa = PBXGroup;
-			children = (
-				A7E0D1A417A8EF6D004BF773 /* SLRESTfulCoreDataObjectCache */,
-				A7AEC89A17492A6900564EE7 /* Framework Additions */,
-				A7AEC8B217492A6900564EE7 /* NSValueTransformers */,
-				A7AEC8BD17492A6900564EE7 /* SLAttributeMapping */,
-				A7AEC8C017492A6900564EE7 /* SLObjectConverter */,
-				A7AEC8C317492A6900564EE7 /* SLObjectDescription */,
-				A7AEC8C617492A6900564EE7 /* SLRESTfulCoreData-Prefix.pch */,
-				A7AEC8C717492A6900564EE7 /* SLRESTfulCoreData.h */,
-				A7AEC8C817492A6900564EE7 /* SLRESTfulCoreData.m */,
-				A7AEC8C917492A6900564EE7 /* SLRESTfulCoreDataBackgroundQueue.h */,
-			);
-			name = SLRESTfulCoreData;
-			path = ../SLRESTfulCoreData/SLRESTfulCoreData;
-			sourceTree = "<group>";
-		};
-		A7AEC89A17492A6900564EE7 /* Framework Additions */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC89B17492A6900564EE7 /* CoreData */,
-				A7AEC8A817492A6900564EE7 /* Foundation */,
-			);
-			path = "Framework Additions";
-			sourceTree = "<group>";
-		};
-		A7AEC89B17492A6900564EE7 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC89C17492A6900564EE7 /* NSManagedObject */,
-				A7AEC8A517492A6900564EE7 /* NSManagedObjectContext */,
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
-		A7AEC89C17492A6900564EE7 /* NSManagedObject */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC89D17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.h */,
-				A7AEC89E17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.m */,
-				A7AEC89F17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.h */,
-				A7AEC8A017492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.m */,
-				A7AEC8A117492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.h */,
-				A7AEC8A217492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m */,
-				A7AEC8A317492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.h */,
-				A7AEC8A417492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.m */,
-			);
-			path = NSManagedObject;
-			sourceTree = "<group>";
-		};
-		A7AEC8A517492A6900564EE7 /* NSManagedObjectContext */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8A617492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.h */,
-				A7AEC8A717492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.m */,
-			);
-			path = NSManagedObjectContext;
-			sourceTree = "<group>";
-		};
-		A7AEC8A817492A6900564EE7 /* Foundation */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8A917492A6900564EE7 /* NSError */,
-				A7AEC8AC17492A6900564EE7 /* NSString */,
-				A7AEC8AF17492A6900564EE7 /* NSURL */,
-			);
-			path = Foundation;
-			sourceTree = "<group>";
-		};
-		A7AEC8A917492A6900564EE7 /* NSError */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8AA17492A6900564EE7 /* NSError+SLRESTfulCoreData.h */,
-				A7AEC8AB17492A6900564EE7 /* NSError+SLRESTfulCoreData.m */,
-			);
-			path = NSError;
-			sourceTree = "<group>";
-		};
-		A7AEC8AC17492A6900564EE7 /* NSString */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8AD17492A6900564EE7 /* NSString+SLRESTfulCoreData.h */,
-				A7AEC8AE17492A6900564EE7 /* NSString+SLRESTfulCoreData.m */,
-			);
-			path = NSString;
-			sourceTree = "<group>";
-		};
-		A7AEC8AF17492A6900564EE7 /* NSURL */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8B017492A6900564EE7 /* NSURL+SLRESTfulCoreData.h */,
-				A7AEC8B117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m */,
-			);
-			path = NSURL;
-			sourceTree = "<group>";
-		};
-		A7AEC8B217492A6900564EE7 /* NSValueTransformers */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8B317492A6900564EE7 /* SLBlockValueTransformer.h */,
-				A7AEC8B417492A6900564EE7 /* SLBlockValueTransformer.m */,
-				A7AEC8B517492A6900564EE7 /* SLIdentityValueTransformer.h */,
-				A7AEC8B617492A6900564EE7 /* SLIdentityValueTransformer.m */,
-				A7AEC8B717492A6900564EE7 /* SLJSONStringValueTransformer.h */,
-				A7AEC8B817492A6900564EE7 /* SLJSONStringValueTransformer.m */,
-				A7AEC8B917492A6900564EE7 /* SLNSURLValueTransformer.h */,
-				A7AEC8BA17492A6900564EE7 /* SLNSURLValueTransformer.m */,
-				A7AEC8BB17492A6900564EE7 /* SLRGBHexStringValueTransformer.h */,
-				A7AEC8BC17492A6900564EE7 /* SLRGBHexStringValueTransformer.m */,
-			);
-			path = NSValueTransformers;
-			sourceTree = "<group>";
-		};
-		A7AEC8BD17492A6900564EE7 /* SLAttributeMapping */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8BE17492A6900564EE7 /* SLAttributeMapping.h */,
-				A7AEC8BF17492A6900564EE7 /* SLAttributeMapping.m */,
-			);
-			path = SLAttributeMapping;
-			sourceTree = "<group>";
-		};
-		A7AEC8C017492A6900564EE7 /* SLObjectConverter */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8C117492A6900564EE7 /* SLObjectConverter.h */,
-				A7AEC8C217492A6900564EE7 /* SLObjectConverter.m */,
-			);
-			path = SLObjectConverter;
-			sourceTree = "<group>";
-		};
-		A7AEC8C317492A6900564EE7 /* SLObjectDescription */ = {
-			isa = PBXGroup;
-			children = (
-				A7AEC8C417492A6900564EE7 /* SLObjectDescription.h */,
-				A7AEC8C517492A6900564EE7 /* SLObjectDescription.m */,
-			);
-			path = SLObjectDescription;
-			sourceTree = "<group>";
-		};
-		A7E0D1A417A8EF6D004BF773 /* SLRESTfulCoreDataObjectCache */ = {
-			isa = PBXGroup;
-			children = (
-				A7E0D1A517A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.h */,
-				A7E0D1A617A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m */,
-			);
-			path = SLRESTfulCoreDataObjectCache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -447,25 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7AEC8CA17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreData.m in Sources */,
-				A7AEC8CB17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataHelpers.m in Sources */,
-				A7AEC8CC17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataQueryInterface.m in Sources */,
-				A7AEC8CD17492A6900564EE7 /* NSManagedObject+SLRESTfulCoreDataSetup.m in Sources */,
-				A7AEC8CE17492A6900564EE7 /* NSManagedObjectContext+SLRESTfulCoreData.m in Sources */,
-				A7AEC8CF17492A6900564EE7 /* NSError+SLRESTfulCoreData.m in Sources */,
-				A7AEC8D017492A6900564EE7 /* NSString+SLRESTfulCoreData.m in Sources */,
-				A7AEC8D117492A6900564EE7 /* NSURL+SLRESTfulCoreData.m in Sources */,
-				A7AEC8D217492A6900564EE7 /* SLBlockValueTransformer.m in Sources */,
 				A7E0D1AA17A8F3D4004BF773 /* SLRESTfulCoreDataObjectCacheTests.m in Sources */,
-				A7AEC8D317492A6900564EE7 /* SLIdentityValueTransformer.m in Sources */,
-				A7AEC8D417492A6900564EE7 /* SLJSONStringValueTransformer.m in Sources */,
-				A7AEC8D517492A6900564EE7 /* SLNSURLValueTransformer.m in Sources */,
-				A7AEC8D617492A6900564EE7 /* SLRGBHexStringValueTransformer.m in Sources */,
-				A7E0D1A717A8EF8B004BF773 /* SLRESTfulCoreDataObjectCache.m in Sources */,
-				A7AEC8D717492A6900564EE7 /* SLAttributeMapping.m in Sources */,
-				A7AEC8D817492A6900564EE7 /* SLObjectConverter.m in Sources */,
-				A7AEC8D917492A6900564EE7 /* SLObjectDescription.m in Sources */,
-				A7AEC8DA17492A6900564EE7 /* SLRESTfulCoreData.m in Sources */,
 				A721A509174A071300B2D9D4 /* SLAttributeMappingTests.m in Sources */,
 				A721A511174A0A5900B2D9D4 /* TestDataStore.xcdatamodeld in Sources */,
 				A721A514174A0A8400B2D9D4 /* SLRESTfulCoreDataTests.m in Sources */,
