@@ -20,33 +20,33 @@ PODS:
   - AFNetworking/UIKit (2.0.2):
     - AFNetworking/NSURLConnection
   - Expecta (0.2.3)
-  - OCMock (2.2)
-  - SLCoreDataStack (0.2.0)
-  - SLRESTfulCoreData (1.3.7):
+  - OCMock (2.2.1)
+  - SLCoreDataStack (0.4.3)
+  - SLRESTfulCoreData (1.4.0):
     - SLRESTfulCoreData/Complete
-  - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue (1.3.7)
-  - SLRESTfulCoreData/Complete (1.3.7):
+  - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue (1.4.0)
+  - SLRESTfulCoreData/Complete (1.4.0):
     - AFNetworking (~> 2.0)
     - SLCoreDataStack (>= 0.2.0)
     - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue
     - SLRESTfulCoreData/Core
-  - SLRESTfulCoreData/Core (1.3.7)
+  - SLRESTfulCoreData/Core (1.4.0)
 
 DEPENDENCIES:
   - Expecta (>= 0.2.2)
   - OCMock (>= 2.2)
   - SLCoreDataStack (>= 0.2.0)
-  - SLRESTfulCoreData (from `../SLRESTfulCoreData.podspec`)
+  - SLRESTfulCoreData (from `..`)
 
 EXTERNAL SOURCES:
   SLRESTfulCoreData:
-    :path: ../SLRESTfulCoreData.podspec
+    :path: ..
 
 SPEC CHECKSUMS:
   AFNetworking: 22de50ae71ab1c4859773f61068d6fcd1d8f9a4d
   Expecta: dbc4a27fabb853bdd2e907e33f11ee43a9a47d0c
-  OCMock: 5300ae6b75398fc3ae6cbf9102191333d35f6852
-  SLCoreDataStack: 6c65e4f829f32ff3bb596fc01709ec83716932a6
-  SLRESTfulCoreData: 63cd95fafdcf422ea66709a5308e5a85b57995e5
+  OCMock: 80e4cfbc71a0e1bd28caf10a9fda27da7c4c8402
+  SLCoreDataStack: 2a14bcf2c87102bab2851c958fe545253833ad10
+  SLRESTfulCoreData: 9636a7b4046d636430033555ba370f2c311e7bd8
 
 COCOAPODS: 0.27.1
