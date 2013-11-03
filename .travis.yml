@@ -1,8 +1,8 @@
 language: objective-c
 before_install:
     - brew update
-    - brew uninstall xctool && brew install https://raw.github.com/fpotter/homebrew/246a1439dab49542d4531ad7e1bac7048151f601/Library/Formula/xctool.rb
-    - gem install cocoapods -v 0.22.2
+    - brew uninstall xctool && brew install xctool
+    - gem install cocoapods
     - pod repo add sparrow-labs https://github.com/Sparrow-Labs/Specs.git
     - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
     # - mkdir -p "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/SLRESTfulCoreData.xcodeproj/xcshareddata/xcschemes/"
