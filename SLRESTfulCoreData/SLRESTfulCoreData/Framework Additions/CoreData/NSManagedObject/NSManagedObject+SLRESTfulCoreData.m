@@ -158,6 +158,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 
 - (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
 {
+    if (!self.managedObjectContext) {
+        return;
+    }
+    
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     NSDictionary *attributesByName = [entityDescription attributesByName];
