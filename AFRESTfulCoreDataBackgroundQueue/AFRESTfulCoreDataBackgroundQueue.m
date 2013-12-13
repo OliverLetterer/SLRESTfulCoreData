@@ -70,7 +70,8 @@
 - (void)getRequestToURL:(NSURL *)URL
       completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
 {
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:nil];
+    NSString *URLString = URL.absoluteString;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
     
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
@@ -88,7 +89,8 @@
 - (void)deleteRequestToURL:(NSURL *)URL
          completionHandler:(void(^)(NSError *error))completionHandler
 {
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:URL.absoluteString parameters:nil];
+    NSString *URLString = URL.absoluteString;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
     
     NSDictionary *JSONObject = @{};
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:NULL];
@@ -123,7 +125,8 @@
 {
     JSONObject = JSONObject ?: @{};
     
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:URL.absoluteString parameters:nil];
+    NSString *URLString = URL.absoluteString;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
     
     NSError *error = nil;
     NSData *JSONData = [NSData data];
@@ -164,7 +167,8 @@
 {
     JSONObject = JSONObject ?: @{};
     
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:URL.absoluteString parameters:nil];
+    NSString *URLString = URL.absoluteString;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
     
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
