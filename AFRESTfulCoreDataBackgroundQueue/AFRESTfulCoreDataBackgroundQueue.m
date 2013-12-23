@@ -38,10 +38,10 @@
     if (self = [super initWithBaseURL:url]) {
         self.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:0];
         self.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:0];
-        
-        [self.requestSerializer setValue:@"Accept" forHTTPHeaderField:@"application/json"];
-        [self.requestSerializer setValue:@"Content-Type" forHTTPHeaderField:@"application/json"];
-        
+
+        [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+
         self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     }
     return self;
@@ -52,18 +52,18 @@
 + (id<SLRESTfulCoreDataBackgroundQueue>)sharedQueue
 {
     NSAssert([self class] != [AFRESTfulCoreDataBackgroundQueue sharedQueue], @"AFRESTfulCoreDataBackgroundQueue is an abstract superclass. You need to subclass this class and implement +[YouSubclass sharedInstance].");
-    
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
-    
+
     if (class_respondsToSelector(objc_getMetaClass(class_getName([self class])), @selector(sharedInstance))) {
         return ((id(*)(id, SEL))objc_msgSend)([self class], @selector(sharedInstance));
     }
-    
+
 #pragma clang diagnostic pop
-    
+
     [NSException raise:NSInternalInconsistencyException format:@"You need to implement +[%@ sharedInstance] and return a singleton instance there in order for AFRESTfulCoreDataBackgroundQueue to work.", NSStringFromClass(self)];
-    
+
     return nil;
 }
 
@@ -72,7 +72,7 @@
 {
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
-    
+
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
             completionHandler(responseObject, nil);
@@ -82,7 +82,7 @@
             completionHandler(nil, error);
         }
     }];
-    
+
     [self.operationQueue addOperation:requestOperation];
 }
 
@@ -91,13 +91,13 @@
 {
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
-    
+
     NSDictionary *JSONObject = @{};
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:NULL];
-    
+
     [request setHTTPBody:JSONData];
     [request setValue:[NSString stringWithFormat:@"%d", JSONData.length] forHTTPHeaderField:@"Content-Length"];
-    
+
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
             completionHandler(nil);
@@ -107,7 +107,7 @@
             completionHandler(error);
         }
     }];
-    
+
     [self.operationQueue addOperation:requestOperation];
 }
 
@@ -124,17 +124,17 @@
      completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
 {
     JSONObject = JSONObject ?: @{};
-    
+
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
-    
+
     NSError *error = nil;
     NSData *JSONData = [NSData data];
-    
+
     if (JSONObject) {
         JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
     }
-    
+
     if (error) {
         if (completionHandler) {
             completionHandler(nil, error);
@@ -142,11 +142,11 @@
     } else {
         [request setHTTPBody:JSONData];
         [request setValue:[NSString stringWithFormat:@"%d", JSONData.length] forHTTPHeaderField:@"Content-Length"];
-        
+
         if (setupHandler) {
             setupHandler(request);
         }
-        
+
         AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
             if (completionHandler) {
                 completionHandler(responseObject, nil);
@@ -156,7 +156,7 @@
                 completionHandler(nil, error);
             }
         }];
-        
+
         [self.operationQueue addOperation:requestOperation];
     }
 }
@@ -166,20 +166,20 @@
     completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
 {
     JSONObject = JSONObject ?: @{};
-    
+
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
-    
+
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
-    
+
     if (error) {
         if (completionHandler) {
             completionHandler(nil, error);
         }
     } else {
         [request setHTTPBody:JSONData];
-        
+
         AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
             if (completionHandler) {
                 completionHandler(responseObject, nil);
@@ -189,7 +189,7 @@
                 completionHandler(nil, error);
             }
         }];
-        
+
         [self.operationQueue addOperation:requestOperation];
     }
 }
