@@ -125,7 +125,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     SLAttributeMapping *attributeMapping = [self attributeMapping];
     SLObjectConverter *objectConverter = [self objectConverter];
     
-    if (![rawDictionary isKindOfClass:NSDictionary.class]) {
+    if (![rawDictionary isKindOfClass:[NSDictionary class]]) {
         NSLog(@"WARNING: JSON Object is not a NSDictionary (%@)", rawDictionary);
         return nil;
     }
@@ -400,12 +400,11 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
     
     // update attributes based in relationship type
     if (relationshipDescription.isToMany) {
-        // is a 1-to-many relation
-        if (![JSONObject isKindOfClass:NSArray.class]) {
-            // make sure JSONObject has correct class
+        if (![JSONObject isKindOfClass:[NSArray class]]) {
             *error = [NSError SLRESTfulCoreDataErrorBecauseBackgroundQueueReturnedUnexpectedJSONObject:JSONObject fromURL:URL];
             return nil;
         }
+
         NSArray *JSONObjectsArray = JSONObject;
         
         // grab each unique identifier from JSONObjectsArray
@@ -466,7 +465,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             }
         }
     } else {
-        if (![JSONObject isKindOfClass:NSDictionary.class]) {
+        if (![JSONObject isKindOfClass:[NSDictionary class]]) {
             // make sure JSONObject has correct class
             *error = [NSError SLRESTfulCoreDataErrorBecauseBackgroundQueueReturnedUnexpectedJSONObject:JSONObject fromURL:URL];
             return nil;

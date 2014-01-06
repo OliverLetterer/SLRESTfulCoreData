@@ -125,6 +125,15 @@
 + (void)registerTimezone:(NSTimeZone *)timezone;
 
 /**
+ If the API returns objects in the form of
+ /v1/user:  {`user`: {} }
+ /v1/users: {`users`: [ {}, {}, ... ] }
+ register a json prefix for case one and a pluralized json prefix for case two.
+ */
++ (void)registerJSONPrefix:(NSString *)jsonPrefix;
++ (void)registerPluralizedJSONPrefix:(NSString *)jsonPrefix;
+
+/**
  relationshipUpdateLevel specifies, how deep any object update should look for contained relationships. A value smaller or equal to zero is equivilant to no relationship updates. Default is NSIntergerMax
  */
 + (void)setRelationshipUpdateLevel:(NSInteger)relationshipUpdateLevel;

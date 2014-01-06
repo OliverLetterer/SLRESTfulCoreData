@@ -73,9 +73,13 @@
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
 
+    NSString *key = [self _responseObjectTransformerKey];
+    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
+    [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
-            completionHandler(responseObject, nil);
+            completionHandler(responseObjectTransformer ? responseObjectTransformer(responseObject) : responseObject, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completionHandler) {
@@ -135,6 +139,10 @@
         JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
     }
 
+    NSString *key = [self _responseObjectTransformerKey];
+    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
+    [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
     if (error) {
         if (completionHandler) {
             completionHandler(nil, error);
@@ -149,7 +157,7 @@
 
         AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
             if (completionHandler) {
-                completionHandler(responseObject, nil);
+                completionHandler(responseObjectTransformer ? responseObjectTransformer(responseObject) : responseObject, nil);
             }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (completionHandler) {
@@ -173,6 +181,10 @@
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
 
+    NSString *key = [self _responseObjectTransformerKey];
+    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
+    [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
     if (error) {
         if (completionHandler) {
             completionHandler(nil, error);
@@ -182,7 +194,7 @@
 
         AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
             if (completionHandler) {
-                completionHandler(responseObject, nil);
+                completionHandler(responseObjectTransformer ? responseObjectTransformer(responseObject) : responseObject, nil);
             }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (completionHandler) {
@@ -192,6 +204,24 @@
 
         [self.operationQueue addOperation:requestOperation];
     }
+}
+
+- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)responseObjectTransformer
+{
+    NSParameterAssert(responseObjectTransformer);
+
+    NSString *key = [self _responseObjectTransformerKey];
+
+    if (![NSThread currentThread].threadDictionary[key]) {
+        [NSThread currentThread].threadDictionary[key] = responseObjectTransformer;
+    }
+}
+
+#pragma mark - Private method implementation ()
+
+- (NSString *)_responseObjectTransformerKey
+{
+    return [NSString stringWithFormat:@"%@ResponseObjectTransformerKey", NSStringFromClass(self.class)];
 }
 
 @end

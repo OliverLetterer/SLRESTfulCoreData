@@ -99,24 +99,70 @@ static id backgroundQueue;
 - (void)testThatQueryInterfaceFetchesSingleObject
 {
     backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
-    
+
     NSURL *URL = [NSURL URLWithString:@"/path"];
     __block SLEntity6 *fetchedEntity = nil;
-    
+
     void(^getRequestImplementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
         void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
         [invocation getArgument:&completionHandler atIndex:3];
-        
+
         completionHandler(@{@"id": @5, @"name": @"oli"}, nil);
     };
-    
+
     [[[backgroundQueue stub] andDo:getRequestImplementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
     [SLEntity6 fetchObjectFromURL:URL completionHandler:^(id fetchedObject, NSError *error) {
         fetchedEntity = fetchedObject;
     }];
-    
+
     expect(fetchedEntity).willNot.beNil();
+
+    expect(fetchedEntity.class).to.equal([SLEntity6 class]);
+    expect(fetchedEntity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
+    expect(fetchedEntity.identifier).to.equal(5);
+    expect(fetchedEntity.name).to.equal(@"oli");
+}
+
+- (void)testThatQueryInterfaceFetchesSingleObjectWithJSONPrefix
+{
+    backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
+
+    NSURL *URL = [NSURL URLWithString:@"/path"];
+    __block SLEntity6 *fetchedEntity = nil;
+
+    void(^getRequestImplementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
+        void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
+        [invocation getArgument:&completionHandler atIndex:3];
+
+        NSDictionary *result = @{ @"entity": @{@"id": @5, @"name": @"oli"} };
+
+        NSString *key = nil;
+
+        for (NSString *threadKey in [NSThread currentThread].threadDictionary) {
+            if ([threadKey hasPrefix:NSStringFromClass([SLTestBackgroundQueue class])]) {
+                key = threadKey;
+                break;
+            }
+        }
+        SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        completionHandler(transformer(result), nil);
+    };
+
+    [[[backgroundQueue stub] andDo:getRequestImplementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+    [SLEntity6 registerJSONPrefix:@"entity"];
+    [SLEntity6 registerPluralizedJSONPrefix:@"entities"];
     
+    [SLEntity6 fetchObjectFromURL:URL completionHandler:^(id fetchedObject, NSError *error) {
+        fetchedEntity = fetchedObject;
+    }];
+
+    [SLEntity6 registerJSONPrefix:nil];
+    [SLEntity6 registerPluralizedJSONPrefix:nil];
+
+    expect(fetchedEntity).willNot.beNil();
+
     expect(fetchedEntity.class).to.equal([SLEntity6 class]);
     expect(fetchedEntity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
     expect(fetchedEntity.identifier).to.equal(5);
@@ -156,27 +202,75 @@ static id backgroundQueue;
 - (void)testThatQueryInterfaceFetchesMultipleObjectsWithAPIReturningAnArray
 {
     backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
-    
+
     NSURL *URL = [NSURL URLWithString:@"/path"];
     __block NSArray *fetchedEntities = nil;
-    
+
     void(^getRequestImplementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
         void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
         [invocation getArgument:&completionHandler atIndex:3];
-        
+
         completionHandler(@[ @{@"id": @5, @"name": @"oli"} ], nil);
     };
-    
+
     [[[backgroundQueue stub] andDo:getRequestImplementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
     [SLEntity6 fetchObjectsFromURL:URL completionHandler:^(NSArray *fetchedObjects, NSError *error) {
         fetchedEntities = fetchedObjects;
     }];
-    
+
     expect(fetchedEntities).willNot.beNil();
     expect(fetchedEntities.count).to.equal(1);
-    
+
     SLEntity6 *entity = fetchedEntities[0];
-    
+
+    expect(entity.class).to.equal([SLEntity6 class]);
+    expect(entity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
+    expect(entity.identifier).to.equal(5);
+    expect(entity.name).to.equal(@"oli");
+}
+
+- (void)testThatQueryInterfaceFetchesMultipleObjectsWithAPIReturningAnArrayWithJSONPrefix
+{
+    backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
+
+    NSURL *URL = [NSURL URLWithString:@"/path"];
+    __block NSArray *fetchedEntities = nil;
+
+    void(^getRequestImplementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
+        void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
+        [invocation getArgument:&completionHandler atIndex:3];
+
+        NSDictionary *result = @{ @"entities": @[ @{@"id": @5, @"name": @"oli"} ] };
+        NSString *key = nil;
+
+        for (NSString *threadKey in [NSThread currentThread].threadDictionary) {
+            if ([threadKey hasPrefix:NSStringFromClass([SLTestBackgroundQueue class])]) {
+                key = threadKey;
+                break;
+            }
+        }
+        SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        completionHandler(transformer(result), nil);
+    };
+
+    [[[backgroundQueue stub] andDo:getRequestImplementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+    [SLEntity6 registerJSONPrefix:@"entity"];
+    [SLEntity6 registerPluralizedJSONPrefix:@"entities"];
+
+    [SLEntity6 fetchObjectsFromURL:URL completionHandler:^(NSArray *fetchedObjects, NSError *error) {
+        fetchedEntities = fetchedObjects;
+    }];
+
+    [SLEntity6 registerJSONPrefix:nil];
+    [SLEntity6 registerPluralizedJSONPrefix:nil];
+
+    expect(fetchedEntities).willNot.beNil();
+    expect(fetchedEntities.count).to.equal(1);
+
+    SLEntity6 *entity = fetchedEntities[0];
+
     expect(entity.class).to.equal([SLEntity6 class]);
     expect(entity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
     expect(entity.identifier).to.equal(5);

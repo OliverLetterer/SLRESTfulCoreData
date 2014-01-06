@@ -135,6 +135,16 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
     [self objectConverter].timeZone = timezone;
 }
 
++ (void)registerJSONPrefix:(NSString *)jsonPrefix
+{
+    [self objectDescription].jsonPrefix = jsonPrefix;
+}
+
++ (void)registerPluralizedJSONPrefix:(NSString *)jsonPrefix
+{
+    [self objectDescription].pluralizedJSONPrefix = jsonPrefix;
+}
+
 + (void)setRelationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
 {
     [self objectDescription].relationshipUpdateLevel = relationshipUpdateLevel;

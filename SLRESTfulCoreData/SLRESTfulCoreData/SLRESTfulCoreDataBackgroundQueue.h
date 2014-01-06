@@ -28,6 +28,8 @@
 
 
 
+typedef id(^SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)(id object);
+
 @protocol SLRESTfulCoreDataBackgroundQueue <NSObject>
 
 + (id<SLRESTfulCoreDataBackgroundQueue>)sharedQueue;
@@ -48,5 +50,9 @@
 - (void)putJSONObject:(id)JSONObject
                 toURL:(NSURL *)URL
     completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler;
+
+
+@optional
+- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)responseObjectTransformer;
 
 @end

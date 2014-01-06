@@ -286,6 +286,17 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 + (void)fetchObjectFromURL:(NSURL *)URL
          completionHandler:(void(^)(id fetchedObject, NSError *error))completionHandler
 {
+    NSString *jsonPrefix = [self objectDescription].jsonPrefix;
+    if (jsonPrefix) {
+        [[self backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                return object[jsonPrefix];
+            }
+
+            return object;
+        }];
+    }
+
     [self fetchObjectsFromURL:URL deleteEveryOtherObject:NO completionHandler:^(NSArray *fetchedObjects, NSError *error) {
         if (!completionHandler) {
             return;
@@ -314,7 +325,18 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 {
     // send request to given URL
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
-    
+
+    NSString *pluralizedJSONPrefix = [self objectDescription].pluralizedJSONPrefix;
+    if (pluralizedJSONPrefix) {
+        [[self backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                return object[pluralizedJSONPrefix];
+            }
+
+            return object;
+        }];
+    }
+
     [[self backgroundQueue] getRequestToURL:URL
                           completionHandler:^(id JSONObject, NSError *error)
      {
@@ -431,6 +453,28 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
         NSError *saveError = nil;
         [self.managedObjectContext save:&saveError];
         NSAssert(saveError == nil, @"error while saving: %@", saveError);
+    }
+
+    NSRelationshipDescription *relationshipDescription = self.entity.relationshipsByName[relationship];
+    NSString *pluralizedJSONPrefix = [NSClassFromString(relationshipDescription.destinationEntity.name) objectDescription].pluralizedJSONPrefix;
+    NSString *jsonPrefix = [NSClassFromString(relationshipDescription.destinationEntity.name) objectDescription].pluralizedJSONPrefix;
+
+    if (relationshipDescription.isToMany && pluralizedJSONPrefix) {
+        [[self.class backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                return object[pluralizedJSONPrefix];
+            }
+
+            return object;
+        }];
+    } else if (!relationshipDescription.isToMany && jsonPrefix) {
+        [[self.class backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                return object[pluralizedJSONPrefix];
+            }
+
+            return object;
+        }];
     }
     
     // send request to given URL

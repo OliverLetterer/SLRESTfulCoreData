@@ -8,8 +8,9 @@
 
 #import "SLRESTfulCoreData.h"
 #import "SLCoreDataStack.h"
+#import <AFRESTfulCoreDataBackgroundQueue.h>
 
 
 
 @interface SLTestDataStore : SLCoreDataStack @end
-@interface SLTestBackgroundQueue : NSObject <SLRESTfulCoreDataBackgroundQueue> @end
+@interface SLTestBackgroundQueue : AFRESTfulCoreDataBackgroundQueue @end
