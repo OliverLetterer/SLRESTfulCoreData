@@ -74,7 +74,7 @@
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
 
     NSString *key = [self _responseObjectTransformerKey];
-    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
+    SLRESTfulCoreDataBackgroundQueueObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
     [[NSThread currentThread].threadDictionary removeObjectForKey:key];
 
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -129,6 +129,19 @@
 {
     JSONObject = JSONObject ?: @{};
 
+    SLRESTfulCoreDataBackgroundQueueObjectTransformer requestObjectTransformer = ({
+        NSString *key = [self _requestObjectTransformerKey];
+
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer objectTransformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        objectTransformer;
+    });
+
+    if (requestObjectTransformer) {
+        JSONObject = requestObjectTransformer(JSONObject);
+    }
+
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
 
@@ -140,7 +153,7 @@
     }
 
     NSString *key = [self _responseObjectTransformerKey];
-    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
+    SLRESTfulCoreDataBackgroundQueueObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
     [[NSThread currentThread].threadDictionary removeObjectForKey:key];
 
     if (error) {
@@ -175,15 +188,33 @@
 {
     JSONObject = JSONObject ?: @{};
 
+    SLRESTfulCoreDataBackgroundQueueObjectTransformer requestObjectTransformer = ({
+        NSString *key = [self _requestObjectTransformerKey];
+
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer objectTransformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        objectTransformer;
+    });
+
+    if (requestObjectTransformer) {
+        JSONObject = requestObjectTransformer(JSONObject);
+    }
+
     NSString *URLString = URL.absoluteString;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil];
 
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
 
-    NSString *key = [self _responseObjectTransformerKey];
-    SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer responseObjectTransformer = [NSThread currentThread].threadDictionary[key];
-    [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+    SLRESTfulCoreDataBackgroundQueueObjectTransformer responseObjectTransformer = ({
+        NSString *key = [self _responseObjectTransformerKey];
+
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer objectTransformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        objectTransformer;
+    });
 
     if (error) {
         if (completionHandler) {
@@ -206,7 +237,7 @@
     }
 }
 
-- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)responseObjectTransformer
+- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueObjectTransformer)responseObjectTransformer
 {
     NSParameterAssert(responseObjectTransformer);
 
@@ -217,11 +248,27 @@
     }
 }
 
+- (void)registerRequestObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueObjectTransformer)requestObjectTransformer
+{
+    NSParameterAssert(requestObjectTransformer);
+
+    NSString *key = [self _requestObjectTransformerKey];
+
+    if (![NSThread currentThread].threadDictionary[key]) {
+        [NSThread currentThread].threadDictionary[key] = requestObjectTransformer;
+    }
+}
+
 #pragma mark - Private method implementation ()
 
 - (NSString *)_responseObjectTransformerKey
 {
     return [NSString stringWithFormat:@"%@ResponseObjectTransformerKey", NSStringFromClass(self.class)];
+}
+
+- (NSString *)_requestObjectTransformerKey
+{
+    return [NSString stringWithFormat:@"%@RequestObjectTransformerKey", NSStringFromClass(self.class)];
 }
 
 @end

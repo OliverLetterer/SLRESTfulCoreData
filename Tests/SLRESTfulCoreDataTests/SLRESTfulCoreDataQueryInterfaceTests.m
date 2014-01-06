@@ -144,7 +144,7 @@ static id backgroundQueue;
                 break;
             }
         }
-        SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
         [[NSThread currentThread].threadDictionary removeObjectForKey:key];
 
         completionHandler(transformer(result), nil);
@@ -249,7 +249,7 @@ static id backgroundQueue;
                 break;
             }
         }
-        SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
         [[NSThread currentThread].threadDictionary removeObjectForKey:key];
 
         completionHandler(transformer(result), nil);
@@ -317,74 +317,158 @@ static id backgroundQueue;
 - (void)testThatQueryInterfaceFetchesPOSTsToURL
 {
     backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
-    
+
     NSURL *URL = [NSURL URLWithString:@"/path"];
     __block NSDictionary *postDictionary = nil;
     NSDictionary *expectedDictionary = @{ @"id": @5, @"name": @"oli" };
-    
+
     void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
         __unsafe_unretained NSDictionary *dictionary = nil;
         void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
-        
+
         [invocation getArgument:&dictionary atIndex:2];
         [invocation getArgument:&completionHandler atIndex:4];
-        
+
         postDictionary = dictionary;
         completionHandler(@{@"id": @5, @"name": @"new_name"}, nil);
     };
-    
+
     [[[backgroundQueue stub] andDo:implementation] postJSONObject:OCMOCK_ANY toURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
-    
+
     SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
     entity.identifier = @5;
     entity.name = @"oli";
-    
+
     __block SLEntity6 *newEntity = nil;
-    
+
     [entity postToURL:URL completionHandler:^(id JSONObject, NSError *error) {
         newEntity = JSONObject;
     }];
-    
+
     expect(newEntity).willNot.beNil();
     expect(newEntity == entity).to.beTruthy();
     expect(newEntity.name).to.equal(@"new_name");
     expect(postDictionary).to.equal(expectedDictionary);
 }
 
-- (void)testThatQueryInterfacePUTsToURL
+- (void)testThatQueryInterfaceFetchesPOSTsToURLWithJSONPrefix
 {
     backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
-    
+
     NSURL *URL = [NSURL URLWithString:@"/path"];
-    __block NSDictionary *putDictionary = nil;
-    NSDictionary *expectedDictionary = @{ @"id": @5, @"name": @"oli" };
-    
+    __block NSDictionary *postDictionary = nil;
+    NSDictionary *expectedDictionary = @{ @"entity": @{ @"id": @5, @"name": @"oli" } };
+
     void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
         __unsafe_unretained NSDictionary *dictionary = nil;
         void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
-        
+
         [invocation getArgument:&dictionary atIndex:2];
         [invocation getArgument:&completionHandler atIndex:4];
-        
-        putDictionary = dictionary;
+
+        NSString *key = nil;
+        for (NSString *threadKey in [NSThread currentThread].threadDictionary) {
+            if ([threadKey hasPrefix:NSStringFromClass([SLTestBackgroundQueue class])]) {
+                key = threadKey;
+                break;
+            }
+        }
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        postDictionary = transformer(dictionary);
         completionHandler(@{@"id": @5, @"name": @"new_name"}, nil);
     };
-    
-    [[[backgroundQueue stub] andDo:implementation] putJSONObject:OCMOCK_ANY toURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
-    
+
+    [[[backgroundQueue stub] andDo:implementation] postJSONObject:OCMOCK_ANY toURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+
     SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
     entity.identifier = @5;
     entity.name = @"oli";
-    
+
+    [SLEntity6 registerJSONPrefix:@"entity"];
+    [entity postToURL:URL completionHandler:NULL];
+    [SLEntity6 registerJSONPrefix:nil];
+
+    expect(postDictionary).to.equal(expectedDictionary);
+}
+
+- (void)testThatQueryInterfacePUTsToURL
+{
+    backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
+
+    NSURL *URL = [NSURL URLWithString:@"/path"];
+    __block NSDictionary *putDictionary = nil;
+    NSDictionary *expectedDictionary = @{ @"id": @5, @"name": @"oli" };
+
+    void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
+        __unsafe_unretained NSDictionary *dictionary = nil;
+        void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
+
+        [invocation getArgument:&dictionary atIndex:2];
+        [invocation getArgument:&completionHandler atIndex:4];
+
+        putDictionary = dictionary;
+        completionHandler(@{@"id": @5, @"name": @"new_name"}, nil);
+    };
+
+    [[[backgroundQueue stub] andDo:implementation] putJSONObject:OCMOCK_ANY toURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+
+    SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    entity.identifier = @5;
+    entity.name = @"oli";
+
     __block SLEntity6 *newEntity = nil;
-    
+
     [entity putToURL:URL completionHandler:^(id JSONObject, NSError *error) {
         newEntity = JSONObject;
     }];
-    
+
     expect(newEntity).willNot.beNil();
     expect(newEntity == entity).to.beTruthy();
     expect(newEntity.name).to.equal(@"new_name");
+    expect(putDictionary).to.equal(expectedDictionary);
+}
+
+- (void)testThatQueryInterfacePUTsToURLWithJSONPrefix
+{
+    backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
+
+    NSURL *URL = [NSURL URLWithString:@"/path"];
+    __block NSDictionary *putDictionary = nil;
+    NSDictionary *expectedDictionary = @{ @"entity": @{ @"id": @5, @"name": @"oli" } };
+
+    void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
+        __unsafe_unretained NSDictionary *dictionary = nil;
+        void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
+
+        [invocation getArgument:&dictionary atIndex:2];
+        [invocation getArgument:&completionHandler atIndex:4];
+
+        NSString *key = nil;
+        for (NSString *threadKey in [NSThread currentThread].threadDictionary) {
+            if ([threadKey hasPrefix:NSStringFromClass([SLTestBackgroundQueue class])]) {
+                key = threadKey;
+                break;
+            }
+        }
+        SLRESTfulCoreDataBackgroundQueueObjectTransformer transformer = [NSThread currentThread].threadDictionary[key];
+        [[NSThread currentThread].threadDictionary removeObjectForKey:key];
+
+        putDictionary = transformer(dictionary);
+        completionHandler(@{@"id": @5, @"name": @"new_name"}, nil);
+    };
+
+    [[[backgroundQueue stub] andDo:implementation] putJSONObject:OCMOCK_ANY toURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+
+    SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    entity.identifier = @5;
+    entity.name = @"oli";
+
+    [SLEntity6 registerJSONPrefix:@"entity"];
+    [entity putToURL:URL completionHandler:NULL];
+    [SLEntity6 registerJSONPrefix:nil];
+
     expect(putDictionary).to.equal(expectedDictionary);
 }
 

@@ -530,6 +530,13 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     NSDictionary *rawJSONDictionary = self.rawJSONDictionary;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
+
+    NSString *jsonPrefix = [NSClassFromString(self.entity.name) objectDescription].jsonPrefix;
+    if (jsonPrefix) {
+        [[self.class backgroundQueue] registerRequestObjectTransformerForNextRequest:^id(id object) {
+            return @{ jsonPrefix: object };
+        }];
+    }
     
     [[self.class backgroundQueue] postJSONObject:rawJSONDictionary
                                            toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
@@ -575,7 +582,14 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     NSDictionary *rawJSONDictionary = self.rawJSONDictionary;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SLRESTfulCoreDataRemoteOperationDidStartNotification object:nil];
-    
+
+    NSString *jsonPrefix = [NSClassFromString(self.entity.name) objectDescription].jsonPrefix;
+    if (jsonPrefix) {
+        [[self.class backgroundQueue] registerRequestObjectTransformerForNextRequest:^id(id object) {
+            return @{ jsonPrefix: object };
+        }];
+    }
+
     [[self.class backgroundQueue] putJSONObject:rawJSONDictionary
                                           toURL:[URL URLBySubstitutingAttributesWithManagedObject:self]
                               completionHandler:^(id JSONObject, NSError *error) {

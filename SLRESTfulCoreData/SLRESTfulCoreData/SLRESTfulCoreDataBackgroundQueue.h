@@ -28,7 +28,7 @@
 
 
 
-typedef id(^SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)(id object);
+typedef id(^SLRESTfulCoreDataBackgroundQueueObjectTransformer)(id object);
 
 @protocol SLRESTfulCoreDataBackgroundQueue <NSObject>
 
@@ -53,6 +53,7 @@ typedef id(^SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)(id object
 
 
 @optional
-- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueResponseObjectTransformer)responseObjectTransformer;
+- (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueObjectTransformer)responseObjectTransformer;
+- (void)registerRequestObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueObjectTransformer)responseObjectTransformer;
 
 @end

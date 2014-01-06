@@ -433,11 +433,11 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
     dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    
+
     NSDate *now = [NSDate date];
     NSString *stringValue = [dateFormatter stringFromDate:now];
     now = [dateFormatter dateFromString:stringValue];
-    
+
     SLEntity5 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity5 class])
                                                       inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
     entity.identifier = @1;
@@ -445,13 +445,13 @@
     entity.date = now;
     entity.floatNumber = @3.5f;
     entity.dictionary = @{ @"key": @"value" };
-    
+
     NSError *saveError = nil;
     [[SLTestDataStore sharedInstance].mainThreadManagedObjectContext save:&saveError];
     NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
-    
-    
-    
+
+
+
     NSDictionary *dictionary = @{
                                  @"id": @1,
                                  @"float_number": @3.5f,
@@ -459,7 +459,7 @@
                                  @"date": stringValue,
                                  @"dictionary": @{ @"key": @"value" }
                                  };
-    
+
     expect(entity.rawJSONDictionary).to.equal(dictionary);
 }
 
