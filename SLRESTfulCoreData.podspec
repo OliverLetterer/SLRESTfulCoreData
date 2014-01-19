@@ -19,7 +19,7 @@ Pod::Spec.new do |spec|
   spec.subspec 'AFRESTfulCoreDataBackgroundQueue' do |sp|
     sp.source_files = 'AFRESTfulCoreDataBackgroundQueue/*.{h,m}'
     sp.dependency 'SLRESTfulCoreData/Core'
-    sp.dependency 'AFNetworking', '~> 2.0'
+    sp.dependency 'AFNetworking', '~> 2.1'
 
 	sp.prefix_header_contents = <<-EOS
 	#import <Availability.h>
@@ -42,7 +42,7 @@ Pod::Spec.new do |spec|
     sp.dependency 'SLRESTfulCoreData/Core'
     sp.dependency 'SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue'
 
-    sp.dependency 'AFNetworking', '~> 2.0'
+    sp.dependency 'AFNetworking', '~> 2.1'
     sp.dependency 'SLCoreDataStack', '>= 0.2.0'
   end
 end
