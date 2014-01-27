@@ -457,7 +457,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 
     NSRelationshipDescription *relationshipDescription = self.entity.relationshipsByName[relationship];
     NSString *pluralizedJSONPrefix = [NSClassFromString(relationshipDescription.destinationEntity.name) objectDescription].pluralizedJSONPrefix;
-    NSString *jsonPrefix = [NSClassFromString(relationshipDescription.destinationEntity.name) objectDescription].pluralizedJSONPrefix;
+    NSString *jsonPrefix = [NSClassFromString(relationshipDescription.destinationEntity.name) objectDescription].jsonPrefix;
 
     if (relationshipDescription.isToMany && pluralizedJSONPrefix) {
         [[self.class backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
@@ -470,7 +470,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     } else if (!relationshipDescription.isToMany && jsonPrefix) {
         [[self.class backgroundQueue] registerResponseObjectTransformerForNextRequest:^id(NSDictionary *object) {
             if ([object isKindOfClass:[NSDictionary class]]) {
-                return object[pluralizedJSONPrefix];
+                return object[jsonPrefix];
             }
 
             return object;
