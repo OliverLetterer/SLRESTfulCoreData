@@ -3,7 +3,7 @@ rvm: 1.9.3
 before_install:
     - brew update
     - brew uninstall xctool && brew install xctool
-    - gem install cocoapods
+    - gem install cocoapods xcpretty
     - pod repo add sparrow-labs https://github.com/Sparrow-Labs/Specs.git
     - cd Tests && rm Podfile.lock && pod install && cd $TRAVIS_BUILD_DIR
 script: rake test
