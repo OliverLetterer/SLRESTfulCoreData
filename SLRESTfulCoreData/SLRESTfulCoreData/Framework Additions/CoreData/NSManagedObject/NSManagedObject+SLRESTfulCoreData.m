@@ -212,6 +212,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 - (void)updateRelationshipsWithRawJSONDictionary:(NSDictionary *)rawDictionary
                          relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
 {
+    if (!self.managedObjectContext) {
+        return;
+    }
+
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     SLAttributeMapping *attributeMapping = [self.class attributeMapping];
@@ -376,6 +380,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                   relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel
                                     error:(NSError *__autoreleasing *)error
 {
+    if (!self.managedObjectContext) {
+        @[];
+    }
+
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
     
