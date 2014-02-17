@@ -381,7 +381,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                                     error:(NSError *__autoreleasing *)error
 {
     if (!self.managedObjectContext) {
-        @[];
+        return @[];
     }
 
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)

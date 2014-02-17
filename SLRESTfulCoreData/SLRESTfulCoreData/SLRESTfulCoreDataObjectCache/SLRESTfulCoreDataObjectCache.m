@@ -141,7 +141,7 @@
     NSString *managedObjectUniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
     
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(class) inManagedObjectContext:context];
-    NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
+    __unused NSAttributeDescription *attributeDescription = entityDescription.attributesByName[managedObjectUniqueKey];
     
     NSAssert(attributeDescription != nil, @"no attributeDescription found for %@[%@]", class, managedObjectUniqueKey);
     
