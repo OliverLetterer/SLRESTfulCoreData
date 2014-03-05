@@ -1,0 +1,4 @@
+= 1.6.0 (2014-03-05)
+
+  * `-[NSManagedObject deleteToURL:completionHandler:]` now immediatly deletes the managed object and restores it in case of an API failure.
+  

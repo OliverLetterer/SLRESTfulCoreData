@@ -7,4 +7,4 @@ link_with 'iOS Tests'
 
 pod 'OCMock', '>= 2.2'
 pod 'Expecta', '>= 0.2.2'
-pod 'SLRESTfulCoreData', path: '../SLRESTfulCoreData.podspec'
+pod 'SLRESTfulCoreData', path: '..'

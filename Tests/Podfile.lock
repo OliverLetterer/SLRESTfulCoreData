@@ -1,51 +1,52 @@
 PODS:
-  - AFNetworking (2.1.0):
+  - AFNetworking (2.2.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
     - AFNetworking/UIKit
-  - AFNetworking/NSURLConnection (2.1.0):
+  - AFNetworking/NSURLConnection (2.2.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.1.0):
+  - AFNetworking/NSURLSession (2.2.0):
     - AFNetworking/NSURLConnection
-  - AFNetworking/Reachability (2.1.0)
-  - AFNetworking/Security (2.1.0)
-  - AFNetworking/Serialization (2.1.0)
-  - AFNetworking/UIKit (2.1.0):
+  - AFNetworking/Reachability (2.2.0)
+  - AFNetworking/Security (2.2.0)
+  - AFNetworking/Serialization (2.2.0)
+  - AFNetworking/UIKit (2.2.0):
     - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - Expecta (0.2.3)
   - OCMock (2.2.2)
   - SLCoreDataStack (0.4.4)
-  - SLRESTfulCoreData (1.5.2):
+  - SLRESTfulCoreData (1.5.3):
     - SLRESTfulCoreData/Complete
-  - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue (1.5.2):
+  - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue (1.5.3):
     - AFNetworking (~> 2.1)
     - SLRESTfulCoreData/Core
-  - SLRESTfulCoreData/Complete (1.5.2):
+  - SLRESTfulCoreData/Complete (1.5.3):
     - AFNetworking (~> 2.1)
     - SLCoreDataStack (>= 0.2.0)
     - SLRESTfulCoreData/AFRESTfulCoreDataBackgroundQueue
     - SLRESTfulCoreData/Core
-  - SLRESTfulCoreData/Core (1.5.2)
+  - SLRESTfulCoreData/Core (1.5.3)
 
 DEPENDENCIES:
   - Expecta (>= 0.2.2)
   - OCMock (>= 2.2)
-  - SLRESTfulCoreData (from `../SLRESTfulCoreData.podspec`)
+  - SLRESTfulCoreData (from `..`)
 
 EXTERNAL SOURCES:
   SLRESTfulCoreData:
-    :path: ../SLRESTfulCoreData.podspec
+    :path: ..
 
 SPEC CHECKSUMS:
-  AFNetworking: c7d7901a83f631414c7eda1737261f696101a5cd
+  AFNetworking: e8cfd8f3fe3bfe19124a0cc63f4d45752d892a56
   Expecta: dbc4a27fabb853bdd2e907e33f11ee43a9a47d0c
   OCMock: ffba68873fd32cfd35d885bddad23bfa816da4a3
   SLCoreDataStack: 45985d0eae41a30c7086ce48352b79eaebc8f3cf
-  SLRESTfulCoreData: 577ec0c8e2e00e5e3355e3d3a56bb51347ddcb93
+  SLRESTfulCoreData: f57f51bc1f2bfeb2546abacbe4911756605ecc63
 
 COCOAPODS: 0.29.0

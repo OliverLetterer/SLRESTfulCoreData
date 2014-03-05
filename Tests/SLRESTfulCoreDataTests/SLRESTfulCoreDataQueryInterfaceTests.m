@@ -498,7 +498,7 @@ static id backgroundQueue;
     }];
     
     expect(completionHandlerCalled).will.beTruthy();
-    expect(entity.isDeleted).to.beTruthy();
+    expect(entity.managedObjectContext).to.beNil();
 }
 
 - (void)testUpdateWithCompletionHandler
@@ -655,7 +655,7 @@ static id backgroundQueue;
     }];
     
     expect(completionHandlerCalled).will.beTruthy();
-    expect(entity.isDeleted).to.beTruthy();
+    expect(entity.managedObjectContext).to.beNil();
     expect(URL).to.equal(expectedURL);
 }
 
@@ -788,7 +788,7 @@ static id backgroundQueue;
     expect(completionHandlerCalled).will.beTruthy();
     
     expect(entity.children.count).to.equal(0);
-    expect(childEntity.isDeleted).to.beTruthy();
+    expect(childEntity.managedObjectContext).to.beNil();
     expect(URL).to.equal(expectedURL);
 }
 
