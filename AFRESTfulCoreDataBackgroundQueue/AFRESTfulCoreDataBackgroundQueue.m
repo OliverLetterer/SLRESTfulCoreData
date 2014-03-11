@@ -100,7 +100,7 @@
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:NULL];
 
     [request setHTTPBody:JSONData];
-    [request setValue:[NSString stringWithFormat:@"%d", JSONData.length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)JSONData.length] forHTTPHeaderField:@"Content-Length"];
 
     AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completionHandler) {
@@ -162,7 +162,7 @@
         }
     } else {
         [request setHTTPBody:JSONData];
-        [request setValue:[NSString stringWithFormat:@"%d", JSONData.length] forHTTPHeaderField:@"Content-Length"];
+        [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)JSONData.length] forHTTPHeaderField:@"Content-Length"];
 
         if (setupHandler) {
             setupHandler(request);
