@@ -43,36 +43,36 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
 + (SLAttributeMapping *)attributeMapping
 {
     SLAttributeMapping *attributeMapping = objc_getAssociatedObject(self, &SLRESTfulCoreDataAttributeMappingKey);
-    
+
     if (!attributeMapping) {
         attributeMapping = [[SLAttributeMapping alloc] initWithManagedObjectClassName:NSStringFromClass(self)];
         objc_setAssociatedObject(self, &SLRESTfulCoreDataAttributeMappingKey, attributeMapping, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    
+
     return attributeMapping;
 }
 
 + (SLObjectConverter *)objectConverter
 {
     SLObjectConverter *objectConverter = objc_getAssociatedObject(self, &SLRESTfulCoreDataObjectConverterKey);
-    
+
     if (!objectConverter) {
         objectConverter = [[SLObjectConverter alloc] initWithManagedObjectClassName:NSStringFromClass(self)];
         objc_setAssociatedObject(self, &SLRESTfulCoreDataObjectConverterKey, objectConverter, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    
+
     return objectConverter;
 }
 
 + (SLObjectDescription *)objectDescription
 {
     SLObjectDescription *attributeMapping = objc_getAssociatedObject(self, &SLRESTfulCoreDataObjectDescriptionKey);
-    
+
     if (!attributeMapping) {
         attributeMapping = [[SLObjectDescription alloc] initWithManagedObjectClassName:NSStringFromClass(self)];
         objc_setAssociatedObject(self, &SLRESTfulCoreDataObjectDescriptionKey, attributeMapping, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    
+
     return attributeMapping;
 
 }
@@ -80,7 +80,7 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
 + (void)registerAttributeName:(NSString *)attributeName forJSONObjectKeyPath:(NSString *)JSONObjectKeyPath
 {
     SLAttributeMapping *attributeMapping = [self attributeMapping];
-    
+
     [attributeMapping registerAttribute:attributeName forJSONObjectKeyPath:JSONObjectKeyPath];
 }
 
@@ -94,7 +94,7 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
 + (void)unregisterAttributeName:(NSString *)attributeName
 {
     SLAttributeMapping *attributeMapping = [self attributeMapping];
-    
+
     [attributeMapping unregisterAttributeName:attributeName];
 }
 
@@ -106,7 +106,7 @@ char *const SLRESTfulCoreDataObjectDescriptionKey;
 + (void)registerCRUDBaseURL:(NSURL *)CRUDBaseURL
 {
     NSParameterAssert(CRUDBaseURL);
-    
+
     [self objectDescription].CRUDBaseURL = CRUDBaseURL;
 }
 

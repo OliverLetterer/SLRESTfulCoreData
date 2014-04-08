@@ -43,18 +43,18 @@
     NSManagedObjectContext *context = [self mainThreadManagedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self)
                                                          inManagedObjectContext:context];
-    
+
     SLAttributeMapping *attributeMapping = [self attributeMapping];
-    
+
     NSArray *allAttributes = entityDescription.attributesByName.allKeys;
     NSMutableArray *registeredAttributes = [NSMutableArray arrayWithCapacity:allAttributes.count];
-    
+
     [allAttributes enumerateObjectsUsingBlock:^(NSString *attributeName, NSUInteger idx, BOOL *stop) {
         if ([attributeMapping isAttributeNameRegistered:attributeName]) {
             [registeredAttributes addObject:attributeName];
         }
     }];
-    
+
     return registeredAttributes;
 }
 
