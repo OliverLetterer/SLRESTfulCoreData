@@ -32,46 +32,45 @@
 {
     NSParameterAssert(managedObject);
     NSString *string = self.relativeString;
-    
+
     NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:@":[a-z]([a-zA-Z_0-9\\.])+"
                                                                                        options:NSRegularExpressionCaseInsensitive
                                                                                          error:NULL];
-    
+
     NSMutableDictionary *substitutionDictionary = [NSMutableDictionary dictionary];
-    
+
     [regularExpression enumerateMatchesInString:string
                                         options:0
                                           range:NSMakeRange(0, string.length)
                                      usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
                                          SLObjectConverter *objectConverter = [managedObject.class objectConverter];
                                          SLAttributeMapping *attributeMapping = [managedObject.class attributeMapping];
-                                         
+
                                          NSString *matchingString = [string substringWithRange:result.range];
                                          NSString *keyPath = [matchingString substringFromIndex:1];
                                          NSArray *keyPathComponents = [keyPath componentsSeparatedByString:@"."];
-                                         
+
                                          id evaluatingObject = managedObject;
                                          for (NSString *URLKey in keyPathComponents) {
                                              NSString *valueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:URLKey];
-                                             
+
                                              evaluatingObject = [evaluatingObject valueForKey:valueKey];
-                                             
+
                                              if ([evaluatingObject isKindOfClass:[NSManagedObject class]]) {
                                                  objectConverter = [[evaluatingObject class] objectConverter];
                                                  attributeMapping = [[evaluatingObject class] attributeMapping];
                                              }
                                          }
-                                         
+
                                          NSString *lastValueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:keyPathComponents.lastObject];
-                                         
+
                                          evaluatingObject = [objectConverter JSONObjectObjectFromManagedObjectObject:evaluatingObject
                                                                                            forManagedObjectAttribute:lastValueKey];
-                                         
+
                                          NSAssert(evaluatingObject != nil, @"no object found for underscored key path: %@", matchingString);
-                                         
-                                         substitutionDictionary[matchingString] = evaluatingObject;
+                                         substitutionDictionary[matchingString] = evaluatingObject ?: [NSNull null];
                                      }];
-    
+
     NSMutableString *finalURLString = string.mutableCopy;
     [substitutionDictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
         [finalURLString replaceOccurrencesOfString:key
@@ -79,7 +78,7 @@
                                            options:NSLiteralSearch
                                              range:NSMakeRange(0, finalURLString.length)];
     }];
-    
+
     return [NSURL URLWithString:finalURLString];
 }
 
