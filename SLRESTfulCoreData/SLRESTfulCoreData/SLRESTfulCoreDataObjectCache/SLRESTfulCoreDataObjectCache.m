@@ -55,6 +55,10 @@
 
 - (id)objectOfClass:(Class)class withRemoteIdentifier:(id)identifier
 {
+    if (!identifier) {
+        return nil;
+    }
+
     while ([class class] != class) {
         class = [class class];
     }
@@ -113,6 +117,10 @@
 
 - (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSSet *)identifiers
 {
+    if (identifiers.count == 0) {
+        return @{};
+    }
+
     while ([class class] != class) {
         class = [class class];
     }
@@ -182,9 +190,10 @@
         }
 
         id identifier = [object valueForKey:uniqueKey];
-        NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
-
-        [self.internalCache setObject:object forKey:cacheKey];
+        if (identifier && object) {
+            NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+            [self.internalCache setObject:object forKey:cacheKey];
+        }
     }
 }
 
