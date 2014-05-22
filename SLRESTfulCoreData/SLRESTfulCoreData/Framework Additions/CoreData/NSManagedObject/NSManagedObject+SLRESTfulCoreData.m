@@ -226,13 +226,26 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         return;
     }
 
-    NSDictionary *relationshipsByName = entityDescription.relationshipsByName;
+    NSMutableDictionary *relationshipsByName = @{}.mutableCopy;
+    [relationshipsByName addEntriesFromDictionary:entityDescription.relationshipsByName];
+    [relationshipsByName addEntriesFromDictionary:entityDescription.propertiesByName];
 
     for (NSString *relationshipName in relationshipsByName) {
-        NSRelationshipDescription *relationship = relationshipsByName[relationshipName];
-        NSAssert(relationship.inverseRelationship != nil, @"No inverseRelationship found for relationship %@ on %@", relationshipName, self.class);
+        id relationship = relationshipsByName[relationshipName];
+        NSRelationshipDescription *inverseRelationship = nil;
 
-        Class destinationClass = NSClassFromString(relationship.destinationEntity.managedObjectClassName);
+        Class destinationClass = nil;
+        if ([relationship isKindOfClass:[NSRelationshipDescription class]]) {
+            inverseRelationship = [relationship inverseRelationship];
+            NSAssert(inverseRelationship != nil, @"No inverseRelationship found for relationship %@ on %@", relationshipName, self.class);
+            destinationClass = NSClassFromString([relationship destinationEntity].managedObjectClassName);
+        }
+        else if ([relationship isKindOfClass:[NSFetchedPropertyDescription class]]) {
+            destinationClass = NSClassFromString([relationship fetchRequest].entity.managedObjectClassName);
+        } else {
+            continue;
+        }
+
         NSString *uniqueJSONObjectIdentifier = [destinationClass objectDescription].uniqueIdentifierOfJSONObjects;
         NSString *uniqueManagedObjectIdentifier = [[destinationClass attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueJSONObjectIdentifier];
 
@@ -249,7 +262,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             NSError *error = nil;
 
             [self updateObjectsForRelationship:relationshipName withJSONObject:relationshipObject fromURL:dummyURL deleteEveryOtherObject:YES relationshipUpdateLevel:relationshipUpdateLevel - 1 error:&error];
-        } else if (rawDictionary[JSONObjectKeyForDestinationIdentifier] && !relationship.isToMany) {
+        } else if (rawDictionary[JSONObjectKeyForDestinationIdentifier] && ![relationship isToMany]) {
             id uniqueIdentifier = [[destinationClass objectConverter] managedObjectObjectFromJSONObjectObject:rawDictionary[JSONObjectKeyForDestinationIdentifier]
                                                                                     forManagedObjectAttribute:uniqueManagedObjectIdentifier];
             if (uniqueIdentifier) {
@@ -282,36 +295,36 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
             }
         }
 
-        NSRelationshipDescription *inverseRelationship = relationship.inverseRelationship;
+        if (inverseRelationship) {
+            // update all existing objects with reference this object with its unique identifier
+            if (!inverseRelationship.isToMany) {
+                NSString *attributeName = [inverseRelationship.name stringByAppendingString:uniqueManagedObjectIdentifier.capitalizedString];
+                NSAttributeDescription *attributeDescription = [relationship destinationEntity].attributesByName[attributeName];
 
-        // update all existing objects with reference this object with its unique identifier
-        if (!inverseRelationship.isToMany) {
-            NSString *attributeName = [inverseRelationship.name stringByAppendingString:uniqueManagedObjectIdentifier.capitalizedString];
-            NSAttributeDescription *attributeDescription = relationship.destinationEntity.attributesByName[attributeName];
+                if (!attributeDescription) {
+                    continue;
+                }
 
-            if (!attributeDescription) {
-                continue;
-            }
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[relationship destinationEntity].managedObjectClassName];
 
-            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:relationship.destinationEntity.managedObjectClassName];
+                if (attributeDescription.attributeType == NSStringAttributeType) {
+                    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K LIKE %@", attributeName, [self valueForKey:uniqueManagedObjectIdentifier]];
+                } else {
+                    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", attributeName, [self valueForKey:uniqueManagedObjectIdentifier]];
+                }
 
-            if (attributeDescription.attributeType == NSStringAttributeType) {
-                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K LIKE %@", attributeName, [self valueForKey:uniqueManagedObjectIdentifier]];
-            } else {
-                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", attributeName, [self valueForKey:uniqueManagedObjectIdentifier]];
-            }
+                NSError *error = nil;
+                NSArray *matchingEntities = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                NSAssert(error == nil, @"error while fetching entities which should be updated for this remote object: %@", error);
 
-            NSError *error = nil;
-            NSArray *matchingEntities = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-            NSAssert(error == nil, @"error while fetching entities which should be updated for this remote object: %@", error);
-
-            for (id entity in matchingEntities) {
-                if (checksAttributesForEqualityBeforeAssigning) {
-                    if ([entity valueForKey:inverseRelationship.name] != self) {
+                for (id entity in matchingEntities) {
+                    if (checksAttributesForEqualityBeforeAssigning) {
+                        if ([entity valueForKey:inverseRelationship.name] != self) {
+                            [entity setValue:self forKey:inverseRelationship.name];
+                        }
+                    } else {
                         [entity setValue:self forKey:inverseRelationship.name];
                     }
-                } else {
-                    [entity setValue:self forKey:inverseRelationship.name];
                 }
             }
         }
@@ -386,28 +399,51 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(self.class)
                                                          inManagedObjectContext:self.managedObjectContext];
+    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
 
     NSMutableArray *updatedObjects = [NSMutableArray array];
+    NSString *destinationClassName = nil;
+    NSString *inverseRelationshipName = nil;
+    NSRelationshipDescription *inverseRelationship = nil;
+    BOOL isToMany = NO;
+    BOOL isFetchedProperty = NO;
 
     // get relationship description, name of destination entity and the name of the invers relation.
-    NSRelationshipDescription *relationshipDescription = entityDescription.relationshipsByName[relationship];
-    NSAssert(relationshipDescription != nil, @"There is no relationship %@ for %@", relationship, self.class);
+    if (relationshipDescription) {
+        destinationClassName = relationshipDescription.destinationEntity.managedObjectClassName;
+        inverseRelationshipName = relationshipDescription.inverseRelationship.name;
+        NSAssert(inverseRelationshipName != nil, @"no inverseRelationshipName specified for relationshipDescription %@", relationshipDescription);
+        inverseRelationship = relationshipDescription.inverseRelationship;
+        NSAssert(inverseRelationship != nil, @"%@ does not have an inverse", relationship);
+        isToMany = relationshipDescription.isToMany;
+    } else {
+        // fetched property?
+        NSFetchedPropertyDescription *fetchedProperty = entityDescription.propertiesByName[relationship];
+        if ([fetchedProperty isKindOfClass:[NSFetchedPropertyDescription class]]) {
+            isFetchedProperty = YES;
+            destinationClassName = fetchedProperty.fetchRequest.entity.managedObjectClassName;
+            if ([JSONObject isKindOfClass:[NSArray class]]) {
+                isToMany = YES;
+            } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
+                isToMany = NO;
+            } else {
+                *error = [NSError SLRESTfulCoreDataErrorBecauseBackgroundQueueReturnedUnexpectedJSONObject:JSONObject fromURL:URL];
+                return nil;
+            }
+        } else {
+            NSAssert(relationshipDescription != nil, @"There is no relationship %@ for %@", relationship, self.class);
+        }
+    }
 
-    NSString *destinationClassName = relationshipDescription.destinationEntity.managedObjectClassName;
     NSAssert(destinationClassName != nil, @"no managedObjectClassName specified for destinationEntity %@", relationshipDescription.destinationEntity);
-    NSString *inverseRelationshipName = relationshipDescription.inverseRelationship.name;
-    NSAssert(inverseRelationshipName != nil, @"no inverseRelationshipName specified for relationshipDescription %@", relationshipDescription);
     NSParameterAssert(error);
-
-    NSRelationshipDescription *inverseRelationship = relationshipDescription.inverseRelationship;
-    NSAssert(inverseRelationship != nil, @"%@ does not have an inverse", relationship);
 
     Class destinationClass = NSClassFromString(destinationClassName);
     SLObjectDescription *destinationDescription = [destinationClass objectDescription];
     NSString *destinationObjectUniqueJSONObjectKeyPath = destinationDescription.uniqueIdentifierOfJSONObjects;
 
     // update attributes based in relationship type
-    if (relationshipDescription.isToMany) {
+    if (isToMany) {
         if (![JSONObject isKindOfClass:[NSArray class]]) {
             *error = [NSError SLRESTfulCoreDataErrorBecauseBackgroundQueueReturnedUnexpectedJSONObject:JSONObject fromURL:URL];
             return nil;
@@ -445,23 +481,25 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
                 object = [destinationClass updatedObjectWithRawJSONDictionary:rawDictionary relationshipUpdateLevel:relationshipUpdateLevel inManagedObjectContext:self.managedObjectContext];
             }
 
-            BOOL checksAttributesForEqualityBeforeAssigning = [destinationClass objectConverter].checksAttributesForEqualityBeforeAssigning;
+            if (!isFetchedProperty) {
+                BOOL checksAttributesForEqualityBeforeAssigning = [destinationClass objectConverter].checksAttributesForEqualityBeforeAssigning;
 
-            if (inverseRelationship.isToMany) {
-                NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                                                                  withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
+                if (inverseRelationship.isToMany) {
+                    NSString *name = [inverseRelationshipName stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                                                                      withString:[inverseRelationshipName substringToIndex:1].uppercaseString];
 
-                NSString *selectorName = [NSString stringWithFormat:@"add%@Object:", name];
-                SEL selector = NSSelectorFromString(selectorName);
+                    NSString *selectorName = [NSString stringWithFormat:@"add%@Object:", name];
+                    SEL selector = NSSelectorFromString(selectorName);
 
-                ((void(*)(id, SEL, id))objc_msgSend)(object, selector, self);
-            } else {
-                if (checksAttributesForEqualityBeforeAssigning) {
-                    if ([object valueForKey:inverseRelationshipName] != self) {
+                    ((void(*)(id, SEL, id))objc_msgSend)(object, selector, self);
+                } else {
+                    if (checksAttributesForEqualityBeforeAssigning) {
+                        if ([object valueForKey:inverseRelationshipName] != self) {
+                            [object setValue:self forKey:inverseRelationshipName];
+                        }
+                    } else {
                         [object setValue:self forKey:inverseRelationshipName];
                     }
-                } else {
-                    [object setValue:self forKey:inverseRelationshipName];
                 }
             }
 
@@ -481,7 +519,10 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
 
         // update destination entity with JSON object.
         id object = [destinationClass updatedObjectWithRawJSONDictionary:JSONObject relationshipUpdateLevel:relationshipUpdateLevel - 1 inManagedObjectContext:self.managedObjectContext];
-        [self setValue:object forKey:relationship];
+
+        if (!isFetchedProperty) {
+            [self setValue:object forKey:relationship];
+        }
 
         if (object) {
             [updatedObjects addObject:object];
@@ -491,7 +532,7 @@ char *const SLRESTfulCoreDataBackgroundThreadActionKey;
         }
     }
 
-    if (relationshipDescription.isToMany) {
+    if (relationshipDescription.isToMany && !isFetchedProperty) {
         NSMutableSet *deletionSet = [[self valueForKey:relationship] mutableCopy];
         for (id object in updatedObjects) {
             [deletionSet removeObject:object];
