@@ -16,13 +16,10 @@
 
 #import <objc/runtime.h>
 
-
-
-@interface SLRESTfulCoreDataObjectCache () {
-
-}
+@interface SLRESTfulCoreDataObjectCache ()
 
 @property (nonatomic, strong) NSCache *internalCache;
+@property (nonatomic, strong) NSMutableDictionary *objectIDToIdentifierLookup;
 
 @end
 
@@ -33,6 +30,15 @@
 @implementation SLRESTfulCoreDataObjectCache
 
 #pragma mark - Initialization
+
+- (NSMutableDictionary *)objectIDToIdentifierLookup
+{
+    if (!_objectIDToIdentifierLookup) {
+        _objectIDToIdentifierLookup = [NSMutableDictionary dictionary];
+    }
+
+    return _objectIDToIdentifierLookup;
+}
 
 - (NSCache *)internalCache
 {
@@ -106,10 +112,12 @@
     NSAssert(error == nil, @"error while fetching: %@", error);
 
     if (objects.count > 0) {
-        id managedObject = objects[0];
+        NSManagedObject *managedObject = objects.firstObject;
 
         [self.internalCache setObject:managedObject forKey:cachedKey];
-        return objects[0];
+        self.objectIDToIdentifierLookup[managedObject.objectID] = managedObjectID;
+
+        return objects.firstObject;
     }
 
     return nil;
@@ -165,6 +173,7 @@
         NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
 
         [self.internalCache setObject:managedObject forKey:cacheKey];
+        self.objectIDToIdentifierLookup[managedObject.objectID] = identifier;
 
         indexedObjects[identifier] = managedObject;
     }
@@ -193,6 +202,7 @@
         if (identifier && object) {
             NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
             [self.internalCache setObject:object forKey:cacheKey];
+            self.objectIDToIdentifierLookup[object.objectID] = identifier;
         }
     }
 }
@@ -217,9 +227,13 @@
         NSString *managedObjectUniqueKey = [[class attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
 
         if (deletedObject.entity.attributesByName[managedObjectUniqueKey] != nil) {
-            id identifier = [deletedObject valueForKey:managedObjectUniqueKey];
-            NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
-            [self.internalCache removeObjectForKey:cachedKey];
+            id identifier = self.objectIDToIdentifierLookup[deletedObject.objectID];
+            if (identifier) {
+                NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+
+                [self.internalCache removeObjectForKey:cachedKey];
+                [self.objectIDToIdentifierLookup removeObjectForKey:deletedObject.objectID];
+            }
         }
     }
 }
@@ -244,12 +258,12 @@
 + (SLRESTfulCoreDataObjectCache *)sharedCacheForManagedObjectContext:(NSManagedObjectContext *)context
 {
     SLRESTfulCoreDataObjectCache *cache = objc_getAssociatedObject(context, _cmd);
-
+    
     if (!cache) {
         cache = [[SLRESTfulCoreDataObjectCache alloc] initWithManagedObjectContext:context];
         objc_setAssociatedObject(context, _cmd, cache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-
+    
     return cache;
 }
 
