@@ -80,7 +80,11 @@ static id managedObjectCollector(id objectIDs, NSManagedObjectContext *context)
         
         return newDictionary;
     } else if ([objectIDs isKindOfClass:[NSManagedObjectID class]]) {
-        return [context objectWithID:objectIDs];
+        NSError *error = nil;
+        NSManagedObject *managedObject = [context existingObjectWithID:objectIDs error:&error];
+        NSCAssert(error == nil, @"error in managedObjectCollector: %@. Make sure to only use performBlock:withObjects: with _saved_ managed objects.", error);
+
+        return managedObject;
     } else if (!objectIDs) {
         return nil;
     }
