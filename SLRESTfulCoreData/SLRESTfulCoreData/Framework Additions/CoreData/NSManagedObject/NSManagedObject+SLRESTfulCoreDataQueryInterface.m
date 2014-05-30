@@ -554,7 +554,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                                        [context performBlock:^{
                                            NSManagedObject *backgroundSelf = [context objectWithID:objectID];
                                            if (backgroundSelf.managedObjectContext && !backgroundSelf.isDeleted) {
-                                               [backgroundSelf updateWithRawJSONDictionary:JSONObject];
+                                               [backgroundSelf updateWithRawJSONDictionary:JSONObject relationshipUpdateLevel:[[self class] objectDescription].relationshipUpdateLevel];
                                            }
 
                                            NSError *saveError = nil;
@@ -608,7 +608,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                                       [context performBlock:^{
                                           NSManagedObject *backgroundSelf = [context objectWithID:objectID];
                                           if (backgroundSelf.managedObjectContext && !backgroundSelf.isDeleted) {
-                                              [backgroundSelf updateWithRawJSONDictionary:JSONObject];
+                                            [backgroundSelf updateWithRawJSONDictionary:JSONObject relationshipUpdateLevel:[[self class] objectDescription].relationshipUpdateLevel];
                                           }
 
                                           NSError *saveError = nil;
