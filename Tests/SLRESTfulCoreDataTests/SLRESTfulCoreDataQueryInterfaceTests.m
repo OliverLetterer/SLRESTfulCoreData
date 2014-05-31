@@ -40,6 +40,7 @@ static id backgroundQueue;
 @property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSSet *children;
+@property (nonatomic, readonly) NSMutableArray *fetchedRelationship;
 @end
 
 @interface SLEntity6 (CoreDataGeneratedAccessors)
@@ -49,7 +50,7 @@ static id backgroundQueue;
 @end
 
 @implementation SLEntity6
-@dynamic identifier, name, children;
+@dynamic identifier, name, children, fetchedRelationship;
 
 + (id<SLRESTfulCoreDataBackgroundQueue>)backgroundQueue
 {
@@ -280,38 +281,75 @@ static id backgroundQueue;
 - (void)testThatQueryInterfaceFetchesFetchesObjectsForRelationship
 {
     backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
-    
+
     NSURL *URL = [NSURL URLWithString:@"/5/children"];
-    
+
     void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
         void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
         [invocation getArgument:&completionHandler atIndex:3];
-        
+
         completionHandler(@[ @{ @"id": @7 } ], nil);
     };
-    
+
     [[[backgroundQueue stub] andDo:implementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
-    
+
     SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
     entity.identifier = @5;
     entity.name = @"oli";
-    
+
     __block NSArray *fetchedEntities = nil;
-    
+
     [entity fetchObjectsForRelationship:@"children" fromURL:URL completionHandler:^(NSArray *fetchedObjects, NSError *error) {
         fetchedEntities = fetchedObjects;
     }];
-    
+
     expect(fetchedEntities).willNot.beNil();
     expect(fetchedEntities.count).to.equal(1);
     expect(entity.children.count).to.equal(1);
-    
+
     SLEntity6Child *childEntity = fetchedEntities[0];
-    
+
     expect(childEntity.class).to.equal([SLEntity6Child class]);
     expect(childEntity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
     expect(childEntity.identifier).to.equal(7);
     expect(childEntity.parent).to.equal(entity);
+}
+
+- (void)testThatQueryInterfaceFetchesObjectsForFetchedRelationships
+{
+    backgroundQueue = [OCMockObject partialMockForObject:[SLTestBackgroundQueue new]];
+
+    NSURL *URL = [NSURL URLWithString:@"/5/fetched_relationship"];
+
+    void(^implementation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
+        void(^__unsafe_unretained completionHandler)(id JSONObject, NSError *error);
+        [invocation getArgument:&completionHandler atIndex:3];
+
+        completionHandler(@[ @{ @"id": @7 } ], nil);
+    };
+
+    [[[backgroundQueue stub] andDo:implementation] getRequestToURL:OCMOCK_ANY completionHandler:OCMOCK_ANY];
+
+    SLEntity6 *entity = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([SLEntity6 class]) inManagedObjectContext:[SLTestDataStore sharedInstance].mainThreadManagedObjectContext];
+    entity.identifier = @5;
+    entity.name = @"oli";
+
+    __block NSArray *fetchedEntities = nil;
+
+    [entity fetchObjectsForRelationship:@"fetchedRelationship" fromURL:URL completionHandler:^(NSArray *fetchedObjects, NSError *error) {
+        fetchedEntities = fetchedObjects;
+    }];
+
+    expect(fetchedEntities).willNot.beNil();
+    expect(fetchedEntities.count).to.equal(1);
+    expect(entity.fetchedRelationship.count).to.equal(1);
+
+    SLEntity6Child *childEntity = fetchedEntities[0];
+
+    expect(childEntity.class).to.equal([SLEntity6Child class]);
+    expect(childEntity.managedObjectContext).to.equal([SLTestDataStore sharedInstance].mainThreadManagedObjectContext);
+    expect(childEntity.identifier).to.equal(7);
+    expect(childEntity.parent).to.beNil();
 }
 
 - (void)testThatQueryInterfaceFetchesPOSTsToURL
