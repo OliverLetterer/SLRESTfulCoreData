@@ -21,6 +21,7 @@
 - (NSDictionary *)indexedObjectsOfClass:(Class)class withRemoteIdentifiers:(NSSet *)identifiers;
 
 - (void)prepopulateCacheWithObjects:(NSSet *)managedObjects;
+- (void)removeManagedObject:(NSManagedObject *)managedObject;
 
 @end
 
