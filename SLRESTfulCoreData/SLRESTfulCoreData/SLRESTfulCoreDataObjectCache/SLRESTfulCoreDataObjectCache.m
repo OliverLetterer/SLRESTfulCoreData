@@ -229,6 +229,10 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
     NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
     NSString *uniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
 
+    if (![managedObject respondsToSelector:NSSelectorFromString(uniqueKey)]) {
+        return;
+    }
+
     id identifier = [managedObject valueForKey:uniqueKey];
 
     NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
