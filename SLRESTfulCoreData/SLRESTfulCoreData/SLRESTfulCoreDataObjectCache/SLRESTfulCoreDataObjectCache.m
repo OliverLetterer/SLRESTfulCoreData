@@ -16,10 +16,38 @@
 
 #import <objc/runtime.h>
 
+static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSelector)
+{
+    Method origMethod = class_getInstanceMethod(class, originalSelector);
+    Method newMethod = class_getInstanceMethod(class, newSelector);
+    if(class_addMethod(class, originalSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
+        class_replaceMethod(class, newSelector, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+    } else {
+        method_exchangeImplementations(origMethod, newMethod);
+    }
+}
+
+
+
+@implementation NSManagedObject (SLRESTfulCoreDataObjectCache)
+
++ (void)load
+{
+    class_swizzleSelector(self, @selector(prepareForDeletion), @selector(__SLRESTfulCoreDataObjectCachePrepareForDeletion));
+}
+
+- (void)__SLRESTfulCoreDataObjectCachePrepareForDeletion
+{
+    [self __SLRESTfulCoreDataObjectCachePrepareForDeletion];
+
+    [[SLRESTfulCoreDataObjectCache sharedCacheForManagedObjectContext:self.managedObjectContext] removeManagedObject:self];
+}
+
+@end
+
 @interface SLRESTfulCoreDataObjectCache ()
 
 @property (nonatomic, strong) NSCache *internalCache;
-@property (nonatomic, strong) NSMutableDictionary *objectIDToIdentifierLookup;
 
 @end
 
@@ -30,15 +58,6 @@
 @implementation SLRESTfulCoreDataObjectCache
 
 #pragma mark - Initialization
-
-- (NSMutableDictionary *)objectIDToIdentifierLookup
-{
-    if (!_objectIDToIdentifierLookup) {
-        _objectIDToIdentifierLookup = [NSMutableDictionary dictionary];
-    }
-
-    return _objectIDToIdentifierLookup;
-}
 
 - (NSCache *)internalCache
 {
@@ -53,8 +72,6 @@
 {
     if (self = [super init]) {
         _managedObjectContext = context;
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_managedObjectContextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:context];
     }
     return self;
 }
@@ -89,7 +106,6 @@
                                                         forManagedObjectAttribute:managedObjectUniqueKey];
 
     if (!managedObjectID) {
-        NSLog(@"WARNING: cannot convert JSON object %@ into CoreData object", identifier);
         return nil;
     }
 
@@ -115,8 +131,6 @@
         NSManagedObject *managedObject = objects.firstObject;
 
         [self.internalCache setObject:managedObject forKey:cachedKey];
-        self.objectIDToIdentifierLookup[managedObject.objectID] = managedObjectID;
-
         return objects.firstObject;
     }
 
@@ -173,7 +187,6 @@
         NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
 
         [self.internalCache setObject:managedObject forKey:cacheKey];
-        self.objectIDToIdentifierLookup[managedObject.objectID] = identifier;
 
         indexedObjects[identifier] = managedObject;
     }
@@ -202,41 +215,31 @@
         if (identifier && object) {
             NSString *cacheKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
             [self.internalCache setObject:object forKey:cacheKey];
-            self.objectIDToIdentifierLookup[object.objectID] = identifier;
         }
     }
 }
 
-#pragma mark - Memory management
-
-- (void)dealloc
+- (void)removeManagedObject:(NSManagedObject *)managedObject
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    Class class = NSClassFromString(managedObject.entity.name);
+    NSParameterAssert(class);
+
+    SLAttributeMapping *attributeMapping = [class attributeMapping];
+
+    NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
+    NSString *uniqueKey = [attributeMapping convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
+
+    if (![managedObject respondsToSelector:NSSelectorFromString(uniqueKey)]) {
+        return;
+    }
+
+    id identifier = [managedObject valueForKey:uniqueKey];
+
+    NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
+    [self.internalCache removeObjectForKey:cachedKey];
 }
 
 #pragma mark - Private category implementation ()
-
-- (void)_managedObjectContextDidChange:(NSNotification *)notification
-{
-    NSArray *deletedObjects = notification.userInfo[NSDeletedObjectsKey];
-
-    for (NSManagedObject *deletedObject in deletedObjects) {
-        Class class = NSClassFromString(deletedObject.entity.name);
-
-        NSString *uniqueKeyForJSONDictionary = [class objectDescription].uniqueIdentifierOfJSONObjects;
-        NSString *managedObjectUniqueKey = [[class attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:uniqueKeyForJSONDictionary];
-
-        if (deletedObject.entity.attributesByName[managedObjectUniqueKey] != nil) {
-            id identifier = self.objectIDToIdentifierLookup[deletedObject.objectID];
-            if (identifier) {
-                NSString *cachedKey = [self _cachedKeyForClass:class withRemoteIdentifier:identifier];
-
-                [self.internalCache removeObjectForKey:cachedKey];
-                [self.objectIDToIdentifierLookup removeObjectForKey:deletedObject.objectID];
-            }
-        }
-    }
-}
 
 - (NSString *)_cachedKeyForClass:(Class)class withRemoteIdentifier:(id)identifier
 {
@@ -258,7 +261,7 @@
 + (SLRESTfulCoreDataObjectCache *)sharedCacheForManagedObjectContext:(NSManagedObjectContext *)context
 {
     SLRESTfulCoreDataObjectCache *cache = objc_getAssociatedObject(context, _cmd);
-    
+
     if (!cache) {
         cache = [[SLRESTfulCoreDataObjectCache alloc] initWithManagedObjectContext:context];
         objc_setAssociatedObject(context, _cmd, cache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

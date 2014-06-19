@@ -438,10 +438,20 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                             fromURL:(NSURL *)URL
                   completionHandler:(void (^)(NSArray *fetchedObjects, NSError *error))completionHandler
 {
-    [self fetchObjectsForRelationship:relationship
-                              fromURL:URL
-               deleteEveryOtherObject:YES
-                    completionHandler:completionHandler];
+    if (self.entity.relationshipsByName[relationship]) {
+        [self fetchObjectsForRelationship:relationship
+                                  fromURL:URL
+                   deleteEveryOtherObject:YES
+                        completionHandler:completionHandler];
+    } else if (self.entity.propertiesByName[relationship]) {
+        NSFetchedPropertyDescription *fetchedPropertyDescription = self.entity.propertiesByName[relationship];
+        NSParameterAssert([fetchedPropertyDescription isKindOfClass:[NSFetchedPropertyDescription class]]);
+
+        Class class = NSClassFromString(fetchedPropertyDescription.fetchRequest.entity.managedObjectClassName);
+        [class fetchObjectsFromURL:[URL URLBySubstitutingAttributesWithManagedObject:self] deleteEveryOtherObject:NO completionHandler:completionHandler];
+    } else {
+        NSAssert(NO, @"cannot fetch objects for relationship %@", relationship);
+    }
 }
 
 - (void)fetchObjectsForRelationship:(NSString *)relationship
@@ -449,6 +459,8 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
              deleteEveryOtherObject:(BOOL)deleteEveryOtherObject
                   completionHandler:(void (^)(NSArray *fetchedObjects, NSError *error))completionHandler
 {
+    NSParameterAssert(self.entity.relationshipsByName[relationship]);
+
     if (self.isInserted || self.hasChanges) {
         NSError *saveError = nil;
         [self.managedObjectContext save:&saveError];

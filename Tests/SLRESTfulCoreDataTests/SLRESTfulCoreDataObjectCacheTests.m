@@ -97,7 +97,7 @@
     [context save:&saveError];
     NSAssert(saveError == nil, @"error saving NSManagedObjectContext: %@", saveError);
     
-    SLRESTfulCoreDataObjectCache *cache = [[SLRESTfulCoreDataObjectCache alloc] initWithManagedObjectContext:context];
+    SLRESTfulCoreDataObjectCache *cache = [SLRESTfulCoreDataObjectCache sharedCacheForManagedObjectContext:context];
     NSString *cachedKey = @"SLEntity2#5";
     NSCache *internalCache = [cache valueForKey:@"internalCache"];
     
