@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>91190D13-2368-4BEC-9B36-E0DBAC7C7079</string>
+	<string>2677B9F7-70CC-4ACB-A88C-591D4A16B021</string>
 	<key>IDESourceControlProjectName</key>
 	<string>SLRESTfulCoreData</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,11 +14,11 @@
 		<string>ssh://github.com/jpaas/SLRESTfulCoreData.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>SLRESTfulCoreData.xcworkspace</string>
+	<string>SLRESTfulCoreData/SLRESTfulCoreData.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2ABB6349-7DAE-4C1F-A3A4-B0B68D21CDA8</key>
-		<string>..</string>
+		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/jpaas/SLRESTfulCoreData.git</string>
