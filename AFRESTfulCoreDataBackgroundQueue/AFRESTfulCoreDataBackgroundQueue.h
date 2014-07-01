@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-#import "SLRESTfulCoreData.h"
+#import <SLRESTfulCoreDataBackgroundQueue.h>
 #import "AFNetworking.h"
 
 

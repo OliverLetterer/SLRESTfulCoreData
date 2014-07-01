@@ -33,7 +33,7 @@
 #import "NSManagedObject+SLRESTfulCoreDataSetup.h"
 #import "NSManagedObject+SLRESTfulCoreDataHelpers.h"
 
-#import "NSManagedObjectContext+SLRESTfulCoreData.h"
+#import <SLCoreDataStack/NSManagedObjectContext+SLRESTfulCoreData.h>
 
 #import "SLAttributeMapping.h"
 #import "SLObjectConverter.h"
