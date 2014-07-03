@@ -394,7 +394,8 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                          return;
                      }
 
-                     NSNumber *JSONObjectID = rawDictionary[[self objectDescription].uniqueIdentifierOfJSONObjects];
+                     NSString *idKey = [[self attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:[self objectDescription].uniqueIdentifierOfJSONObjects];
+                     id JSONObjectID = [object valueForKey:idKey];
                      if (JSONObjectID) {
                          [fetchedObjectIDs addObject:JSONObjectID];
                      }
@@ -405,7 +406,8 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
                  if (object) {
                      [updatedObjects addObject:object];
 
-                     NSNumber *JSONObjectID = JSONObject[[self objectDescription].uniqueIdentifierOfJSONObjects];
+                     NSString *idKey = [[self attributeMapping] convertJSONObjectAttributeToManagedObjectAttribute:[self objectDescription].uniqueIdentifierOfJSONObjects];
+                     id JSONObjectID = [object valueForKey:idKey];
                      if (JSONObjectID) {
                          [fetchedObjectIDs addObject:JSONObjectID];
                      }
@@ -694,7 +696,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 
     CRUDBaseURL = [CRUDBaseURL URLByAppendingPathComponent:[@":" stringByAppendingString:[[self.class objectDescription] uniqueIdentifierOfJSONObjects]]];
     CRUDBaseURL = [CRUDBaseURL URLBySubstitutingAttributesWithManagedObject:self];
-
+    
     [self.class fetchObjectFromURL:CRUDBaseURL completionHandler:completionHandler];
 }
 
@@ -702,7 +704,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 {
     NSURL *CRUDBaseURL = [self.class objectDescription].CRUDBaseURL;
     NSParameterAssert(CRUDBaseURL);
-
+    
     [self postToURL:CRUDBaseURL completionHandler:completionHandler];
 }
 
@@ -710,9 +712,9 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 {
     NSURL *CRUDBaseURL = [self.class objectDescription].CRUDBaseURL;
     NSParameterAssert(CRUDBaseURL);
-
+    
     CRUDBaseURL = [CRUDBaseURL URLByAppendingPathComponent:[@":" stringByAppendingString:[[self.class objectDescription] uniqueIdentifierOfJSONObjects]]];
-
+    
     [self putToURL:CRUDBaseURL completionHandler:completionHandler];
 }
 
@@ -720,7 +722,7 @@ static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSele
 {
     NSURL *CRUDBaseURL = [self.class objectDescription].CRUDBaseURL;
     NSParameterAssert(CRUDBaseURL);
-
+    
     CRUDBaseURL = [CRUDBaseURL URLByAppendingPathComponent:[@":" stringByAppendingString:[[self.class objectDescription] uniqueIdentifierOfJSONObjects]]];
     
     [self deleteToURL:CRUDBaseURL completionHandler:completionHandler];
