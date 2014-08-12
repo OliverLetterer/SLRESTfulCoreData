@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'SLRESTfulCoreData'
-  spec.version      = '1.9.1'
+  spec.version      = '1.9.2'
   spec.platform     = :ios, '6.0'
   spec.license      = 'MIT'
   spec.source       = { :git => 'https://github.com/OliverLetterer/SLRESTfulCoreData.git', :tag => spec.version.to_s }
@@ -15,6 +15,9 @@ Pod::Spec.new do |spec|
 
   spec.dependency 'SLCoreDataStack', '~> 0.6.0'
   spec.dependency 'AFNetworking', '~> 2.3.1'
+
+  spec.deprecated = true
+  spec.deprecated_in_favor_of = 'CloudBridge'
 
 	spec.prefix_header_contents = <<-EOS
 	#import <Availability.h>
