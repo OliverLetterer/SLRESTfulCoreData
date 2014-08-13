@@ -73,6 +73,12 @@ typedef NSManagedObjectContext *(^SLRESTfulCoreDataManagedObjectContextBlock)(vo
 - (void)updateWithRawJSONDictionary:(NSDictionary *)dictionary;
 
 /**
+ Updates the actual instance and its relations with the given JSON dictionary;
+ */
+- (void)updateWithRawJSONDictionary:(NSDictionary *)rawDictionary
+            relationshipUpdateLevel:(NSInteger)relationshipUpdateLevel;
+
+/**
  converts self into a JSON object.
  */
 - (NSDictionary *)rawJSONDictionary;
