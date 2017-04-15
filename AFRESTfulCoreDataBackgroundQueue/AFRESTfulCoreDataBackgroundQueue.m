@@ -187,54 +187,44 @@
     completionHandler:(void(^)(id JSONObject, NSError *error))completionHandler
 {
     JSONObject = JSONObject ?: @{};
-
+    
     SLRESTfulCoreDataBackgroundQueueObjectTransformer requestObjectTransformer = ({
         NSString *key = [self _requestObjectTransformerKey];
-
+        
         SLRESTfulCoreDataBackgroundQueueObjectTransformer objectTransformer = [NSThread currentThread].threadDictionary[key];
         [[NSThread currentThread].threadDictionary removeObjectForKey:key];
-
+        
         objectTransformer;
     });
-
+    
     if (requestObjectTransformer) {
         JSONObject = requestObjectTransformer(JSONObject);
     }
-
+    
     NSString *URLString = URL.absoluteString;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:nil error:NULL];
-
-    NSError *error = nil;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
-
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:JSONObject error:NULL];
+    
     SLRESTfulCoreDataBackgroundQueueObjectTransformer responseObjectTransformer = ({
         NSString *key = [self _responseObjectTransformerKey];
-
+        
         SLRESTfulCoreDataBackgroundQueueObjectTransformer objectTransformer = [NSThread currentThread].threadDictionary[key];
         [[NSThread currentThread].threadDictionary removeObjectForKey:key];
-
+        
         objectTransformer;
     });
-
-    if (error) {
+    
+    AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (completionHandler) {
+            completionHandler(responseObjectTransformer ? responseObjectTransformer(responseObject) : responseObject, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completionHandler) {
             completionHandler(nil, error);
         }
-    } else {
-        [request setHTTPBody:JSONData];
-
-        AFHTTPRequestOperation *requestOperation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if (completionHandler) {
-                completionHandler(responseObjectTransformer ? responseObjectTransformer(responseObject) : responseObject, nil);
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if (completionHandler) {
-                completionHandler(nil, error);
-            }
-        }];
-
-        [self.operationQueue addOperation:requestOperation];
-    }
+    }];
+    
+    [self.operationQueue addOperation:requestOperation];
+    
 }
 
 - (void)registerResponseObjectTransformerForNextRequest:(SLRESTfulCoreDataBackgroundQueueObjectTransformer)responseObjectTransformer
